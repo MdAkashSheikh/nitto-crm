@@ -3,8 +3,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+// const router = require('./routes/route')
 
 const app = express();
+
+app.use(cors())
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
 
 mongoose.connect(process.env.DB_CONN)
 .then(() => console.log("Database Connected"))
@@ -13,6 +18,8 @@ mongoose.connect(process.env.DB_CONN)
 app.get("/", (req, res) => {
     res.send("Hello Server")
 })
+
+// app.use('/api', route);
 
 app.listen('5001', () => {
     console.log('listening on port:5001');
