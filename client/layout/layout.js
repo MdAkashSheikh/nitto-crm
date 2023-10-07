@@ -103,7 +103,7 @@ const Layout = (props) => {
     return (
         <React.Fragment>
             <Head>
-                <title>Sakai by PrimeReact | Free Admin Template for NextJS</title>
+                <title>CleanBattle</title>
                 <meta charSet="UTF-8" />
                 <meta name="description" content="The ultimate collection of design-agnostic, flexible and accessible React UI Components." />
                 <meta name="robots" content="index, follow" />
@@ -114,7 +114,7 @@ const Layout = (props) => {
                 <meta property="og:description" content="The ultimate collection of design-agnostic, flexible and accessible React UI Components." />
                 <meta property="og:image" content="https://www.primefaces.org/static/social/sakai-nextjs.png"></meta>
                 <meta property="og:ttl" content="604800"></meta>
-                <link rel="icon" href={`/favicon.ico`} type="image/x-icon"></link>
+                <link rel="icon" href={`/favicon1.png`} type="image/x-icon"></link>
             </Head>
 
             <div className={containerClass}>
