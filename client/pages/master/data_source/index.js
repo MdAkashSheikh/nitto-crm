@@ -118,7 +118,7 @@ const Data_Source = () => {
         );
     };
 
-    console.log(sourceData, "SOURCE DATA")
+    // console.log(sourceData, "SOURCE DATA")
 
     const sourceDataBodyTemplate = (rowData) => {
         return (
