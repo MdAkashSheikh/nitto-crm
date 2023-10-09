@@ -9,7 +9,6 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { ProductService } from '../../../demo/service/ProductService';
 import { DataSourceService } from '../../../demo/service/SourceDataService';
 
 const Data_Source = () => {
@@ -33,8 +32,9 @@ const Data_Source = () => {
 
 
     useEffect(() => {
-        // ProductService.getTime().then((data) => setSourceDatas(data));
+
         DataSourceService.getSourceData().then((res) => setSourceDatas(res.data.AllData));
+
     }, [toggleRefresh]);
 
     console.log(sourceDatas, "SOURCE DATAS")
@@ -195,27 +195,27 @@ const Data_Source = () => {
         </>
     );
 
-    // if(sourceDatas == null) {
-    //     return (
-    //         <div className="card">
-    //             <div className="border-round border-1 surface-border p-4 surface-card">
-    //                 <div className="flex mb-3">
-    //                     <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
-    //                     <div>
-    //                         <Skeleton width="10rem" className="mb-2"></Skeleton>
-    //                         <Skeleton width="5rem" className="mb-2"></Skeleton>
-    //                         <Skeleton height=".5rem"></Skeleton>
-    //                     </div>
-    //                 </div>
-    //                 <Skeleton width="100%" height="570px"></Skeleton>
-    //                 <div className="flex justify-content-between mt-3">
-    //                     <Skeleton width="4rem" height="2rem"></Skeleton>
-    //                     <Skeleton width="4rem" height="2rem"></Skeleton>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     )
-    // }
+    if(sourceDatas == null) {
+        return (
+            <div className="card">
+                <div className="border-round border-1 surface-border p-4 surface-card">
+                    <div className="flex mb-3">
+                        <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
+                        <div>
+                            <Skeleton width="10rem" className="mb-2"></Skeleton>
+                            <Skeleton width="5rem" className="mb-2"></Skeleton>
+                            <Skeleton height=".5rem"></Skeleton>
+                        </div>
+                    </div>
+                    <Skeleton width="100%" height="570px"></Skeleton>
+                    <div className="flex justify-content-between mt-3">
+                        <Skeleton width="4rem" height="2rem"></Skeleton>
+                        <Skeleton width="4rem" height="2rem"></Skeleton>
+                    </div>
+                </div>
+            </div>
+        )
+    }
    
 
 
