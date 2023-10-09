@@ -10,11 +10,12 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProductService } from '../../../demo/service/ProductService';
+import { DataSourceService } from '../../../demo/service/SourceDataService';
 
 const Data_Source = () => {
     let emptySource = {
         id: 0,
-        dataSource: '',
+        name: '',
         details: '',
     };
 
@@ -32,7 +33,10 @@ const Data_Source = () => {
 
     useEffect(() => {
         // ProductService.getTime().then((data) => setSourceDatas(data));
+        DataSourceService.getSourceData().then((res) => setSourceDatas(res.data.AllData));
     }, [toggleRefresh]);
+
+    console.log(sourceDatas, "SOURCE DATAS")
 
     const openNew = () => {
         setSourceData(emptySource);
@@ -55,24 +59,24 @@ const Data_Source = () => {
 
         console.log("PPPP1",sourceData)
 
-        if( sourceData.sourceData && sourceData.details, sourceData._id) {
-            ProductService.editTime(
-                sourceData.sourceData,
+        if( sourceData.name && sourceData.details, sourceData._id) {
+            DataSourceService.editDataSource(
+                sourceData.name,
                 sourceData.details,
                 sourceData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Time is Updated', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Source is Updated', life: 3000 });
             })
-        } else if( sourceData.sourceData && sourceData.details) {
-            ProductService.postTime(
-                sourceData.sourceData,
+        } else if( sourceData.name && sourceData.details) {
+            DataSourceService.postDataSource(
+                sourceData.name,
                 sourceData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Time is Created', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Data Source is Created', life: 3000 });
             })
         }
     };
@@ -124,7 +128,7 @@ const Data_Source = () => {
         return (
             <>
                 <span className="p-column-title">Start Time</span>
-                {rowData.sourceData}
+                {rowData.name}
             </>
         );
     }
@@ -255,7 +259,7 @@ const Data_Source = () => {
                     >
 
                         <Column
-                            field="dataSource"
+                            field="name"
                             header="Data Source"
                             sortable
                             body={sourceDataBodyTemplate}
@@ -292,14 +296,14 @@ const Data_Source = () => {
                         <div className="field">
                             <label htmlFor="sourceData">Data Source</label>
                             <InputText 
-                                id="sourceData" 
-                                value={sourceData.sourceData} 
-                                onChange={(e) => onInputChange(e, "sourceData")} 
+                                id="name" 
+                                value={sourceData.name} 
+                                onChange={(e) => onInputChange(e, "name")} 
                                 required 
                                 autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !sourceData.sourceData })} 
+                                className={classNames({ 'p-invalid': submitted && !sourceData.name })} 
                                 />
-                            {submitted && !sourceData.sourceData && <small className="p-invalid">
+                            {submitted && !sourceData.name && <small className="p-invalid">
                                 Data Source is required.
                             </small>}
                         </div>
@@ -318,7 +322,7 @@ const Data_Source = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {sourceData && (
                                 <span>
-                                    Are you sure you want to delete <b>{sourceData.dataSource}</b>?
+                                    Are you sure you want to delete <b>{sourceData.name}</b>?
                                 </span>
                             )}
                         </div>

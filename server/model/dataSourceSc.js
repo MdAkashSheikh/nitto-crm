@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const dataSourceSc = new mongoose.Schema({
-    dataSource: {
+    name: {
         type: String,
     },
     details: {

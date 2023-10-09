@@ -1,12 +1,25 @@
 import axios from 'axios';
 
 export const URL = '//localhost:5001';
-export const SourceDataService = {
-    async postSourceData(sourceData, details) {
+export const DataSourceService = {
+    async postDataSource(name, details) {
         const data = {
-            sourceData,
+            name,
             details
         }
-        await axios.post(`${URL}/api/post-data-source`, data)
+        await axios.post(`${URL}/post-data-source`, data)
     },
+
+    async editDataSource(name, details, _id) {
+        const data = {
+            name,
+            details,
+        }
+        await axios.post(`${URL}/edit-data-source/` + _id, data);
+    },
+
+    async getSourceData() {
+        const response = await axios.get(`${URL}/get-data-source`);
+        return response;
+    }
 }
