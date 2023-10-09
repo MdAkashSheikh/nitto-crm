@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export const URL = '//localhost:5001';
+
 export const DataSourceService = {
     async postDataSource(name, details) {
         const data = {
@@ -21,5 +22,9 @@ export const DataSourceService = {
     async getSourceData() {
         const response = await axios.get(`${URL}/get-data-source`);
         return response;
+    },
+
+    async deleteSourceData(_id) {
+        await axios.delete(`${URL}/delete-data-source/` + _id);
     }
 }

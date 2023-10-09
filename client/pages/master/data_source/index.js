@@ -94,11 +94,11 @@ const Data_Source = () => {
     };
 
     const deleteData = () => {
-        ProductService.deleteTime(sourceData._id).then(() => {
+        DataSourceService.deleteSourceData(sourceData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
             setSourceData(emptySource);
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Time is Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Source is Deleted', life: 3000 });
         })
     };
 

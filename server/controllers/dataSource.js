@@ -47,8 +47,20 @@ const getDataSource = async(req, res) => {
     }
 }
 
+const deleteDataSource = async(req, res) => {
+    const id = req.params.id;
+
+    try {
+        await dataSourceSc.findByIdAndRemove(id);
+        res.send("Deleted.")
+    } catch (err) {
+        res.status(400).send(err);
+    }
+}
+
 module.exports = {
     postDataSourc,
     editDataSource,
     getDataSource,
+    deleteDataSource,
 }
