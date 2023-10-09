@@ -16,6 +16,7 @@ const Data_Source = () => {
     let emptySource = {
         id: 0,
         name: '',
+        is_active: '',
         details: '',
     };
 
@@ -112,22 +113,10 @@ const Data_Source = () => {
         setSourceData(data);
     };
 
-
-    const codeBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Code</span>
-                {rowData.id}
-            </>
-        );
-    };
-
-    // console.log(sourceData, "SOURCE DATA")
-
     const sourceDataBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Start Time</span>
+                <span className="p-column-title">Name</span>
                 {rowData.name}
             </>
         );
@@ -136,7 +125,7 @@ const Data_Source = () => {
     const detailsBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">End Time</span>
+                <span className="p-column-title">Details</span>
                 {rowData.details}
             </>
         );
@@ -150,7 +139,7 @@ const Data_Source = () => {
                 if (rowData.is_active == '0') {
                     is_active = '1'
                 }
-                ProductService.toggleTime(is_active, rowData._id).then(() => {
+                DataSourceService.toggleSourceData(is_active, rowData._id).then(() => {
                 setTogleRefresh(!toggleRefresh)
                 })
              }} />

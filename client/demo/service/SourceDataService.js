@@ -26,5 +26,12 @@ export const DataSourceService = {
 
     async deleteSourceData(_id) {
         await axios.delete(`${URL}/delete-data-source/` + _id);
+    },
+
+    async toggleSourceData(is_active, _id) {
+        const data = {
+            is_active,
+        }
+        await axios.post(`${URL}/toggle-source-data/` + _id, data)
     }
 }

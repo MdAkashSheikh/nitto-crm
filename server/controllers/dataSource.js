@@ -58,9 +58,27 @@ const deleteDataSource = async(req, res) => {
     }
 }
 
+const toggleSourceData = async(req, res) => {
+    const id = req.params.id;
+    
+    const is_active = req.body.is_active;
+
+    try {
+        const oneData = await dataSourceSc.findByIdAndUpdate(id, {
+            "is_active": is_active,
+        })
+
+        res.send(oneData);
+        
+    } catch (err) {
+        res.status(400).send(err);
+    }
+}
+
 module.exports = {
     postDataSourc,
     editDataSource,
     getDataSource,
     deleteDataSource,
+    toggleSourceData,
 }
