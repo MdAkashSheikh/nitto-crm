@@ -79,10 +79,6 @@ const AppMenu = () => {
                             icon: 'pi pi-fw pi-list',
                             to: '/master/category'
                         },
-                        {
-                            label: 'Submenu 1.2',
-                            icon: 'pi pi-fw pi-bookmark',
-                        }
                     ]
                 },
             ]

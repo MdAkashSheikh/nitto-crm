@@ -87,7 +87,6 @@ const Data_Source = () => {
         setDataDialog(true);
     };
 
-    // console.log('sourceData--->', sourceData)
 
     const confirmDeleteData = (sourceData) => {
         setSourceData(sourceData);

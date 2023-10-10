@@ -99,7 +99,7 @@ const Potential_Customer = () => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
             setPotentialData(emptyPotential);
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Source is Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Potential Customer is Deleted', life: 3000 });
         })
     };
 

@@ -100,7 +100,7 @@ const Priority_Group = () => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
             setPriorityData(emptyPriority);
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Priority Group is Deleted', life: 3000 });
         })
     };
 
