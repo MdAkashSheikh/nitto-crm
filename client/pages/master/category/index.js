@@ -9,9 +9,9 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { ZoneService } from '../../../demo/service/ZoneService';
+import { CategoryService } from '../../../demo/service/CategoryService';
 
-const Zone = () => {
+const Category = () => {
     let emptyZone = {
         id: 0,
         name: '',
@@ -19,10 +19,10 @@ const Zone = () => {
         details: '',
     };
 
-    const [zoneDatas, setZoneDatas] = useState(null);
+    const [categoryDatas, setCategoryDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
-    const [zoneData, setZoneData] = useState(emptyZone);
+    const [categoryData, setCategoryData] = useState(emptyZone);
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -33,14 +33,14 @@ const Zone = () => {
 
     useEffect(() => {
 
-        ZoneService.getZone().then((res) => setZoneDatas(res.data.AllData));
+        CategoryService.getCategory().then((res) => setCategoryDatas(res.data.AllData));
 
     }, [toggleRefresh]);
 
-    console.log(zoneDatas, "SOURCE DATAS")
+    console.log(categoryDatas, "SOURCE DATAS")
 
     const openNew = () => {
-        setZoneData(emptyZone);
+        setCategoryData(emptyZone);
         setSubmitted(false);
         setDataDialog(true);
     };
@@ -58,47 +58,47 @@ const Zone = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",zoneData)
+        console.log("PPPP1",categoryData)
 
-        if( zoneData.name && zoneData.details, zoneData._id) {
-            ZoneService.editZone(
-                zoneData.name,
-                zoneData.details,
-                zoneData._id,
+        if( categoryData.name && categoryData.details, categoryData._id) {
+            CategoryService.editCategory(
+                categoryData.name,
+                categoryData.details,
+                categoryData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Zone is Updated', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Categoryis Updated', life: 3000 });
             })
-        } else if( zoneData.name && zoneData.details) {
-            ZoneService.postZone(
-                zoneData.name,
-                zoneData.details,
+        } else if( categoryData.name && categoryData.details) {
+            CategoryService.postCategory(
+                categoryData.name,
+                categoryData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Zone is Created', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Category is Created', life: 3000 });
             })
         }
     };
 
-    const editData = (zoneData) => {
-        setZoneData({ ...zoneData });
+    const editData = (categoryData) => {
+        setCategoryData({ ...categoryData });
         setDataDialog(true);
     };
 
 
-    const confirmDeleteData = (zoneData) => {
-        setZoneData(zoneData);
+    const confirmDeleteData = (categoryData) => {
+        setCategoryData(categoryData);
         setDeleteDataDialog(true);
     };
 
     const deleteData = () => {
-        ZoneService.deleteZone(zoneData._id).then(() => {
+        CategoryService.deleteCategory(categoryData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
-            setZoneData(emptyZone);
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Zone is Deleted', life: 3000 });
+            setCategoryData(emptyZone);
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category is Deleted', life: 3000 });
         })
     };
 
@@ -106,10 +106,10 @@ const Zone = () => {
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let data = { ...zoneData };
+        let data = { ...categoryData };
         data[`${name}`] = val;
 
-        setZoneData(data);
+        setCategoryData(data);
     };
 
     const priorityGroupBodyTemplate = (rowData) => {
@@ -138,7 +138,7 @@ const Zone = () => {
                 if (rowData.is_active == '0') {
                     is_active = '1'
                 }
-                ZoneService.toggleZone(is_active, rowData._id).then(() => {
+                CategoryService.toggleCategory(is_active, rowData._id).then(() => {
                 setTogleRefresh(!toggleRefresh)
                 })
              }} />
@@ -159,7 +159,7 @@ const Zone = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <h2 className="m-0">Zone</h2>
+                    <h2 className="m-0">Category</h2>
                 </div>
             </React.Fragment>
         );
@@ -168,7 +168,7 @@ const Zone = () => {
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <Button
-                    label="Add Zone"
+                    label="Add Category"
                     icon="pi pi-plus"
                     severity="sucess"
                     className="mr-2"
@@ -194,7 +194,7 @@ const Zone = () => {
         </>
     );
 
-    if(zoneDatas == null) {
+    if(categoryDatas == null) {
         return (
             <div className="card">
                 <div className="border-round border-1 surface-border p-4 surface-card">
@@ -230,7 +230,7 @@ const Zone = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={zoneDatas}
+                        value={categoryDatas}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
@@ -239,16 +239,16 @@ const Zone = () => {
                         rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Data-Source"
+                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Category"
                         globalFilter={globalFilter}
-                        emptyMessage="Data Group is Empty."
+                        emptyMessage="Category is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >
 
                         <Column
                             field="name"
-                            header="Zone Name"
+                            header="Category Name"
                             sortable
                             body={priorityGroupBodyTemplate}
                             headerStyle={{ minWidth: "10rem" }}
@@ -274,7 +274,7 @@ const Zone = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "450px" }}
-                        header="Add Zone"
+                        header="Add Category"
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}
@@ -282,24 +282,24 @@ const Zone = () => {
                     >
                 
                         <div className="field">
-                            <label htmlFor="zoneData">Zone Name</label>
+                            <label htmlFor="categoryData">Category Name</label>
                             <InputText 
                                 id="name" 
-                                value={zoneData.name} 
+                                value={categoryData.name} 
                                 onChange={(e) => onInputChange(e, "name")} 
                                 required 
                                 autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !zoneData.name })} 
+                                className={classNames({ 'p-invalid': submitted && !categoryData.name })} 
                                 />
-                            {submitted && !zoneData.name && <small className="p-invalid">
-                                Zone Name is required.
+                            {submitted && !categoryData.name && <small className="p-invalid">
+                                Category Name is required.
                             </small>}
                         </div>
                         <div className="field">
                             <label htmlFor="details">Details</label>
                             <InputText 
                                 id="details" 
-                                value={zoneData.details} 
+                                value={categoryData.details} 
                                 onChange={(e) => onInputChange(e, "details")} 
                             />
                         </div>
@@ -308,9 +308,9 @@ const Zone = () => {
                     <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {zoneData && (
+                            {categoryData && (
                                 <span>
-                                    Are you sure you want to delete <b>{zoneData.name}</b>?
+                                    Are you sure you want to delete <b>{categoryData.name}</b>?
                                 </span>
                             )}
                         </div>
@@ -322,4 +322,4 @@ const Zone = () => {
     );
 };
 
-export default  Zone;
+export default  Category;

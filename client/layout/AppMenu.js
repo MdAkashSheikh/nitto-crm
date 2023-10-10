@@ -51,32 +51,33 @@ const AppMenu = () => {
                     items: [
                         {
                             label: 'Data Source',
-                            icon: 'pi pi-fw pi-bookmark',
+                            icon: 'pi pi-fw pi-database',
                             to: '/master/data_source'
                         },
                         {
                             label: 'Data Group',
-                            icon: 'pi pi-fw pi-bookmark',
+                            icon: 'pi pi-fw pi-server',
                             to: '/master/data_group'
                         },
                         {
                             label: 'Priority Group',
-                            icon: 'pi pi-fw pi-bookmark',
+                            icon: 'pi pi-fw pi-angle-double-up',
                             to: '/master/priority_group'
                         },
                         {
                             label: 'Potential Customer Group',
-                            icon: 'pi pi-fw pi-bookmark',
+                            icon: 'pi pi-fw pi-users',
                             to: '/master/potential_customer'
                         },
                         {
                             label: 'Zone',
-                            icon: 'pi pi-fw pi-bookmark',
+                            icon: 'pi pi-fw pi-globe',
                             to: '/master/zone'
                         },
                         {
                             label: 'Category',
-                            icon: 'pi pi-fw pi-bookmark',
+                            icon: 'pi pi-fw pi-list',
+                            to: '/master/category'
                         },
                         {
                             label: 'Submenu 1.2',

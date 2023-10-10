@@ -1,3 +1,4 @@
+const { postCategory, editCategory, getCategory, deleteCategory, toggleCategory } = require('../controllers/category');
 const { 
     postDataGroup, 
     editDataGroup, 
@@ -13,7 +14,14 @@ const {
     deleteDataSource, 
     toggleSourceData
 } = require('../controllers/dataSource');
-const { postPotential, getPotential, editPotential, deletePotential, togglePotential } = require('../controllers/potentialCutomer');
+
+const { 
+    postPotential, 
+    getPotential, 
+    editPotential, 
+    deletePotential, 
+    togglePotential 
+} = require('../controllers/potentialCutomer');
 
 const { 
     postPriority, 
@@ -22,6 +30,14 @@ const {
     deletePriority, 
     togglePriority 
 } = require('../controllers/priorityGroup');
+
+const { 
+    postZone, 
+    getZone, 
+    editZone, 
+    deleteZone, 
+    toggleZone
+} = require('../controllers/zone');
 
 const express = require('express');
 const router = express.Router();
@@ -54,5 +70,18 @@ router.get('/get-potential', getPotential);
 router.delete('/delete-potential/:id', deletePotential);
 router.post('/toggle-potential/:id', togglePotential);
 
+//Zone Route URL
+router.post('/post-zone', postZone);
+router.post('/edit-zone/:id', editZone);
+router.get('/get-zone', getZone);
+router.delete('/delete-zone/:id', deleteZone);
+router.post('/toggle-zone/:id', toggleZone);
+
+//Category Route URL
+router.post('/post-category', postCategory);
+router.post('/edit-category/:id', editCategory);
+router.get('/get-category', getCategory);
+router.delete('/delete-category/:id', deleteCategory);
+router.post('/toggle-category/:id', toggleCategory);
 
 module.exports = router;
