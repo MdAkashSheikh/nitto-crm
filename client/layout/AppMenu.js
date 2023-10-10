@@ -67,10 +67,12 @@ const AppMenu = () => {
                         {
                             label: 'Potential Customer Group',
                             icon: 'pi pi-fw pi-bookmark',
+                            to: '/master/potential_customer'
                         },
                         {
                             label: 'Zone',
                             icon: 'pi pi-fw pi-bookmark',
+                            to: '/master/zone'
                         },
                         {
                             label: 'Category',

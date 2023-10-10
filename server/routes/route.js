@@ -13,6 +13,7 @@ const {
     deleteDataSource, 
     toggleSourceData
 } = require('../controllers/dataSource');
+const { postPotential, getPotential, editPotential, deletePotential, togglePotential } = require('../controllers/potentialCutomer');
 
 const { 
     postPriority, 
@@ -45,6 +46,13 @@ router.post('/edit-priority/:id', editPriority);
 router.get('/get-priority', getPriority);
 router.delete('/delete-priority/:id', deletePriority);
 router.post('/toggle-priority/:id', togglePriority);
+
+//Potential Customer Route URL
+router.post('/post-potential', postPotential);
+router.post('/edit-potential/:id', editPotential);
+router.get('/get-potential', getPotential);
+router.delete('/delete-potential/:id', deletePotential);
+router.post('/toggle-potential/:id', togglePotential);
 
 
 module.exports = router;
