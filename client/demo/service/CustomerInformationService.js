@@ -39,5 +39,12 @@ export const CustomerInformationService = {
 
     async deleteCustomerInfo(_id) {
         await axios.delete(`${URL}/delete-customer-info/` + _id);
+    },
+
+    async toggleCustomerInfo(is_active, _id) {
+        const data = {
+            is_active,
+        }
+        await axios.post(`${URL}/toggle-customer-info/` + _id, data);
     }
 }

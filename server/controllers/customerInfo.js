@@ -83,10 +83,26 @@ const deleteCustomerInfo = async(req, res) => {
     }
 }
 
+const toggleCustomerInfo = async(req, res) => {
+    const id = req.params.id;
+    const is_active = req.body.is_active;
+
+    try {
+        const oneData = await customerInfoSc.findByIdAndUpdate(id, {
+            "is_active": is_active,
+        })
+        res.send(oneData);
+
+    } catch (err) {
+        res.status(400).send(err);
+    }
+}
+
 module.exports = {
     postCustomerInfo,
     editCustomerInfo,
     getCustomerInfo,
     deleteCustomerInfo,
+    toggleCustomerInfo,
 
 }

@@ -216,6 +216,21 @@ const Customer_Info = () => {
         );
     }
 
+    const statusBodyTemplate = (rowData) => {
+        return (
+            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
+            checked={rowData.is_active != '0'} onChange={(e) => {
+                let is_active = '0';
+                if (rowData.is_active == '0') {
+                    is_active = '1'
+                }
+                CustomerInformationService.toggleCustomerInfo(is_active, rowData._id).then(() => {
+                setTogleRefresh(!toggleRefresh)
+                })
+             }} />
+        );
+    }
+
     const actionBodyTemplate = (rowData) => {
         return (
             <>
@@ -264,6 +279,28 @@ const Customer_Info = () => {
             <Button label="Yes" icon="pi pi-check" text onClick={deleteData} />
         </>
     );
+
+    const addField = () => {
+        console.log("OK")
+        return (
+            <>
+                <div className="field">
+                    <label htmlFor="infoData">Address</label>
+                    <InputText 
+                        id="address" 
+                        value={infoData.address} 
+                        onChange={(e) => onInputChange(e, "address")} 
+                        required 
+                        className={classNames({ 'p-invalid': submitted && !infoData.address })} 
+                        />
+                    {submitted && !infoData.address && <small className="p-invalid">
+                        Address is required.
+                    </small>}
+                    
+                </div>
+            </>
+        )
+    };
 
     if(infoDatas == null) {
         return (
@@ -361,6 +398,11 @@ const Customer_Info = () => {
                             headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
+                            header="Status"
+                            body={statusBodyTemplate}
+                            headerStyle={{ minWidth: "5rem" }}
+                        ></Column>
+                        <Column
                             header="Action"
                             body={actionBodyTemplate}
                             headerStyle={{ minWidth: "2rem" }}
@@ -389,7 +431,6 @@ const Customer_Info = () => {
                                     showClear
                                     placeholder="Select a Zone"
                                     required
-                                    autoFocus
                                     className={classNames({
                                         "p-invalid": submitted && !infoData.chamber,
                                     })}
@@ -482,7 +523,9 @@ const Customer_Info = () => {
                             {submitted && !infoData.address && <small className="p-invalid">
                                 Address is required.
                             </small>}
+                            
                         </div>
+                        <Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2" onClick={addField} />
                         <div className="field">
                             <label htmlFor="infoData">Asset</label>
                             <InputText 
