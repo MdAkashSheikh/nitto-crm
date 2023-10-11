@@ -2,6 +2,7 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
@@ -10,12 +11,20 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { CategoryService } from '../../../demo/service/CategoryService';
+import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
+import { ZoneService } from '../../../demo/service/ZoneService';
 
 const Customer_Info = () => {
     let emptyInfo = {
         id: 0,
+        zone: '',
+        category: '',
         name: '',
-        is_active: '',
+        address: '',
+        asset: '',
+        phone: '',
+        email: '',
+        whatsapp: '',
         details: '',
     };
 
@@ -26,6 +35,8 @@ const Customer_Info = () => {
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
+    const [msZone, setMsZone] = useState(null);
+    const [msCategory, setMsCategory] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
@@ -33,7 +44,9 @@ const Customer_Info = () => {
 
     useEffect(() => {
 
-        CategoryService.getCategory().then((res) => setInfoDatas(res.data.AllData));
+        CustomerInformationService.getCustomerInfo().then((res) => setInfoDatas(res.data.AllData));
+        ZoneService.getZone().then((res) => setMsZone(res.data.AllData));
+        CategoryService.getCategory().then((res) => setMsCategory(res.data.AllData));
 
     }, [toggleRefresh]);
 
@@ -58,24 +71,38 @@ const Customer_Info = () => {
 
         console.log("PPPP1",infoData)
 
-        if( infoData.name && infoData.details, infoData._id ) {
-            CategoryService.editCategory(
+        if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
+            CustomerInformationService.editCustomerInfo(
+                infoData.zone,
+                infoData.category,
                 infoData.name,
+                infoData.address,
+                infoData.asset,
+                infoData.phone,
+                infoData.email,
+                infoData.whatsapp,
                 infoData.details,
                 infoData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Categoryis Updated', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
-        } else if( infoData.name && infoData.details ) {
-            CategoryService.postCategory(
+        } else if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset ) {
+            CustomerInformationService.postCustomerInfo(
+                infoData.zone,
+                infoData.category,
                 infoData.name,
+                infoData.address,
+                infoData.asset,
+                infoData.phone,
+                infoData.email,
+                infoData.whatsapp,
                 infoData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Category is Created', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Information is Created', life: 3000 });
             })
         }
     };
@@ -92,11 +119,11 @@ const Customer_Info = () => {
     };
 
     const deleteData = () => {
-        CategoryService.deleteCategory(infoData._id).then(() => {
+        CustomerInformationService.deleteCustomerInfo(infoData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
             setInfoData(emptyInfo);
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category is Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer is Deleted', life: 3000 });
         })
     };
 
@@ -110,11 +137,72 @@ const Customer_Info = () => {
         setInfoData(data);
     };
 
-    const priorityGroupBodyTemplate = (rowData) => {
+    const onSelectionChange = (e, name) => {
+        let _infoData = {...infoData };
+        _infoData[`${name}`] = e.value;
+        setInfoData(_infoData);
+    }
+
+    const filteredZone = msZone?.filter((item) => item.is_active == '1');
+    const zoneList = filteredZone?.map(item => {
+        return { label: item.name, value: item.name }
+    })
+
+    const filteredCategory = msCategory?.filter((item) => item.is_active == '1');
+    const categoryList = filteredCategory?.map(item => {
+        return { label: item.name, value: item.name}
+    })
+
+    const nameBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
                 {rowData.name}
+            </>
+        );
+    }
+
+    const phoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Phone</span>
+                {rowData.phone}
+            </>
+        );
+    }
+
+    const emailBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Email</span>
+                {rowData.email}
+            </>
+        );
+    }
+    
+    const addressBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Address</span>
+                {rowData.address}
+            </>
+        );
+    }
+
+    const zoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Zone</span>
+                {rowData.zone}
+            </>
+        );
+    }
+
+    const categoryBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Category</span>
+                {rowData.category}
             </>
         );
     }
@@ -128,26 +216,11 @@ const Customer_Info = () => {
         );
     }
 
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
-            checked={rowData.is_active != '0'} onChange={(e) => {
-                let is_active = '0';
-                if (rowData.is_active == '0') {
-                    is_active = '1'
-                }
-                CategoryService.toggleCategory(is_active, rowData._id).then(() => {
-                setTogleRefresh(!toggleRefresh)
-                })
-             }} />
-        );
-    }
-
     const actionBodyTemplate = (rowData) => {
         return (
             <>
                 <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editData(rowData)} />
-                <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} />
+                {/* <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} /> */}
             </>
         );
     };
@@ -246,21 +319,46 @@ const Customer_Info = () => {
 
                         <Column
                             field="name"
-                            header="Category Name"
+                            header="Name"
                             sortable
-                            body={priorityGroupBodyTemplate}
-                            headerStyle={{ minWidth: "10rem" }}
+                            body={nameBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="phone"
+                            header="Phone"
+                            body={phoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="email"
+                            header="Email"
+                            body={emailBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="address"
+                            header="Address"
+                            body={addressBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="zone"
+                            header="Zone"
+                            body={zoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="category"
+                            header="Category"
+                            body={categoryBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                          <Column
                             field="details"
                             header="Details"
                             body={detailsBodyTemplate}
-                            headerStyle={{ minWidth: "15rem" }}
-                        ></Column>
-                        <Column
-                            header="Status"
-                            body={statusBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
                             header="Action"
@@ -271,26 +369,131 @@ const Customer_Info = () => {
 
                     <Dialog
                         visible={dataDialog}
-                        style={{ width: "450px" }}
+                        style={{ width: "550px" }}
                         header="Add Information"
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}
                         onHide={hideDialog}
                     >
+
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="infoData">Zone</label>
+                                <Dropdown
+                                    value={infoData.zone}
+                                    name='zone'
+                                    onChange={(e) => onSelectionChange(e, "zone")}
+                                    options={zoneList}
+                                    optionLabel="value"
+                                    showClear
+                                    placeholder="Select a Zone"
+                                    required
+                                    autoFocus
+                                    className={classNames({
+                                        "p-invalid": submitted && !infoData.chamber,
+                                    })}
+                                />
+                                {submitted && !infoData.chamber && (
+                                    <small className="p-invalid">
+                                        Zone is required.
+                                    </small>
+                                )}
+                            </div>
+                            <div className="field col">
+                                <label htmlFor="infoData">Category</label>
+                                <Dropdown
+                                    value={infoData.category}
+                                    name='doctor'
+                                    onChange={(e) => onSelectionChange(e, "category")}
+                                    options={categoryList}
+                                    optionLabel="label"
+                                    showClear
+                                    placeholder="Select a Category"
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !infoData.category,
+                                    })}
+                                />
+                                {submitted && !infoData.category && (
+                                    <small className="p-invalid">
+                                        Category is required.
+                                    </small>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="infoData">Name</label>
+                                <InputText
+                                    id="name"
+                                    value={infoData.name}
+                                    onChange={(e) => onInputChange(e, "name")}
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !infoData.name,
+                                    })}
+                                />
+                                {submitted && !infoData.name && (
+                                    <small className="p-invalid">
+                                        Name is required.
+                                    </small>
+                                )}
+                            </div>
+                            <div className="field col">
+                                <label htmlFor="infoData">Phone</label>
+                                <InputText
+                                    id="age"
+                                    value={infoData.phone}
+                                    onChange={(e) => onInputChange(e, "phone")}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="infoData">Email</label>
+                                <InputText
+                                    id="email"
+                                    value={infoData.email}
+                                    onChange={(e) => onInputChange(e, "email")}
+                                />
+                            </div>
+                            <div className="field col">
+                                <label htmlFor="infoData">What's App</label>
+                                <InputText
+                                    id="whatsapp"
+                                    value={infoData.whatsapp}
+                                    onChange={(e) => onInputChange(e, "whatsapp")}
+                                />
+                            </div>
+                        </div>
                 
                         <div className="field">
-                            <label htmlFor="infoData">Category Name</label>
+                            <label htmlFor="infoData">Address</label>
                             <InputText 
-                                id="name" 
-                                value={infoData.name} 
-                                onChange={(e) => onInputChange(e, "name")} 
+                                id="address" 
+                                value={infoData.address} 
+                                onChange={(e) => onInputChange(e, "address")} 
                                 required 
-                                autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !infoData.name })} 
+                                className={classNames({ 'p-invalid': submitted && !infoData.address })} 
                                 />
-                            {submitted && !infoData.name && <small className="p-invalid">
-                                Category Name is required.
+                            {submitted && !infoData.address && <small className="p-invalid">
+                                Address is required.
+                            </small>}
+                        </div>
+                        <div className="field">
+                            <label htmlFor="infoData">Asset</label>
+                            <InputText 
+                                id="asset" 
+                                value={infoData.asset} 
+                                onChange={(e) => onInputChange(e, "asset")} 
+                                required 
+                                className={classNames({ 'p-invalid': submitted && !infoData.asset })} 
+                                />
+                            {submitted && !infoData.asset && <small className="p-invalid">
+                                Asset is required.
                             </small>}
                         </div>
                         <div className="field">

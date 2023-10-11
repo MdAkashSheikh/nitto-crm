@@ -2,7 +2,7 @@ import axios from "axios";
 import { URL } from "./SourceDataService";
 
 export const CustomerInformationService = {
-    async postCustomerInfo(zone, category, name, address, asset, phone, email, whatsapp, details) {
+    async postCustomerInfo(zone, category, name, address, asset, phone, email, whatsapp, details ) {
         const data = {
             zone,
             category,
