@@ -37,6 +37,7 @@ const Customer_Info = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const [msZone, setMsZone] = useState(null);
     const [msCategory, setMsCategory] = useState(null);
+    const [addList, setAddList] = useState([{address: ""}]);
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
@@ -141,6 +142,22 @@ const Customer_Info = () => {
         let _infoData = {...infoData };
         _infoData[`${name}`] = e.value;
         setInfoData(_infoData);
+    }
+
+    const onFieldAddChange = (e, index) => {
+        const [name, value] = e.target;
+        const _list = [...addList];
+        _list[index][name] = value;
+
+        setAddList(_list);
+        setInfoData(_list);
+    }
+
+    const onFieldRemoveChange = (index) => {
+        const _list = [...addList];
+        _list.splice(index, 1);
+
+        setAddList(_list);
     }
 
     const filteredZone = msZone?.filter((item) => item.is_active == '1');
@@ -280,27 +297,6 @@ const Customer_Info = () => {
         </>
     );
 
-    const addField = () => {
-        console.log("OK")
-        return (
-            <>
-                <div className="field">
-                    <label htmlFor="infoData">Address</label>
-                    <InputText 
-                        id="address" 
-                        value={infoData.address} 
-                        onChange={(e) => onInputChange(e, "address")} 
-                        required 
-                        className={classNames({ 'p-invalid': submitted && !infoData.address })} 
-                        />
-                    {submitted && !infoData.address && <small className="p-invalid">
-                        Address is required.
-                    </small>}
-                    
-                </div>
-            </>
-        )
-    };
 
     if(infoDatas == null) {
         return (
@@ -323,7 +319,6 @@ const Customer_Info = () => {
             </div>
         )
     }
-   
 
 
 
@@ -510,22 +505,34 @@ const Customer_Info = () => {
                                 />
                             </div>
                         </div>
-                
-                        <div className="field">
-                            <label htmlFor="infoData">Address</label>
-                            <InputText 
-                                id="address" 
-                                value={infoData.address} 
-                                onChange={(e) => onInputChange(e, "address")} 
-                                required 
-                                className={classNames({ 'p-invalid': submitted && !infoData.address })} 
-                                />
-                            {submitted && !infoData.address && <small className="p-invalid">
-                                Address is required.
-                            </small>}
-                            
+
+                        {addList.map((val, i) => {
+                            return (
+                                <div className="field" key={val}>
+                                    <label htmlFor="infoData">Address</label>
+                                    <InputText 
+                                        id="address" 
+                                        value={infoData.i} 
+                                        onChange={(e) => onFieldAddChange(e, i)} 
+                                        required 
+                                        className={classNames({ 'p-invalid': submitted && !infoData.address })} 
+                                        />
+                                    {submitted && !infoData.address && <small className="p-invalid">
+                                        Address is required.
+                                    </small>}
+                            </div>
+                            )   
+                        })}
+                        <div className="formgrid grid">
+                            <div className="field col">  
+                                {<Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2" onClick={onFieldAddChange} />}  
+                            </div>
+                            <div className="field col">    
+                            <Button label="remove" icon="pi pi-minus" severity="warning" className="mr-2" onClick />
+                            </div>
                         </div>
-                        <Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2" onClick={addField} />
+
+                        
                         <div className="field">
                             <label htmlFor="infoData">Asset</label>
                             <InputText 

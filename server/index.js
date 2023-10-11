@@ -22,6 +22,6 @@ app.get("/", (req, res) => {
 
 app.use(routeAll);
 
-app.listen('5001', () => {
-    console.log('listening on port:5001');
+app.listen('6300', () => {
+    console.log('listening on port:6300');
 })
