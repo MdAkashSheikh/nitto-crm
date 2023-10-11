@@ -1,4 +1,18 @@
-const { postCategory, editCategory, getCategory, deleteCategory, toggleCategory } = require('../controllers/category');
+const { 
+    postCategory, 
+    editCategory, 
+    getCategory, 
+    deleteCategory, 
+    toggleCategory 
+} = require('../controllers/category');
+
+const { 
+    postCustomerInfo, 
+    editCustomerInfo, 
+    getCustomerInfo, 
+    deleteCustomerInfo
+} = require('../controllers/customerInfo');
+
 const { 
     postDataGroup, 
     editDataGroup, 
@@ -83,5 +97,11 @@ router.post('/edit-category/:id', editCategory);
 router.get('/get-category', getCategory);
 router.delete('/delete-category/:id', deleteCategory);
 router.post('/toggle-category/:id', toggleCategory);
+
+//Customer Information Route URL
+router.post('/post-customer-info', postCustomerInfo);
+router.post('/edit-customer-info/:id', editCustomerInfo);
+router.get('/get-customer-info', getCustomerInfo);
+router.delete('/delete-customer-info/:id', deleteCustomerInfo);
 
 module.exports = router;

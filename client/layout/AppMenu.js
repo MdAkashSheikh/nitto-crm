@@ -18,6 +18,11 @@ const AppMenu = () => {
             to: '/pages',
             items: [
                 {
+                    label: 'Customer Information',
+                    icon: 'pi pi-fw pi-list',
+                    to: '/pages/customer_info'
+                },
+                {
                     label: 'Crud',
                     icon: 'pi pi-fw pi-pencil',
                     to: '/pages/crud'
