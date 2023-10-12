@@ -21,7 +21,7 @@ const Customer_Info = () => {
         category: '',
         name: '',
         address: [''],
-        asset: '',
+        asset: [''],
         phone: '',
         email: '',
         whatsapp: '',
@@ -312,6 +312,12 @@ const Customer_Info = () => {
         setInfoData(newInfoData)
     }
 
+    function onAsset() {
+        const newInfoData = {...infoData}
+        newInfoData.asset = [...infoData.asset, '']
+        setInfoData(newInfoData);
+    }
+
 
     return (
         <div className="grid crud-demo">
@@ -513,20 +519,22 @@ const Customer_Info = () => {
 
                         <Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2 mb-3 w-10rem" onClick={onAdd} />
                         
+                        {infoData.asset.map((val, i) => {
+                            return (
+                                <div className="field" key={i}>
+                                    <label htmlFor="infoData">Asset</label>
+                                    <InputText 
+                                        id="asset" 
+                                        autoFocus={true}
+                                        value={infoData.asset[i]} 
+                                        onChange={(e) => onAdrressChange(e, "asset", i)} 
+                                    />
+                                </div>
+                            )   
+                        })}
 
-                        <div className="field">
-                            <label htmlFor="infoData">Asset</label>
-                            <InputText 
-                                id="asset" 
-                                value={infoData.asset} 
-                                onChange={(e) => onInputChange(e, "asset")} 
-                                required 
-                                className={classNames({ 'p-invalid': submitted && !infoData.asset })} 
-                                />
-                            {submitted && !infoData.asset && <small className="p-invalid">
-                                Asset is required.
-                            </small>}
-                        </div>
+                        <Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2 mb-3 w-10rem" onClick={onAsset} />
+
                         <div className="field">
                             <label htmlFor="details">Details</label>
                             <InputText 
