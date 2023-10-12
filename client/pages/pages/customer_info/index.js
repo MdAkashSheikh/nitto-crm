@@ -37,7 +37,7 @@ const Customer_Info = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const [msZone, setMsZone] = useState(null);
     const [msCategory, setMsCategory] = useState(null);
-    const [addList, setAddList] = useState([{address: ""}]);
+    const [addresses, setAddresses] = useState([emptyInfo]);
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
@@ -72,7 +72,7 @@ const Customer_Info = () => {
 
         console.log("PPPP1",infoData)
 
-        if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
+        if( infoData.zone && infoData.category && infoData.name || infoData.address || infoData.asset || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
                 infoData.category,
@@ -89,7 +89,7 @@ const Customer_Info = () => {
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
-        } else if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset ) {
+        } else if( infoData.zone && infoData.category && infoData.name ) {
             CustomerInformationService.postCustomerInfo(
                 infoData.zone,
                 infoData.category,
@@ -113,7 +113,6 @@ const Customer_Info = () => {
         setDataDialog(true);
     };
 
-
     const confirmDeleteData = (infoData) => {
         setInfoData(infoData);
         setDeleteDataDialog(true);
@@ -127,8 +126,6 @@ const Customer_Info = () => {
             toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer is Deleted', life: 3000 });
         })
     };
-
-
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -144,20 +141,12 @@ const Customer_Info = () => {
         setInfoData(_infoData);
     }
 
-    const onFieldAddChange = (e, index) => {
-        const [name, value] = e.target;
-        const _list = [...addList];
-        _list[index][name] = value;
+    const onAdrressChange = (e, name, i) => {
+        let val = (e.target && e.target.value) || '';
+        let _data = {...infoData};
+        _data[`${name}-${i}`] = val;
+        setInfoData(_data);
 
-        setAddList(_list);
-        setInfoData(_list);
-    }
-
-    const onFieldRemoveChange = (index) => {
-        const _list = [...addList];
-        _list.splice(index, 1);
-
-        setAddList(_list);
     }
 
     const filteredZone = msZone?.filter((item) => item.is_active == '1');
@@ -256,7 +245,6 @@ const Customer_Info = () => {
             </>
         );
     };
-
         
     const topHeader = () => {
         return (
@@ -297,7 +285,6 @@ const Customer_Info = () => {
         </>
     );
 
-
     if(infoDatas == null) {
         return (
             <div className="card">
@@ -320,6 +307,12 @@ const Customer_Info = () => {
         )
     }
 
+    function onAdd(){
+        setAddresses([...addresses, addresses.length]);
+    }
+
+    console.log(addresses, "ADRESSSS");
+    console.log(infoData, "INFO DATA");
 
 
     return (
@@ -427,10 +420,10 @@ const Customer_Info = () => {
                                     placeholder="Select a Zone"
                                     required
                                     className={classNames({
-                                        "p-invalid": submitted && !infoData.chamber,
+                                        "p-invalid": submitted && !infoData.zone,
                                     })}
                                 />
-                                {submitted && !infoData.chamber && (
+                                {submitted && !infoData.zone && (
                                     <small className="p-invalid">
                                         Zone is required.
                                     </small>
@@ -506,33 +499,22 @@ const Customer_Info = () => {
                             </div>
                         </div>
 
-                        {addList.map((val, i) => {
+                        {addresses.map((val, i) => {
                             return (
                                 <div className="field" key={val}>
                                     <label htmlFor="infoData">Address</label>
                                     <InputText 
                                         id="address" 
-                                        value={infoData.i} 
-                                        onChange={(e) => onFieldAddChange(e, i)} 
-                                        required 
-                                        className={classNames({ 'p-invalid': submitted && !infoData.address })} 
-                                        />
-                                    {submitted && !infoData.address && <small className="p-invalid">
-                                        Address is required.
-                                    </small>}
-                            </div>
+                                        value={infoData[addresses-i]} 
+                                        onChange={(e) => onAdrressChange(e, "address", i)} 
+                                    />
+                                </div>
                             )   
                         })}
-                        <div className="formgrid grid">
-                            <div className="field col">  
-                                {<Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2" onClick={onFieldAddChange} />}  
-                            </div>
-                            <div className="field col">    
-                            <Button label="remove" icon="pi pi-minus" severity="warning" className="mr-2" onClick />
-                            </div>
-                        </div>
 
+                        <Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2 mb-3 w-10rem" onClick={onAdd} />
                         
+
                         <div className="field">
                             <label htmlFor="infoData">Asset</label>
                             <InputText 
@@ -574,3 +556,4 @@ const Customer_Info = () => {
 };
 
 export default  Customer_Info;
+
