@@ -20,7 +20,7 @@ const Customer_Info = () => {
         zone: '',
         category: '',
         name: '',
-        address: '',
+        address: [''],
         asset: '',
         phone: '',
         email: '',
@@ -37,7 +37,6 @@ const Customer_Info = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const [msZone, setMsZone] = useState(null);
     const [msCategory, setMsCategory] = useState(null);
-    const [addresses, setAddresses] = useState([emptyInfo]);
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
@@ -144,7 +143,7 @@ const Customer_Info = () => {
     const onAdrressChange = (e, name, i) => {
         let val = (e.target && e.target.value) || '';
         let _data = {...infoData};
-        _data[`${name}-${i}`] = val;
+        _data[name][i] = val;
         setInfoData(_data);
 
     }
@@ -308,11 +307,10 @@ const Customer_Info = () => {
     }
 
     function onAdd(){
-        setAddresses([...addresses, addresses.length]);
+        const newInfoData = {...infoData}
+        newInfoData.address = [...infoData.address, '']
+        setInfoData(newInfoData)
     }
-
-    console.log(addresses, "ADRESSSS");
-    console.log(infoData, "INFO DATA");
 
 
     return (
@@ -499,13 +497,14 @@ const Customer_Info = () => {
                             </div>
                         </div>
 
-                        {addresses.map((val, i) => {
+                        {infoData.address.map((val, i) => {
                             return (
-                                <div className="field" key={val}>
+                                <div className="field" key={i}>
                                     <label htmlFor="infoData">Address</label>
                                     <InputText 
                                         id="address" 
-                                        value={infoData[addresses-i]} 
+                                        autoFocus={true}
+                                        value={infoData.address[i]} 
                                         onChange={(e) => onAdrressChange(e, "address", i)} 
                                     />
                                 </div>
