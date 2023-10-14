@@ -23,9 +23,9 @@ const AppMenu = () => {
                     to: '/pages/customer_info'
                 },
                 {
-                    label: 'Crud',
+                    label: 'Manager Panel',
                     icon: 'pi pi-fw pi-pencil',
-                    to: '/pages/crud'
+                    to: '/pages/manager_panel'
                 },
                 {
                     label: 'Timeline',
