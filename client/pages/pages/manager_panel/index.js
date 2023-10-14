@@ -1,46 +1,59 @@
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
+import { Calendar } from 'primereact/calendar';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { CategoryService } from '../../../demo/service/CategoryService';
+import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
+import { PriorityGroupService } from '../../../demo/service/PriorityGroupService';
+import { PotentialCustomerService } from '../../../demo/service/PotentialCustomerService';
 
-const Category = () => {
-    let emptyManager = {
+const Manager_Panel = () => {
+    let managerInfo = {
         id: 0,
-        name: '',
-        is_active: '',
+        ptime: '',
+        addresses: [''],
+        feedback: '',
+        priority: '',
+        potential: '',
+        followDate: '',
         details: '',
     };
 
     const [managerDatas, setManagerDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
-    const [managerData, setManagerData] = useState(emptyManager);
+    const [managerData, setManagerData] = useState(managerInfo);
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
+    const [msPriority, setMsPriority] = useState(null);
+    const [msPotential, setMsPotential] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
+    const [one, setOne] = useState(null);
 
 
     useEffect(() => {
 
-        CategoryService.getCategory().then((res) => setManagerDatas(res.data.AllData));
+        CustomerInformationService.getCustomerInfo().then((res) => setManagerDatas(res.data.AllData));
+        PriorityGroupService.getPriority().then((res) => setMsPriority(res.data.AllData));
+        PotentialCustomerService.getPotential().then((res) => setMsPotential(res.data.AllData)); 
+
 
     }, [toggleRefresh]);
 
-    console.log(managerDatas, "SOURCE DATAS")
-
     const openNew = () => {
-        setManagerData(emptyManager);
+        setManagerData(managerInfo);
         setSubmitted(false);
         setDataDialog(true);
     };
@@ -60,24 +73,19 @@ const Category = () => {
 
         console.log("PPPP1",managerData)
 
-        if( managerData.name && managerData.details, managerData._id) {
-            CategoryService.editCategory(
-                managerData.name,
-                managerData.details,
+        if( managerData.addresses && managerData.ptime && managerData.feedback || managerData.priority || managerData.followDate || managerData.potential , managerData._id ) {
+            CustomerInformationService.editCustomerInfo(
+                managerData.addresses,
+                managerData.ptime,
+                managerData.feedback,
+                managerData.priority,
+                managerData.followDate,
+                managerData.potential,
                 managerData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Categoryis Updated', life: 3000 });
-            })
-        } else if( managerData.name && managerData.details) {
-            CategoryService.postCategory(
-                managerData.name,
-                managerData.details,
-            ).then(() => {
-                setTogleRefresh(!toggleRefresh);
-                setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Category is Created', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
         }
     };
@@ -85,8 +93,8 @@ const Category = () => {
     const editData = (managerData) => {
         setManagerData({ ...managerData });
         setDataDialog(true);
+        setOne(1);
     };
-
 
     const confirmDeleteData = (managerData) => {
         setManagerData(managerData);
@@ -94,15 +102,13 @@ const Category = () => {
     };
 
     const deleteData = () => {
-        CategoryService.deleteCategory(managerData._id).then(() => {
+        CustomerInformationService.deleteCustomerInfo(managerData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
-            setManagerData(emptyManager);
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Category is Deleted', life: 3000 });
+            setManagerData(managerInfo);
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer is Deleted', life: 3000 });
         })
     };
-
-
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -112,11 +118,87 @@ const Category = () => {
         setManagerData(data);
     };
 
-    const priorityGroupBodyTemplate = (rowData) => {
+    const onSelectionChange = (e, name) => {
+        let _infoData = {...managerData };
+        _infoData[`${name}`] = e.value;
+        setManagerData(_infoData);
+    }
+
+    const onDateChange = (e, name) => {
+        let _manageData = {...managerData };
+        _manageData[`${name}`] = e.value;
+        setManagerData(_manageData);
+    }
+
+    let addressList;
+    if(one == 1) {
+        let m = managerData.address;
+        addressList = m?.map(item => {
+            return { label: item, value: item }
+        })
+        
+    }
+
+    const filteredPriority = msPriority?.filter((item) => item.is_active == '1');
+    const priorityList = filteredPriority?.map(item => {
+        return { label: item.name, value: item.name }
+    }) 
+
+    const filteredPotential = msPotential?.filter((item) => item.is_active == '1');
+    const potentialList = filteredPotential?.map(item => {
+        return { label: item.name, value: item.name };
+    })
+ 
+    const nameBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
                 {rowData.name}
+            </>
+        );
+    }
+
+    const phoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Phone</span>
+                {rowData.phone}
+            </>
+        );
+    }
+
+    const emailBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Email</span>
+                {rowData.email}
+            </>
+        );
+    }
+    
+    const addressBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Address</span>
+                {rowData.address}
+            </>
+        );
+    }
+
+    const zoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Zone</span>
+                {rowData.zone}
+            </>
+        );
+    }
+
+    const categoryBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Category</span>
+                {rowData.category}
             </>
         );
     }
@@ -130,30 +212,15 @@ const Category = () => {
         );
     }
 
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
-            checked={rowData.is_active != '0'} onChange={(e) => {
-                let is_active = '0';
-                if (rowData.is_active == '0') {
-                    is_active = '1'
-                }
-                CategoryService.toggleCategory(is_active, rowData._id).then(() => {
-                setTogleRefresh(!toggleRefresh)
-                })
-             }} />
-        );
-    }
 
     const actionBodyTemplate = (rowData) => {
         return (
             <>
                 <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editData(rowData)} />
-                <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} />
+                {/* <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} /> */}
             </>
         );
     };
-
         
     const topHeader = () => {
         return (
@@ -167,13 +234,6 @@ const Category = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <Button
-                    label="Add Category"
-                    icon="pi pi-plus"
-                    severity="sucess"
-                    className="mr-2"
-                    onClick={openNew}
-                />
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -215,8 +275,6 @@ const Category = () => {
             </div>
         )
     }
-   
-
 
 
     return (
@@ -248,21 +306,46 @@ const Category = () => {
 
                         <Column
                             field="name"
-                            header="Category Name"
+                            header="Name"
                             sortable
-                            body={priorityGroupBodyTemplate}
-                            headerStyle={{ minWidth: "10rem" }}
+                            body={nameBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="phone"
+                            header="Phone"
+                            body={phoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="email"
+                            header="Email"
+                            body={emailBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="address"
+                            header="Address"
+                            body={addressBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="zone"
+                            header="Zone"
+                            body={zoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="category"
+                            header="Category"
+                            body={categoryBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                          <Column
                             field="details"
                             header="Details"
                             body={detailsBodyTemplate}
-                            headerStyle={{ minWidth: "15rem" }}
-                        ></Column>
-                        <Column
-                            header="Status"
-                            body={statusBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
                             header="Action"
@@ -273,34 +356,127 @@ const Category = () => {
 
                     <Dialog
                         visible={dataDialog}
-                        style={{ width: "450px" }}
-                        header="Add Category"
+                        style={{ width: "550px" }}
+                        header="Add Information"
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}
                         onHide={hideDialog}
                     >
-                
-                        <div className="field">
-                            <label htmlFor="managerData">Category Name</label>
-                            <InputText 
-                                id="name" 
-                                value={managerData.name} 
-                                onChange={(e) => onInputChange(e, "name")} 
-                                required 
-                                autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !managerData.name })} 
+
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="managerData">Address</label>
+                                <Dropdown
+                                    value={managerData.addresses}
+                                    name='addresses'
+                                    onChange={(e) => onSelectionChange(e, "addresses")}
+                                    options={addressList}
+                                    optionLabel="value"
+                                    showClear
+                                    placeholder="Select a address"
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !managerData.addresses,
+                                    })}
                                 />
-                            {submitted && !managerData.name && <small className="p-invalid">
-                                Category Name is required.
-                            </small>}
+                                {submitted && !managerData.addresses && (
+                                    <small className="p-invalid">
+                                        Addresses is required.
+                                    </small>
+                                )}
+                            </div>
                         </div>
+
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="managerData">Follow Up Date</label>
+                                <Calendar 
+                                    value={new Date(managerData.followDate)}
+                                    name='followDate' 
+                                    onChange={(e) => onDateChange(e, "followDate")} 
+                                    dateFormat="dd/mm/yy" 
+                                    placeholder="Select a Date"
+                                    required
+                                    showIcon
+                                    className={classNames({
+                                        "p-invalid": submitted && !managerData.followDate,
+                                    })}
+                                />
+                                {submitted && !managerData.followDate && (
+                                    <small className="p-invalid">
+                                        Follow Up Date is required.
+                                    </small>
+                                )}
+                            </div>
+                            <div className="field col">
+                                <label htmlFor="managerData">Phone Time</label>
+                                <InputText
+                                    id="ptime"
+                                    value={managerData.ptime}
+                                    onChange={(e) => onInputChange(e, "ptime")}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="managerData">Priority Group</label>
+                                <Dropdown
+                                    value={managerData.priority}
+                                    name='priority'
+                                    onChange={(e) => onSelectionChange(e, "priority")}
+                                    options={priorityList}
+                                    optionLabel="value"
+                                    showClear
+                                    placeholder="Select a Priority"
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !managerData.priority,
+                                    })}
+                                />
+                                {submitted && !managerData.priority && (
+                                    <small className="p-invalid">
+                                        Priority is required.
+                                    </small>
+                                )}
+                            </div>
+
+                            <div className="field col">
+                                <label htmlFor="managerData">Potential Group</label>
+                                <Dropdown
+                                    value={managerData.potential}
+                                    name='potential'
+                                    onChange={(e) => onSelectionChange(e, "potential")}
+                                    options={potentialList}
+                                    optionLabel="value"
+                                    showClear
+                                    placeholder="Select a Potential"
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !managerData.potential,
+                                    })}
+                                />
+                                {submitted && !managerData.potential && (
+                                    <small className="p-invalid">
+                                        Potential is required.
+                                    </small>
+                                )}
+                            </div>
+                        </div>
+
+
                         <div className="field">
-                            <label htmlFor="details">Details</label>
-                            <InputText 
-                                id="details" 
-                                value={managerData.details} 
-                                onChange={(e) => onInputChange(e, "details")} 
+                            <label htmlFor="managerData">Feedback</label>
+                            <InputTextarea
+                                id="feedback"
+                                value={managerData.feedback}
+                                onChange={(e) =>
+                                    onInputChange(e, "feedback")
+                                }
+                                required
+                                rows={3}
+                                cols={20}
                             />
                         </div>
                     </Dialog>
@@ -322,4 +498,5 @@ const Category = () => {
     );
 };
 
-export default  Category;
+export default  Manager_Panel;
+
