@@ -1,29 +1,26 @@
-import { useState } from 'react';
+import React, { useState } from "react";
+import { Calendar } from 'primereact/calendar';
 
-let nextId = 0;
+export default function TimeDemo() {
 
-export default function List() {
-  const [name, setName] = useState('');
-  const [artists, setArtists] = useState([]);
+    
+    
+    const [time, setTime] = useState(new Date().toTimeString().slice(0, 8));
 
-  return (
-    <>
-      <h1>Inspiring sculptors:</h1>
-      <input
-        value={name}
-        onChange={e => setName(e.target.value)}
-      />
-      <button onClick={() => {
-        setArtists([
-          ...artists,
-          { id: nextId++, name: name }
-        ]);
-      }}>Add</button>
-      <ul>
-        {artists.map(artist => (
-          <li key={artist.id}>{artist.name}</li>
-        ))}
-      </ul>
-    </>
-  );
+    // const date1 = new Date().toTimeString();
+    // console.log(date1)
+    // let cDate = date1.slice(0, 8);
+    // console.log(cDate)
+    // setTime(cDate)
+    return (
+        <div className="card flex flex-wrap gap-3 p-fluid">
+            <div className="flex-auto">
+                <label htmlFor="calendar-timeonly" className="font-bold block mb-2">
+                    Time Only
+                </label>
+                <Calendar id="calendar-timeonly" value={time} onChange={(e) => setTime(e.value)} timeOnly hourFormat="12" />
+            </div>
+        </div>
+    )
 }
+       

@@ -28,6 +28,24 @@ const customerInfoSc = new mongoose.Schema({
     details:{
         type: String,
     },
+    adresses: {
+        type: Array,
+    },
+    ptime: {
+        type: String,
+    },
+    followDate: {
+        type: String,
+    },
+    priority: {
+        type: String,
+    },
+    potential: {
+        type: String
+    },
+    feedback: {
+        type: String,
+    },
     is_active: {
         type: String,
         default: '1',

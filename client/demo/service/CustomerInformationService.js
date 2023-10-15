@@ -46,5 +46,17 @@ export const CustomerInformationService = {
             is_active,
         }
         await axios.post(`${URL}/toggle-customer-info/` + _id, data);
+    },
+
+    async editManagerPanel(addresses, ptime, feedback, priority, followDate, potential, _id) {
+        const data = {
+            addresses,
+            ptime,
+            feedback,
+            priority,
+            followDate,
+            potential
+        }
+        await axios.post(`${URL}/edit-manager-panel/` + _id, data);
     }
 }

@@ -20,7 +20,7 @@ const Manager_Panel = () => {
     let managerInfo = {
         id: 0,
         ptime: '',
-        addresses: [''],
+        addresses: [],
         feedback: '',
         priority: '',
         potential: '',
@@ -67,11 +67,18 @@ const Manager_Panel = () => {
         setDeleteDataDialog(false);
     };
 
+    console.log(typeof managerData, "dd")
 
     const saveData = () => {
         setSubmitted(true);
+        let num = Math.random().toString();
+        num = num.slice(2);
+        console.log(num)
+        managerData.addresses.concat({'id': num});
+        
 
         console.log("PPPP1",managerData)
+
 
         if( managerData.addresses && managerData.ptime && managerData.feedback || managerData.priority || managerData.followDate || managerData.potential , managerData._id ) {
             CustomerInformationService.editCustomerInfo(
@@ -121,8 +128,17 @@ const Manager_Panel = () => {
     const onSelectionChange = (e, name) => {
         let _infoData = {...managerData };
         _infoData[`${name}`] = e.value;
+        
         setManagerData(_infoData);
     }
+
+    const onAddressChange = (e, name) => {
+        let _infoData = {...managerData };
+        _infoData[`${name}`] = e.value;
+        
+        setManagerData([_infoData]);
+    }
+
 
     const onDateChange = (e, name) => {
         let _manageData = {...managerData };
@@ -370,7 +386,7 @@ const Manager_Panel = () => {
                                 <Dropdown
                                     value={managerData.addresses}
                                     name='addresses'
-                                    onChange={(e) => onSelectionChange(e, "addresses")}
+                                    onChange={(e) => onAddressChange(e, "addresses")}
                                     options={addressList}
                                     optionLabel="value"
                                     showClear
@@ -411,10 +427,12 @@ const Manager_Panel = () => {
                             </div>
                             <div className="field col">
                                 <label htmlFor="managerData">Phone Time</label>
-                                <InputText
-                                    id="ptime"
-                                    value={managerData.ptime}
-                                    onChange={(e) => onInputChange(e, "ptime")}
+                                <Calendar 
+                                    id="calendar-timeonly" 
+                                    value={managerData.ptime} 
+                                    onChange={(e) => onDateChange(e, 'ptime')} 
+                                    timeOnly 
+                                    hourFormat="12" 
                                 />
                             </div>
                         </div>
