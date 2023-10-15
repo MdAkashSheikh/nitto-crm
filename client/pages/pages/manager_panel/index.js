@@ -8,7 +8,6 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
-import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
@@ -71,10 +70,6 @@ const Manager_Panel = () => {
 
     const saveData = () => {
         setSubmitted(true);
-        let num = Math.random().toString();
-        num = num.slice(2);
-        console.log(num)
-        managerData.addresses.concat({'id': num});
         
 
         console.log("PPPP1",managerData)
@@ -134,7 +129,14 @@ const Manager_Panel = () => {
 
     const onAddressChange = (e, name) => {
         let _infoData = {...managerData };
-        _infoData[`${name}`] = e.value;
+        let num = Math.random().toString();
+        num = num.slice(2);
+        
+        // _infoData[`${name}`] = e.value;
+        _infoData.name = {
+            id: num,
+            name1: e.value
+        }
         
         setManagerData([_infoData]);
     }
