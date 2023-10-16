@@ -71,7 +71,7 @@ const Customer_Info = () => {
 
         console.log("PPPP1",infoData)
 
-        if( infoData.zone && infoData.category && infoData.name || infoData.address || infoData.asset || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
+        if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
                 infoData.category,
@@ -88,7 +88,7 @@ const Customer_Info = () => {
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
-        } else if( infoData.zone && infoData.category && infoData.name ) {
+        } else if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset) {
             CustomerInformationService.postCustomerInfo(
                 infoData.zone,
                 infoData.category,
@@ -186,10 +186,11 @@ const Customer_Info = () => {
     }
     
     const addressBodyTemplate = (rowData) => {
+
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address}
+                {rowData.address.map(item=><ul><li>{item}</li></ul>)}
             </>
         );
     }
@@ -511,8 +512,16 @@ const Customer_Info = () => {
                                         id="address" 
                                         autoFocus={true}
                                         value={infoData.address[i]} 
-                                        onChange={(e) => onAdrressChange(e, "address", i)} 
+                                        onChange={(e) => onAdrressChange(e, "address", i)}
+                                        className={classNames({
+                                            "p-invalid": submitted && !infoData.address,
+                                        })} 
                                     />
+                                    {submitted && !infoData.address && (
+                                        <small className="p-invalid">
+                                            Address is required.
+                                        </small>
+                                    )}
                                 </div>
                             )   
                         })}
@@ -528,7 +537,15 @@ const Customer_Info = () => {
                                         autoFocus={true}
                                         value={infoData.asset[i]} 
                                         onChange={(e) => onAdrressChange(e, "asset", i)} 
+                                        className={classNames({
+                                            "p-invalid": submitted && !infoData.asset,
+                                        })}
                                     />
+                                    {submitted && !infoData.asset && (
+                                    <small className="p-invalid">
+                                        Asset is required.
+                                    </small>
+                                    )}
                                 </div>
                             )   
                         })}
