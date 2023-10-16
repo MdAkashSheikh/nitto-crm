@@ -66,7 +66,6 @@ const Manager_Panel = () => {
         setDeleteDataDialog(false);
     };
 
-    console.log(typeof managerData, "dd")
 
     const saveData = () => {
         setSubmitted(true);
@@ -76,7 +75,7 @@ const Manager_Panel = () => {
 
 
         if( managerData.addresses && managerData.ptime && managerData.feedback || managerData.priority || managerData.followDate || managerData.potential , managerData._id ) {
-            CustomerInformationService.editCustomerInfo(
+            CustomerInformationService.editManagerPanel(
                 managerData.addresses,
                 managerData.ptime,
                 managerData.feedback,
@@ -132,14 +131,17 @@ const Manager_Panel = () => {
         let num = Math.random().toString();
         num = num.slice(2);
         
-        // _infoData[`${name}`] = e.value;
-        _infoData.name = {
-            id: num,
-            name1: e.value
-        }
+        let name1 = [
+        ..._infoData.addresses,
+        {
+            adress1: e.value,
+            id: num
+        }]
         
-        setManagerData([_infoData]);
-    }
+        _infoData[`${name}`] = name1;
+        
+        setManagerData(_infoData);
+        }
 
 
     const onDateChange = (e, name) => {
@@ -272,7 +274,9 @@ const Manager_Panel = () => {
         </>
     );
 
-    if(managerDatas == null) {
+    const filteredManagerDatas = managerDatas?.filter(item => item.is_active == '1');
+
+    if(filteredManagerDatas == null) {
         return (
             <div className="card">
                 <div className="border-round border-1 surface-border p-4 surface-card">
@@ -306,7 +310,7 @@ const Manager_Panel = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={managerDatas}
+                        value={filteredManagerDatas}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
@@ -317,7 +321,7 @@ const Manager_Panel = () => {
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Category"
                         globalFilter={globalFilter}
-                        emptyMessage="Category is Empty."
+                        emptyMessage="Manager Panel is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >

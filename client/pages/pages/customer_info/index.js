@@ -341,7 +341,7 @@ const Customer_Info = () => {
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Category"
                         globalFilter={globalFilter}
-                        emptyMessage="Category is Empty."
+                        emptyMessage="Customer Information is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >

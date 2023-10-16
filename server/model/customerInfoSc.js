@@ -28,7 +28,7 @@ const customerInfoSc = new mongoose.Schema({
     details:{
         type: String,
     },
-    adresses: {
+    addresses: {
         type: Array,
     },
     ptime: {
