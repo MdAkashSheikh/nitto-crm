@@ -4,6 +4,7 @@ import { MultiSelect } from 'primereact/multiselect';
 
 export default function BasicDemo() {
     const [selectedCities, setSelectedCities] = useState(null);
+    const a = useState(0);
     const cities = [
         { name: 'New York', code: 'NY' },
         { name: 'Rome', code: 'RM' },
@@ -14,6 +15,7 @@ export default function BasicDemo() {
 
     console.log(selectedCities, 'selectedCities')
     console.log(typeof selectedCities, 'selectedCities')
+    console.log(a, "a")
 
     return (
         <div className="card flex justify-content-center">

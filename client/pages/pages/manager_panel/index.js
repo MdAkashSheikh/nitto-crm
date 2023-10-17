@@ -131,17 +131,16 @@ const Manager_Panel = () => {
         let num = Math.random().toString();
         num = num.slice(2);
         
-        let name1 = [
-        ..._infoData.addresses,
-        {
-            adress1: e.value,
-            id: num
-        }]
+        // let name1 = [
+        // ..._infoData.addresses,
+        // {
+        //     adress1: e.value,
+        //     id: num
+        // }]
         
-        _infoData[`${name}`] = name1;
-        
+        _infoData[`${name}`] = e.value;
         setManagerData(_infoData);
-        }
+    }
 
 
     const onDateChange = (e, name) => {
