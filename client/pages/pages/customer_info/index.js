@@ -142,6 +142,9 @@ const Customer_Info = () => {
 
     const onAdrressChange = (e, name, i) => {
         let val = (e.target && e.target.value) || '';
+        // let num = Math.random().toString();
+        // num = num.slice(2);
+        
         let _data = {...infoData};
         _data[name][i] = val;
         setInfoData(_data);
