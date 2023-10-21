@@ -40,6 +40,7 @@ const Manager_Panel = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [one, setOne] = useState(null);
+    const [selectedAddress, setSelectedAddress] = useState('');
 
 
     useEffect(() => {
@@ -126,10 +127,11 @@ const Manager_Panel = () => {
         setManagerData(_infoData);
     }
 
-    const onAddressChange = (e, name) => {
-        let _infoData = {...managerData };
-        let num = Math.random().toString();
-        num = num.slice(2);
+    const onAddressChange = (e) => {
+        setSelectedAddress(e.value)
+        // let _infoData = {...managerData };
+        // let num = Math.random().toString();
+        // num = num.slice(2);
         
         // let name1 = [
         // ..._infoData.addresses,
@@ -138,8 +140,8 @@ const Manager_Panel = () => {
         //     id: num
         // }]
         
-        _infoData[`${name}`] = e.value;
-        setManagerData(_infoData);
+        // _infoData[name] = name1;
+        // setManagerData(_infoData);
     }
 
 
@@ -389,9 +391,9 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Address</label>
                                 <Dropdown
-                                    value={managerData.addresses}
+                                    value={selectedAddress}
                                     name='addresses'
-                                    onChange={(e) => onAddressChange(e, "addresses")}
+                                    onChange={(e) => onAddressChange(e)}
                                     options={addressList}
                                     optionLabel="value"
                                     showClear

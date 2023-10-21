@@ -20,7 +20,7 @@ const Customer_Info = () => {
         zone: '',
         category: '',
         name: '',
-        address: [''],
+        address: [{val: '', id: 0}],
         asset: [''],
         phone: '',
         email: '',
@@ -140,12 +140,19 @@ const Customer_Info = () => {
         setInfoData(_infoData);
     }
 
-    const onAdrressChange = (e, name, i) => {
-        let val = (e.target && e.target.value) || '';
-        // let num = Math.random().toString();
-        // num = num.slice(2);
-        
+    const onAdrressChange = (e, name, i, previous_address) => {
+        console.log('onAdrressChange-----------------',e.target?.value, name, i, previous_address)
+        let val = (e.target && e.target.value) || ''; 
         let _data = {...infoData};
+        const num = Math.random().toString().slice(2);
+        _data[name][i] = {add: val, id: previous_address?.id || num};
+        setInfoData(_data);
+
+    }
+
+    const onAssetChange = ( e, name, i) => {
+        let val = (e.target && e.target.value) || '';
+        let _data = { ...infoData };
         _data[name][i] = val;
         setInfoData(_data);
 
@@ -193,7 +200,7 @@ const Customer_Info = () => {
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address.map(item=><ul><li>{item}</li></ul>)}
+                {rowData.address.map(item=><ul><li>{item.add}</li></ul>)}
             </>
         );
     }
@@ -312,7 +319,9 @@ const Customer_Info = () => {
 
     function onAdd(){
         const newInfoData = {...infoData}
-        newInfoData.address = [...infoData.address, '']
+        const num = Math.random().toString().slice(2);
+        const newAddr = {val: '', id: num}
+        newInfoData.address = [...infoData.address, newAddr]
         setInfoData(newInfoData)
     }
 
@@ -507,15 +516,16 @@ const Customer_Info = () => {
                             </div>
                         </div>
 
-                        {infoData.address.map((val, i) => {
+                        {infoData.address.map((address, i) => {
+                            console.log('val---------------------------------', address)
                             return (
                                 <div className="field" key={i}>
                                     <label htmlFor="infoData">Address</label>
                                     <InputText 
                                         id="address" 
                                         autoFocus={true}
-                                        value={infoData.address[i]} 
-                                        onChange={(e) => onAdrressChange(e, "address", i)}
+                                        value={address.add} 
+                                        onChange={(e) => onAdrressChange(e, "address", i, address)}
                                         className={classNames({
                                             "p-invalid": submitted && !infoData.address,
                                         })} 
@@ -539,7 +549,7 @@ const Customer_Info = () => {
                                         id="asset" 
                                         autoFocus={true}
                                         value={infoData.asset[i]} 
-                                        onChange={(e) => onAdrressChange(e, "asset", i)} 
+                                        onChange={(e) => onAssetChange(e, "asset", i)} 
                                         className={classNames({
                                             "p-invalid": submitted && !infoData.asset,
                                         })}
