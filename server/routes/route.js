@@ -11,7 +11,8 @@ const {
     editCustomerInfo, 
     getCustomerInfo, 
     deleteCustomerInfo,
-    toggleCustomerInfo
+    toggleCustomerInfo,
+    editManagerPanel
 } = require('../controllers/customerInfo');
 
 const { 
@@ -105,5 +106,6 @@ router.post('/edit-customer-info/:id', editCustomerInfo);
 router.get('/get-customer-info', getCustomerInfo);
 router.delete('/delete-customer-info/:id', deleteCustomerInfo);
 router.post('/toggle-customer-info/:id', toggleCustomerInfo);
+router.post('/edit-manager-panel/:id', editManagerPanel);
 
 module.exports = router;

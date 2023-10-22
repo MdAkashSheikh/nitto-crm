@@ -18,14 +18,7 @@ import { PotentialCustomerService } from '../../../demo/service/PotentialCustome
 const Manager_Panel = () => {
     let managerInfo = {
         id: 0,
-        ptime: '',
-        addresses: [{id: 0, add1: '', priority: '', potential: '', followDate: '', ptime: '', feedback: ''}],
-        feedback: '',
-        priority: '',
-        potential: '',
-        followDate: '',
-        details: '',
-        follows: []
+        follows: [{id: 0, aid: 0, add1: '', priority: '', potential: '', followDate: '', ptime: '', feedback: ''}]
     };
 
     const [managerDatas, setManagerDatas] = useState(null);
@@ -76,15 +69,10 @@ const Manager_Panel = () => {
         console.log("PPPP1",managerData)
 
 
-        if( managerData.addresses && managerData.ptime && managerData.feedback || managerData.priority || managerData.followDate || managerData.potential , managerData._id ) {
+        if( managerData.follows, managerData._id ) {
             CustomerInformationService.editManagerPanel(
-                managerData.addresses,
-                managerData.ptime,
-                managerData.feedback,
-                managerData.priority,
-                managerData.followDate,
-                managerData.potential,
-                managerData._id,
+                managerData.follows,
+                managerData._id
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
@@ -117,39 +105,38 @@ const Manager_Panel = () => {
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
         let data = { ...managerData };
-        data.addresses[`${name}`] = val;
+        data.follows[`${name}`] = val;
 
         setManagerData(data);
     };
 
     const onSelectionChange = (e, name) => {
         let _infoData = {...managerData };
-        _infoData.addresses[`${name}`] = e.value;
+        _infoData.follows[`${name}`] = e.value;
         
         setManagerData(_infoData);
     }
 
     const onAddressChange = (e, prev_address) => {
-        console.log(prev_address, "HI")
-
-        // setSelectedAddress(e.value)
-        let id1 = prev_address?.filter(item => item.add == e.value)?.map(item=> item.id);
+        let id1 = prev_address?.filter(item => item.add == e.value)?.map(item=> item.id).toString();
+        const num = Math.random().toString().slice(2);
         let _infoData = {...managerData };
-        _infoData.addresses['id'] = id1;
-        _infoData.addresses['add1'] = e.value;
+        _infoData.follows['id'] = num;
+        _infoData.follows['aid'] = id1;
+        _infoData.follows['add1'] = e.value;
         setManagerData(_infoData);
     }
 
 
     const onDateChange = (e) => {
         let _manageData = {...managerData };
-        _manageData.addresses = {followDate: e.value};
+        _manageData.follows = {followDate: e.value};
         setManagerData(_manageData);
     }
 
     const onPtimeChange = (e, name) => {
         let _manageData = {...managerData };
-        _manageData.addresses[`${name}`] = e.value;
+        _manageData.follows[`${name}`] = e.value;
         setManagerData(_manageData);
     }
 
@@ -393,7 +380,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Address</label>
                                 <Dropdown
-                                    value={managerData.addresses.add1}
+                                    value={managerData.follows.add1}
                                     name='address'
                                     onChange={(e) => onAddressChange(e, managerData.address)}
                                     options={addressList}
@@ -402,12 +389,12 @@ const Manager_Panel = () => {
                                     placeholder="Select a address"
                                     required
                                     className={classNames({
-                                        "p-invalid": submitted && !managerData.addresses,
+                                        "p-invalid": submitted && !managerData.follows,
                                     })}
                                 />
-                                {submitted && !managerData.addresses && (
+                                {submitted && !managerData.follows && (
                                     <small className="p-invalid">
-                                        Addresses is required.
+                                        follows is required.
                                     </small>
                                 )}
                             </div>
@@ -417,7 +404,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Follow Up Date</label>
                                 <Calendar 
-                                    value={new Date(managerData.addresses.followDate)}
+                                    value={new Date(managerData.follows.followDate)}
                                     name='followDate' 
                                     onChange={(e) => onDateChange(e)} 
                                     dateFormat="dd/mm/yy" 
@@ -425,7 +412,7 @@ const Manager_Panel = () => {
                                     required
                                     showIcon
                                     className={classNames({
-                                        "p-invalid": submitted && !managerData.addresses.followDate,
+                                        "p-invalid": submitted && !managerData.follows.followDate,
                                     })}
                                 />
                                 {submitted && !managerData.followDate && (
@@ -438,7 +425,7 @@ const Manager_Panel = () => {
                                 <label htmlFor="managerData">Phone Time</label>
                                 <Calendar 
                                     id="calendar-timeonly" 
-                                    value={managerData.addresses.ptime}
+                                    value={managerData.follows.ptime}
                                     onChange={(e) => onPtimeChange(e, "ptime")} 
                                     timeOnly 
                                     hourFormat="12" 
@@ -450,7 +437,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Priority Group</label>
                                 <Dropdown
-                                    value={managerData.addresses.priority}
+                                    value={managerData.follows.priority}
                                     name='priority'
                                     onChange={(e) => onSelectionChange(e, "priority")}
                                     options={priorityList}
@@ -472,7 +459,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Potential Group</label>
                                 <Dropdown
-                                    value={managerData.addresses.potential}
+                                    value={managerData.follows.potential}
                                     name='potential'
                                     onChange={(e) => onSelectionChange(e, "potential")}
                                     options={potentialList}
