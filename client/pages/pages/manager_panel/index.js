@@ -19,12 +19,13 @@ const Manager_Panel = () => {
     let managerInfo = {
         id: 0,
         ptime: '',
-        addresses: [],
+        addresses: [{id: 0, add1: '', priority: '', potential: '', followDate: '', ptime: '', feedback: ''}],
         feedback: '',
         priority: '',
         potential: '',
         followDate: '',
         details: '',
+        follows: []
     };
 
     const [managerDatas, setManagerDatas] = useState(null);
@@ -92,6 +93,7 @@ const Manager_Panel = () => {
         }
     };
 
+    console.log("Manager Data", managerData);
     const editData = (managerData) => {
         setManagerData({ ...managerData });
         setDataDialog(true);
@@ -115,39 +117,31 @@ const Manager_Panel = () => {
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
         let data = { ...managerData };
-        data[`${name}`] = val;
+        data.addresses[`${name}`] = val;
 
         setManagerData(data);
     };
 
     const onSelectionChange = (e, name) => {
         let _infoData = {...managerData };
-        _infoData[`${name}`] = e.value;
+        _infoData.addresses[`${name}`] = e.value;
         
         setManagerData(_infoData);
     }
 
     const onAddressChange = (e) => {
-        setSelectedAddress(e.value)
-        // let _infoData = {...managerData };
-        // let num = Math.random().toString();
-        // num = num.slice(2);
-        
-        // let name1 = [
-        // ..._infoData.addresses,
-        // {
-        //     adress1: e.value,
-        //     id: num
-        // }]
-        
-        // _infoData[name] = name1;
-        // setManagerData(_infoData);
+
+        // setSelectedAddress(e.value)
+        let id1 = managerData.address?.filter(item => item.add == e.value)?.map(item=> item.id).toString();
+        let _infoData = {...managerData };
+        _infoData.addresses = {add1: e.value, id: id1};
+        setManagerData(_infoData);
     }
 
 
     const onDateChange = (e, name) => {
         let _manageData = {...managerData };
-        _manageData[`${name}`] = e.value;
+        _manageData.addresses = {followDate: e.value};
         setManagerData(_manageData);
     }
 
@@ -155,7 +149,7 @@ const Manager_Panel = () => {
     if(one == 1) {
         let m = managerData.address;
         addressList = m?.map(item => {
-            return { label: item, value: item }
+            return { label: item.add, value: item.add, id: item.id }
         })
         
     }
@@ -201,7 +195,7 @@ const Manager_Panel = () => {
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address}
+                {rowData.address?.map(item => <ul>{item.add}</ul>)}
             </>
         );
     }
@@ -391,8 +385,8 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Address</label>
                                 <Dropdown
-                                    value={selectedAddress}
-                                    name='addresses'
+                                    value={managerData.addresses.add1}
+                                    name='address'
                                     onChange={(e) => onAddressChange(e)}
                                     options={addressList}
                                     optionLabel="value"
