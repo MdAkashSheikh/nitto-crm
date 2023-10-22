@@ -129,19 +129,27 @@ const Manager_Panel = () => {
         setManagerData(_infoData);
     }
 
-    const onAddressChange = (e) => {
+    const onAddressChange = (e, prev_address) => {
+        console.log(prev_address, "HI")
 
         // setSelectedAddress(e.value)
-        let id1 = managerData.address?.filter(item => item.add == e.value)?.map(item=> item.id).toString();
+        let id1 = prev_address?.filter(item => item.add == e.value)?.map(item=> item.id);
         let _infoData = {...managerData };
-        _infoData.addresses = {add1: e.value, id: id1};
+        _infoData.addresses['id'] = id1;
+        _infoData.addresses['add1'] = e.value;
         setManagerData(_infoData);
     }
 
 
-    const onDateChange = (e, name) => {
+    const onDateChange = (e) => {
         let _manageData = {...managerData };
         _manageData.addresses = {followDate: e.value};
+        setManagerData(_manageData);
+    }
+
+    const onPtimeChange = (e, name) => {
+        let _manageData = {...managerData };
+        _manageData.addresses[`${name}`] = e.value;
         setManagerData(_manageData);
     }
 
@@ -387,7 +395,7 @@ const Manager_Panel = () => {
                                 <Dropdown
                                     value={managerData.addresses.add1}
                                     name='address'
-                                    onChange={(e) => onAddressChange(e)}
+                                    onChange={(e) => onAddressChange(e, managerData.address)}
                                     options={addressList}
                                     optionLabel="value"
                                     showClear
@@ -409,15 +417,15 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Follow Up Date</label>
                                 <Calendar 
-                                    value={new Date(managerData.followDate)}
+                                    value={new Date(managerData.addresses.followDate)}
                                     name='followDate' 
-                                    onChange={(e) => onDateChange(e, "followDate")} 
+                                    onChange={(e) => onDateChange(e)} 
                                     dateFormat="dd/mm/yy" 
                                     placeholder="Select a Date"
                                     required
                                     showIcon
                                     className={classNames({
-                                        "p-invalid": submitted && !managerData.followDate,
+                                        "p-invalid": submitted && !managerData.addresses.followDate,
                                     })}
                                 />
                                 {submitted && !managerData.followDate && (
@@ -430,8 +438,8 @@ const Manager_Panel = () => {
                                 <label htmlFor="managerData">Phone Time</label>
                                 <Calendar 
                                     id="calendar-timeonly" 
-                                    value={managerData.ptime} 
-                                    onChange={(e) => onDateChange(e, 'ptime')} 
+                                    value={managerData.addresses.ptime}
+                                    onChange={(e) => onPtimeChange(e, "ptime")} 
                                     timeOnly 
                                     hourFormat="12" 
                                 />
@@ -442,7 +450,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Priority Group</label>
                                 <Dropdown
-                                    value={managerData.priority}
+                                    value={managerData.addresses.priority}
                                     name='priority'
                                     onChange={(e) => onSelectionChange(e, "priority")}
                                     options={priorityList}
@@ -464,7 +472,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Potential Group</label>
                                 <Dropdown
-                                    value={managerData.potential}
+                                    value={managerData.addresses.potential}
                                     name='potential'
                                     onChange={(e) => onSelectionChange(e, "potential")}
                                     options={potentialList}
