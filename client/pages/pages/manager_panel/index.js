@@ -21,6 +21,7 @@ const Manager_Panel = () => {
         follows: [{id: 0, aid: 0, add1: '', priority: '', potential: '', followDate: '', ptime: '', feedback: ''}]
     };
 
+    const dataArr = [];
     const [managerDatas, setManagerDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
@@ -66,17 +67,20 @@ const Manager_Panel = () => {
         setSubmitted(true);
         
 
-        console.log("PPPP1",managerData)
+        // let followsArr = [...managerData.follows]
+        // console.log("PPPP1",typeof followsArr)
+        dataArr.push(managerData.follows)
+        console.log("PPPPPPPPPPPP", typeof dataArr)
 
 
-        if( managerData.follows, managerData._id ) {
+        if( dataArr, managerData._id ) {
             CustomerInformationService.editManagerPanel(
-                managerData.follows,
+                dataArr,
                 managerData._id
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Follow is Updated', life: 3000 });
             })
         }
     };
@@ -505,7 +509,6 @@ const Manager_Panel = () => {
                             )}
                         </div>
                     </Dialog>
-                    
                 </div>
             </div>
         </div>

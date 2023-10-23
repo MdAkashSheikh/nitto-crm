@@ -100,7 +100,8 @@ const toggleCustomerInfo = async(req, res) => {
 
 const editManagerPanel = async(req, res) => {
     const id = req.params.id;
-    const follows = req.params.follows;
+    const follows = req.body.follows;
+    console.log(req.body);
 
     try {
         const oneData = await customerInfoSc.findByIdAndUpdate(id, {
