@@ -49,9 +49,6 @@ export const CustomerInformationService = {
     },
 
     async editManagerPanel(follows, _id) {
-        const data = {
-            follows
-        }
-        await axios.post(`${URL}/edit-manager-panel/` + _id, data);
+        await axios.post(`${URL}/edit-manager-panel/` + _id, follows);
     }
 }

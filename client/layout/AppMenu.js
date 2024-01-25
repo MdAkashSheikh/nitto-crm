@@ -27,21 +27,21 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-pencil',
                     to: '/pages/manager_panel'
                 },
-                {
-                    label: 'Timeline',
-                    icon: 'pi pi-fw pi-calendar',
-                    to: '/pages/timeline'
-                },
-                {
-                    label: 'Not Found',
-                    icon: 'pi pi-fw pi-exclamation-circle',
-                    to: '/pages/notfound'
-                },
-                {
-                    label: 'Empty',
-                    icon: 'pi pi-fw pi-circle-off',
-                    to: '/pages/empty'
-                }
+                // {
+                //     label: 'Timeline',
+                //     icon: 'pi pi-fw pi-calendar',
+                //     to: '/pages/timeline'
+                // },
+                // {
+                //     label: 'Not Found',
+                //     icon: 'pi pi-fw pi-exclamation-circle',
+                //     to: '/pages/notfound'
+                // },
+                // {
+                //     label: 'Empty',
+                //     icon: 'pi pi-fw pi-circle-off',
+                //     to: '/pages/empty'
+                // }
             ]
         },
 
@@ -83,6 +83,11 @@ const AppMenu = () => {
                             label: 'Category',
                             icon: 'pi pi-fw pi-list',
                             to: '/master/category'
+                        },
+                        {
+                            label: 'Services',
+                            icon: 'pi pi-fw pi-list',
+                            to: '/master/services'
                         },
                     ]
                 },

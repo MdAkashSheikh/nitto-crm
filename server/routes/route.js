@@ -48,6 +48,14 @@ const {
 } = require('../controllers/priorityGroup');
 
 const { 
+    postService, 
+    editService, 
+    getService, 
+    deleteService,
+    toggleService
+} = require('../controllers/service');
+
+const { 
     postZone, 
     getZone, 
     editZone, 
@@ -99,6 +107,13 @@ router.post('/edit-category/:id', editCategory);
 router.get('/get-category', getCategory);
 router.delete('/delete-category/:id', deleteCategory);
 router.post('/toggle-category/:id', toggleCategory);
+
+//Service Route URL
+router.post('/post-service', postService);
+router.post('/edit-service/:id', editService);
+router.get('/get-service', getService);
+router.post('/delete-service/:id', deleteService);
+router.post('/toggle-service/:id', toggleService);
 
 //Customer Information Route URL
 router.post('/post-customer-info', postCustomerInfo);
