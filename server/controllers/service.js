@@ -9,9 +9,11 @@ const postService = async(req, res) => {
         completion_time, 
     } = req.body;
 
+    let a_id = Math.floor(Math.random() * 10000).toString()
+
     try {
         const AllData = await ServiceSc.create({
-            service_id,
+            'service_id': a_id,
             service_name,
             base_price,
             completion_time,

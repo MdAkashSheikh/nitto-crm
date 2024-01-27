@@ -369,7 +369,7 @@ const Manager_Panel = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "550px" }}
-                        header="Add Information"
+                        header="Add Following"
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}

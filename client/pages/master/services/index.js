@@ -12,12 +12,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 
 const Service = () => {
-
-    let a_id = Math.floor(Math.random() * 10000)
-    console.log(a_id)
     
     let emptyService = {
-        service_id: a_id,
+        service_id: '',
         service_name: '',
         base_price: '',
         completion_time: '',
@@ -367,7 +364,6 @@ const Service = () => {
                             )}
                         </div>
                     </Dialog>
-                    
                 </div>
             </div>
         </div>
