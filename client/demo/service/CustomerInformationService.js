@@ -42,13 +42,10 @@ export const CustomerInformationService = {
     },
 
     async toggleCustomerInfo(is_active, _id) {
-        const data = {
-            is_active,
-        }
-        await axios.post(`${URL}/toggle-customer-info/` + _id, data);
+        await axios.post(`${URL}/toggle-customer-info/` + _id, { is_active });
     },
 
     async editManagerPanel(follows, _id) {
-        await axios.post(`${URL}/edit-manager-panel/` + _id, follows);
+        await axios.post(`${URL}/edit-manager-panel/` + _id, { follows });
     }
 }

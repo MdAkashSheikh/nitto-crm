@@ -29,6 +29,6 @@ export const PotentialCustomerService = {
     },
 
     async togglePotential(is_active, _id) {
-        await axios.post(`${URL}/toggle-potential/` + _id, is_active);
+        await axios.post(`${URL}/toggle-potential/` + _id, { is_active });
     }
 }

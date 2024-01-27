@@ -65,13 +65,9 @@ const Manager_Panel = () => {
 
     const saveData = () => {
         setSubmitted(true);
-        
 
-        // let followsArr = [...managerData.follows]
-        // console.log("PPPP1",typeof followsArr)
         dataArr.push(managerData.follows)
         console.log("PPPPPPPPPPPP", typeof dataArr)
-
 
         if( dataArr, managerData._id ) {
             CustomerInformationService.editManagerPanel(

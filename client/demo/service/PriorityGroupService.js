@@ -28,6 +28,6 @@ export const PriorityGroupService = {
     },
 
     async togglePriority(is_active, _id) {
-        await axios.post(`${URL}/toggle-priority/` + _id, is_active);
+        await axios.post(`${URL}/toggle-priority/` + _id, { is_active });
     }
 }
