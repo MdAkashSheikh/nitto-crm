@@ -14,7 +14,7 @@ import { CategoryService } from '../../../demo/service/CategoryService';
 import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
 import { ZoneService } from '../../../demo/service/ZoneService';
 
-const Customer_Info = () => {
+const Lead_Info = () => {
     let emptyInfo = {
         id: 0,
         zone: '',
@@ -260,7 +260,7 @@ const Customer_Info = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <h2 className="m-0">Customer Information</h2>
+                    <h2 className="m-0">Lead Information</h2>
                 </div>
             </React.Fragment>
         );
@@ -592,5 +592,5 @@ const Customer_Info = () => {
     );
 };
 
-export default  Customer_Info;
+export default  Lead_Info;
 

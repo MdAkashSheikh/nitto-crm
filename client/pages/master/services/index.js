@@ -9,7 +9,6 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { ZoneService } from '../../../demo/service/ZoneService';
 import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 
 const Service = () => {
@@ -26,7 +25,6 @@ const Service = () => {
         details: '',
     };
 
-    const [zoneDatas, setZoneDatas] = useState(null);
     const [serviceDatas, setServiceDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
@@ -39,19 +37,11 @@ const Service = () => {
     const [toggleRefresh, setTogleRefresh] = useState(false);
 
 
-    // useEffect(() => {
-
-    //     ServiceGroupService.getService().then((res) => setServiceDatas(res.data.AllData));
-
-    // }, [toggleRefresh]);
-
     useEffect(() => {
 
         ServiceGroupService.getService().then((res) => setServiceDatas(res.data.AllData));
 
-    }, [!toggleRefresh]);
-
-    console.log(serviceDatas, "SOURCE DATAS")
+    }, [toggleRefresh]);
 
     const openNew = () => {
         setServiceData(emptyService);

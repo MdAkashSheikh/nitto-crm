@@ -18,9 +18,9 @@ const AppMenu = () => {
             to: '/pages',
             items: [
                 {
-                    label: 'Customer Information',
+                    label: 'Lead Information',
                     icon: 'pi pi-fw pi-list',
-                    to: '/pages/customer_info'
+                    to: '/pages/lead_info'
                 },
                 {
                     label: 'Manager Panel',
