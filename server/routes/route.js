@@ -112,7 +112,7 @@ router.post('/toggle-category/:id', toggleCategory);
 router.post('/post-service', postService);
 router.post('/edit-service/:id', editService);
 router.get('/get-service', getService);
-router.post('/delete-service/:id', deleteService);
+router.delete('/delete-service/:id', deleteService);
 router.post('/toggle-service/:id', toggleService);
 
 //Customer Information Route URL

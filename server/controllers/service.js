@@ -106,7 +106,7 @@ const toggleService = async(req, res) => {
 
         res.status(200).json({
             success: true,
-            message: error.message
+            oneData
         })
 
     } catch (error) {

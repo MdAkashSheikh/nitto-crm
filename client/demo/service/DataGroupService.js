@@ -28,6 +28,6 @@ export const DataGroupService = {
     },
 
     async toggleDataGroup(is_active, _id) {
-        await axios.post(`${URL}/toggle-data-group/` + _id, is_active);
+        await axios.post(`${URL}/toggle-data-group/` + _id, { is_active });
     }
 }

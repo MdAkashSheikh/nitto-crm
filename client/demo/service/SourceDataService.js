@@ -32,9 +32,6 @@ export const DataSourceService = {
     },
 
     async toggleSourceData(is_active, _id) {
-        const data = {
-            is_active,
-        }
-        await axios.post(`${URL}/toggle-source-data/` + _id, data)
+        await axios.post(`${URL}/toggle-source-data/` + _id, { is_active })
     }
 }

@@ -26,6 +26,7 @@ const Service = () => {
         details: '',
     };
 
+    const [zoneDatas, setZoneDatas] = useState(null);
     const [serviceDatas, setServiceDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
@@ -38,11 +39,17 @@ const Service = () => {
     const [toggleRefresh, setTogleRefresh] = useState(false);
 
 
+    // useEffect(() => {
+
+    //     ServiceGroupService.getService().then((res) => setServiceDatas(res.data.AllData));
+
+    // }, [toggleRefresh]);
+
     useEffect(() => {
 
         ServiceGroupService.getService().then((res) => setServiceDatas(res.data.AllData));
 
-    }, [toggleRefresh]);
+    }, [!toggleRefresh]);
 
     console.log(serviceDatas, "SOURCE DATAS")
 
@@ -143,11 +150,20 @@ const Service = () => {
         );
     }
 
-    const detailsBodyTemplate = (rowData) => {
+    const base_priceBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Details</span>
-                {rowData.details}
+                {rowData.base_price}
+            </>
+        );
+    }
+
+    const completion_timeBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Details</span>
+                {rowData.completion_time}
             </>
         );
     }
@@ -281,10 +297,16 @@ const Service = () => {
                             headerStyle={{ minWidth: "10rem" }}
                         ></Column>
                          <Column
-                            field="details"
-                            header="Details"
-                            body={detailsBodyTemplate}
+                            field="base_price"
+                            header="Base Price"
+                            body={base_priceBodyTemplate}
                             headerStyle={{ minWidth: "15rem" }}
+                        ></Column>
+                        <Column
+                            field="completion_time"
+                            header="Completion Time"
+                            body={completion_timeBodyTemplate}
+                            headerStyle={{ minWidth: "5rem" }}
                         ></Column>
                         <Column
                             header="Status"

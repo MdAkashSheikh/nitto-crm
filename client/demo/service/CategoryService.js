@@ -28,6 +28,6 @@ export const CategoryService = {
     },
     
     async toggleCategory(is_active, _id) {
-        await axios.post(`${URL}/toggle-category/` + _id, is_active);
+        await axios.post(`${URL}/toggle-category/` + _id, { is_active });
     }
 }

@@ -30,11 +30,10 @@ export const ServiceGroupService = {
     },
 
     async deleteService(id) {
-        console.log(id)
         await axios.delete(`${URL}/delete-service/` + id);
     },
 
     async toggleService(is_active, id) {
-        await axios.post(`${URL}/toggle-service/` + id, is_active);
+        await axios.post(`${URL}/toggle-service/` + id, { is_active });
     }
 }

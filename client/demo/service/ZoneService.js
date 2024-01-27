@@ -31,6 +31,6 @@ export const ZoneService = {
         const data = {
             is_active,
         }
-        await axios.post(`${URL}/toggle-zone/` + _id, data);
+        await axios.post(`${URL}/toggle-zone/` + _id, { is_active });
     },
 }
