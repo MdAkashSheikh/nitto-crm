@@ -260,7 +260,7 @@ const Lead_Info = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <h2 className="m-0">Lead Information</h2>
+                    <h2 className="m-0">Lead Sheet</h2>
                 </div>
             </React.Fragment>
         );
