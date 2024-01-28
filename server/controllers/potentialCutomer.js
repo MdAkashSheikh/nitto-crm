@@ -70,7 +70,6 @@ const togglePotential = async(req, res) => {
     }
 }
 
-
 module.exports = {
     postPotential,
     editPotential,
