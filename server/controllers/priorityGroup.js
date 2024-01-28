@@ -37,7 +37,7 @@ const editPriority = async(req, res) => {
 
 const getPriority = async(req, res) => {
     try {
-        const AllData = await priorityGroupSc.find({}).sort('-date');
+        const AllData = await priorityGroupSc.find({});
         res.send({ AllData })
 
     } catch (err) {
