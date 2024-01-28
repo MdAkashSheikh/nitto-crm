@@ -123,4 +123,6 @@ router.delete('/delete-customer-info/:id', deleteCustomerInfo);
 router.post('/toggle-customer-info/:id', toggleCustomerInfo);
 router.post('/edit-manager-panel/:id', editManagerPanel);
 
+//Team Information Route URL
+
 module.exports = router;
