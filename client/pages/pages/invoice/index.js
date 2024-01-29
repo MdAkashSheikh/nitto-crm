@@ -1,19 +1,18 @@
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import React from "react";
-import images from '../../../public/layout/images/logo.png'
 import {
-  MDBCard,
-  MDBCardBody,
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBBtn,
-  MDBIcon,
-  MDBTypography,
-  MDBTable,
-  MDBTableHead,
-  MDBTableBody,
+    MDBCard,
+    MDBCardBody,
+    MDBContainer,
+    MDBRow,
+    MDBCol,
+    MDBBtn,
+    MDBIcon,
+    MDBTypography,
+    MDBTable,
+    MDBTableHead,
+    MDBTableBody,
 } from "mdb-react-ui-kit";
 
 export default function App() {
@@ -173,15 +172,15 @@ export default function App() {
                     <hr />
                     <MDBRow>
                         <MDBCol xl="10">
-                        <p>Thank you for your purchase</p>
+                            <p>Thank you for your purchase</p>
                         </MDBCol>
                         <MDBCol xl="2">
-                        <MDBBtn
-                            className="text-capitalize"
-                            style={{ backgroundColor: "#60bdf3" }}
-                        >
-                            Pay Now
-                        </MDBBtn>
+                            <MDBBtn
+                                className="text-capitalize"
+                                style={{ backgroundColor: "#60bdf3" }}
+                            >
+                                Pay Now
+                            </MDBBtn>
                         </MDBCol>
                     </MDBRow>
                 </MDBCardBody>
