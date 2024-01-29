@@ -399,7 +399,7 @@ const Team_Info = () => {
                                 multiple
                                 accept="image/*" 
                                 name='photo'
-                                url={`${URL}/post-follow-image`}
+                                url="/api/upload"
                                 maxFileSize={1000000} 
                                 emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} 
                                 className='mt-1'
