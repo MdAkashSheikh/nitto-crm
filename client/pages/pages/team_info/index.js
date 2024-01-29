@@ -1,19 +1,15 @@
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
-import { Calendar } from 'primereact/calendar';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
+import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
-import { PriorityGroupService } from '../../../demo/service/PriorityGroupService';
-import { PotentialCustomerService } from '../../../demo/service/PotentialCustomerService';
+import { ZoneService } from '../../../demo/service/ZoneService';
 
 const Team_Info = () => {
     let empInfo = {
@@ -25,42 +21,44 @@ const Team_Info = () => {
         phone: [],
     };
 
-    const dataArr = [];
-    const [managerDatas, setManagerDatas] = useState(null);
+    const [teamDatas, setTeamDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
-    const [managerData, setManagerData] = useState(empInfo);
+    const [teamData, setTeamData] = useState(empInfo);
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
-    const [msPriority, setMsPriority] = useState(null);
-    const [msPotential, setMsPotential] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
-    const [one, setOne] = useState(null);
-    const [selectedAddress, setSelectedAddress] = useState('');
+    const [selectEdit, setSelectEdit] = useState(false);
 
 
     useEffect(() => {
 
-        CustomerInformationService.getCustomerInfo().then((res) => setManagerDatas(res.data.AllData));
-        PriorityGroupService.getPriority().then((res) => setMsPriority(res.data.AllData));
-        PotentialCustomerService.getPotential().then((res) => setMsPotential(res.data.AllData)); 
-
+        ZoneService.getZone().then((res) => setTeamDatas(res.data.AllData));
 
     }, [toggleRefresh]);
 
+    console.log(teamDatas, "SOURCE DATAS")
+
     const openNew = () => {
-        setManagerData(empInfo);
+        setTeamData(empInfo);
         setSubmitted(false);
         setDataDialog(true);
+        setSelectEdit(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
         setDataDialog(false);
     };
+
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add New Employee' : 'Edit Employee'
+        )
+    }
 
     const hideDeleteProductDialog = () => {
         setDeleteDataDialog(false);
@@ -70,149 +68,66 @@ const Team_Info = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        dataArr.push(managerData.follows)
-        console.log("PPPPPPPPPPPP", typeof dataArr)
+        console.log("PPPP1",teamData)
 
-        if( dataArr, managerData._id ) {
-            CustomerInformationService.editManagerPanel(
-                dataArr,
-                managerData._id
+        if( teamData.name && teamData.details, teamData._id) {
+            ZoneService.editZone(
+                teamData.name,
+                teamData.details,
+                teamData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Follow is Updated', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Team_Info is Updated', life: 3000 });
+            })
+        } else if( teamData.name && teamData.details) {
+            ZoneService.postZone(
+                teamData.name,
+                teamData.details,
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setDataDialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Zone is Created', life: 3000 });
             })
         }
     };
 
-    console.log("Manager Data", managerData);
-    const editData = (managerData) => {
-        setManagerData({ ...managerData });
+    const editData = (teamData) => {
+        setTeamData({ ...teamData });
         setDataDialog(true);
-        setOne(1);
+        setSelectEdit(false)
     };
 
-    const confirmDeleteData = (managerData) => {
-        setManagerData(managerData);
+
+    const confirmDeleteData = (teamData) => {
+        setTeamData(teamData);
         setDeleteDataDialog(true);
     };
 
     const deleteData = () => {
-        CustomerInformationService.deleteCustomerInfo(managerData._id).then(() => {
+        ZoneService.deleteZone(teamData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
-            setManagerData(empInfo);
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer is Deleted', life: 3000 });
+            setTeamData(empInfo);
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Zone is Deleted', life: 3000 });
         })
     };
+
+
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let data = { ...managerData };
-        data.follows[`${name}`] = val;
+        let data = { ...teamData };
+        data[`${name}`] = val;
 
-        setManagerData(data);
+        setTeamData(data);
     };
 
-    const onSelectionChange = (e, name) => {
-        let _infoData = {...managerData };
-        _infoData.follows[`${name}`] = e.value;
-        
-        setManagerData(_infoData);
-    }
-
-    const onAddressChange = (e, prev_address) => {
-        let id1 = prev_address?.filter(item => item.add == e.value)?.map(item=> item.id).toString();
-        const num = Math.random().toString().slice(2);
-        let _infoData = {...managerData };
-        _infoData.follows['id'] = num;
-        _infoData.follows['aid'] = id1;
-        _infoData.follows['add1'] = e.value;
-        setManagerData(_infoData);
-    }
-
-
-    const onDateChange = (e) => {
-        let _manageData = {...managerData };
-        _manageData.follows = {followDate: e.value};
-        setManagerData(_manageData);
-    }
-
-    const onPtimeChange = (e, name) => {
-        let _manageData = {...managerData };
-        _manageData.follows[`${name}`] = e.value;
-        setManagerData(_manageData);
-    }
-
-    let addressList;
-    if(one == 1) {
-        let m = managerData.address;
-        addressList = m?.map(item => {
-            return { label: item.add, value: item.add, id: item.id }
-        })
-        
-    }
-
-    const filteredPriority = msPriority?.filter((item) => item.is_active == '1');
-    const priorityList = filteredPriority?.map(item => {
-        return { label: item.name, value: item.name }
-    }) 
-
-    const filteredPotential = msPotential?.filter((item) => item.is_active == '1');
-    const potentialList = filteredPotential?.map(item => {
-        return { label: item.name, value: item.name };
-    })
- 
-    const nameBodyTemplate = (rowData) => {
+    const priorityGroupBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
                 {rowData.name}
-            </>
-        );
-    }
-
-    const phoneBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Phone</span>
-                {rowData.phone}
-            </>
-        );
-    }
-
-    const emailBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Email</span>
-                {rowData.email}
-            </>
-        );
-    }
-    
-    const addressBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Address</span>
-                {rowData.address?.map(item => <ul>{item.add}</ul>)}
-            </>
-        );
-    }
-
-    const zoneBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Zone</span>
-                {rowData.zone}
-            </>
-        );
-    }
-
-    const categoryBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Category</span>
-                {rowData.category}
             </>
         );
     }
@@ -226,21 +141,36 @@ const Team_Info = () => {
         );
     }
 
+    const statusBodyTemplate = (rowData) => {
+        return (
+            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
+            checked={rowData.is_active != '0'} onChange={(e) => {
+                let is_active = '0';
+                if (rowData.is_active == '0') {
+                    is_active = '1'
+                }
+                ZoneService.toggleZone(is_active, rowData._id).then(() => {
+                setTogleRefresh(!toggleRefresh)
+                })
+             }} />
+        );
+    }
 
     const actionBodyTemplate = (rowData) => {
         return (
             <>
                 <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editData(rowData)} />
-                {/* <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} /> */}
+                <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} />
             </>
         );
     };
+
         
     const topHeader = () => {
         return (
             <React.Fragment>
                 <div className="my-2">
-                    <h2 className="m-0">Manager Panel</h2>
+                    <h2 className="m-0">Team Information</h2>
                 </div>
             </React.Fragment>
         );
@@ -248,6 +178,13 @@ const Team_Info = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <Button
+                    label="Add Employee"
+                    icon="pi pi-plus"
+                    severity="sucess"
+                    className="mr-2"
+                    onClick={openNew}
+                />
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -268,9 +205,7 @@ const Team_Info = () => {
         </>
     );
 
-    const filteredManagerDatas = managerDatas?.filter(item => item.is_active == '1');
-
-    if(filteredManagerDatas == null) {
+    if(teamDatas == null) {
         return (
             <div className="card">
                 <div className="border-round border-1 surface-border p-4 surface-card">
@@ -304,7 +239,7 @@ const Team_Info = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={filteredManagerDatas}
+                        value={teamDatas}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
@@ -313,55 +248,30 @@ const Team_Info = () => {
                         rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Category"
+                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Data-Source"
                         globalFilter={globalFilter}
-                        emptyMessage="Manager Panel is Empty."
+                        emptyMessage="Data Group is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >
 
                         <Column
                             field="name"
-                            header="Name"
+                            header="Zone Name"
                             sortable
-                            body={nameBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
-                        ></Column>
-                        <Column
-                            field="phone"
-                            header="Phone"
-                            body={phoneBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
-                        ></Column>
-                        <Column
-                            field="email"
-                            header="Email"
-                            body={emailBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
-                        ></Column>
-                        <Column
-                            field="address"
-                            header="Address"
-                            body={addressBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
-                        ></Column>
-                        <Column
-                            field="zone"
-                            header="Zone"
-                            body={zoneBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
-                        ></Column>
-                        <Column
-                            field="category"
-                            header="Category"
-                            body={categoryBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            body={priorityGroupBodyTemplate}
+                            headerStyle={{ minWidth: "10rem" }}
                         ></Column>
                          <Column
                             field="details"
                             header="Details"
                             body={detailsBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "15rem" }}
+                        ></Column>
+                        <Column
+                            header="Status"
+                            body={statusBodyTemplate}
+                            headerStyle={{ minWidth: "5rem" }}
                         ></Column>
                         <Column
                             header="Action"
@@ -370,6 +280,50 @@ const Team_Info = () => {
                         ></Column>
                     </DataTable>
 
+                    <Dialog
+                        visible={dataDialog}
+                        style={{ width: "450px" }}
+                        header={diaHeader}
+                        modal
+                        className="p-fluid"
+                        footer={dataDialogFooter}
+                        onHide={hideDialog}
+                    >
+                
+                        <div className="field">
+                            <label htmlFor="teamData">Name</label>
+                            <InputText 
+                                id="name" 
+                                value={teamData.name} 
+                                onChange={(e) => onInputChange(e, "name")} 
+                                required 
+                                autoFocus 
+                                className={classNames({ 'p-invalid': submitted && !teamData.name })} 
+                                />
+                            {submitted && !teamData.name && <small className="p-invalid">
+                                Zone Name is required.
+                            </small>}
+                        </div>
+                        <div className="field">
+                            <label htmlFor="details">Details</label>
+                            <InputText 
+                                id="details" 
+                                value={teamData.details} 
+                                onChange={(e) => onInputChange(e, "details")} 
+                            />
+                        </div>
+                    </Dialog>
+
+                    <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {teamData && (
+                                <span>
+                                    Are you sure you want to delete <b>{teamData.name}</b>?
+                                </span>
+                            )}
+                        </div>
+                    </Dialog>
                     
                 </div>
             </div>
@@ -378,4 +332,3 @@ const Team_Info = () => {
 };
 
 export default  Team_Info;
-

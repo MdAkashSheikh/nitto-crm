@@ -1,5 +1,8 @@
 const categorySc = require("../model/categorySc");
 
+/* -------------------------------- */
+/*         Post Category            */
+/* -------------------------------- */
 const postCategory = async(req, res) => {
     const name = req.body.name;
     const details = req.body.details;
@@ -16,6 +19,9 @@ const postCategory = async(req, res) => {
     }
 }
 
+/* -------------------------------- */
+/*         EDIT Category            */
+/* -------------------------------- */
 const editCategory = async(req, res) => {
     const id = req.params.id;
     const name = req.body.name;
@@ -33,6 +39,9 @@ const editCategory = async(req, res) => {
     }
 }
 
+/* -------------------------------- */
+/*           GET Category           */
+/* -------------------------------- */
 const getCategory = async(req, res) => {
     try {
         const AllData = await categorySc.find({}).sort('-date');
@@ -43,6 +52,9 @@ const getCategory = async(req, res) => {
     }
 }
 
+/* -------------------------------- */
+/*         DELETE Category          */
+/* -------------------------------- */
 const deleteCategory = async(req, res) => {
     const id = req.params.id;
     
@@ -55,6 +67,9 @@ const deleteCategory = async(req, res) => {
     }
 }
 
+/* -------------------------------- */
+/*         Toggle Category          */
+/* -------------------------------- */
 const toggleCategory = async(req, res) => {
     const id = req.params.id;
     const is_active = req.body.is_active;
