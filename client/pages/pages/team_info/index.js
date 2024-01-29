@@ -2,6 +2,8 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
+import { FileUpload } from 'primereact/fileupload';
 import { InputText } from 'primereact/inputtext';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
@@ -14,11 +16,11 @@ import { ZoneService } from '../../../demo/service/ZoneService';
 const Team_Info = () => {
     let empInfo = {
         name: '',
-        nid: '',
-        photo: '',
         father_name: '',
         mother_name: '',
         phone: [],
+        nid: '',
+        photo: '',
     };
 
     const [teamDatas, setTeamDatas] = useState(null);
@@ -32,6 +34,7 @@ const Team_Info = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [selectEdit, setSelectEdit] = useState(false);
+    const [file, setFile] = useState([]);
 
 
     useEffect(() => {
@@ -205,6 +208,40 @@ const Team_Info = () => {
         </>
     );
 
+    const imageShow = () => {
+        if(teamData.photo) {
+            return teamData.photo.map((item, i) => {
+                return (
+                    <div className="p-fileupload-content px-1 py-1" key={i}>
+                        <div>
+                            <div>
+                                </div>
+                        </div>
+                        <div>
+                            <div className="p-fileupload-row">
+                                <img role="presentation" className="p-fileupload-file-thumbnail mr-2" src={`${URL}/uploads/` + item}  width="50"></img>
+                                <div>
+                                    <span>{item}</span>
+                                    <span className="p-badge p-component p-badge-success p-fileupload-file-badge">Completed</span>
+                                </div>
+                                <div>
+                                    <button type="button" className="p-button p-component p-button-danger p-button-text p-button-rounded p-button-icon-only">
+                                        <span className="p-button-icon p-c pi pi-times" onClick={()=> deleteImage(item, follow._id)}></span>
+                                        <span className="p-button-label p-c">&nbsp;</span><span role="presentation" className="p-ink" style={{height: '42px', width: '42px'}}></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    // <div className='formgrid grid'>
+                    //     <img src={`${URL}/uploads/` + item} width={100} height={60}/>
+                    //     <button className='m-4' onClick={()=> deleteImage(item, follow._id)}>delete</button>
+                    // </div>
+                )
+            })
+        }
+    }
+
     if(teamDatas == null) {
         return (
             <div className="card">
@@ -282,7 +319,7 @@ const Team_Info = () => {
 
                     <Dialog
                         visible={dataDialog}
-                        style={{ width: "450px" }}
+                        style={{ width: "550px" }}
                         header={diaHeader}
                         modal
                         className="p-fluid"
@@ -301,17 +338,105 @@ const Team_Info = () => {
                                 className={classNames({ 'p-invalid': submitted && !teamData.name })} 
                                 />
                             {submitted && !teamData.name && <small className="p-invalid">
-                                Zone Name is required.
+                                Name is required.
                             </small>}
                         </div>
+
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="teamData">Father Name</label>
+                                <InputText
+                                    id="father_name"
+                                    value={teamData.father_name}
+                                    onChange={(e) => onInputChange(e, "father_name")}
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !teamData.father_name,
+                                    })}
+                                />
+                                {submitted && !teamData.father_name && (
+                                    <small className="p-invalid">
+                                        Father Name is required.
+                                    </small>
+                                )}
+                            </div>
+                            <div className="field col">
+                                <label htmlFor="teamData">Mother Name</label>
+                                <InputText
+                                    id="mother_name"
+                                    value={teamData.mother_name}
+                                    onChange={(e) => onInputChange(e, "mother_name")}
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !teamData.mother_name,
+                                    })}
+                                />
+                                {submitted && !teamData.mother_name && (
+                                    <small className="p-invalid">
+                                        Mother Name is required.
+                                    </small>
+                                )}
+                            </div>
+                        </div>
+
                         <div className="field">
-                            <label htmlFor="details">Details</label>
+                            <label htmlFor="teamData">Phone</label>
                             <InputText 
-                                id="details" 
-                                value={teamData.details} 
-                                onChange={(e) => onInputChange(e, "details")} 
+                                id="phone" 
+                                value={teamData.phone} 
+                                onChange={(e) => onInputChange(e, "phone")} 
+                                required 
+                                className={classNames({ 'p-invalid': submitted && !teamData.phone })} 
+                                />
+                            {submitted && !teamData.phone && <small className="p-invalid">
+                                Phone is required.
+                            </small>}
+                        </div>
+
+                        <div className="field">
+                            <label htmlFor="teamData">Upload Your Photo</label>
+                            <FileUpload 
+                                multiple
+                                accept="image/*" 
+                                name='photo'
+                                url={`${URL}/post-follow-image`}
+                                maxFileSize={1000000} 
+                                emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} 
+                                className='mt-1'
+                                onUpload={(e)=> { 
+                                    console.log( "slidufgoidh", e)
+                                    const data = JSON.parse(e.xhr.responseText)
+                                    console.log(data)
+                                    setFile([...file, ...data.file1]);
+                                }}
+                                onRemove={(e)=> { 
+                                    console.log("remove", e)
+                                }}
                             />
                         </div>
+
+                        <div className="field">
+                            <label htmlFor="teamData">Upload Your NID or Birth-Certificate</label>
+                            <FileUpload 
+                                multiple
+                                accept="image/*" 
+                                name='photo'
+                                url={`${URL}/post-follow-image`}
+                                maxFileSize={1000000} 
+                                emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} 
+                                className='mt-1'
+                                onUpload={(e)=> { 
+                                    console.log( "slidufgoidh", e)
+                                    const data = JSON.parse(e.xhr.responseText)
+                                    console.log(data)
+                                    setFile([...file, ...data.file1]);
+                                }}
+                                onRemove={(e)=> { 
+                                    console.log("remove", e)
+                                }}
+                            />
+                        </div>
+
                     </Dialog>
 
                     <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
