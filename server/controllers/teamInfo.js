@@ -2,14 +2,14 @@ const teamInfoSc = require('../model/teamInfoSc');
 
 const postTeamInfo = async(req, res) => {
     const {
-        name, nid, photo, father_name, mother_name, phone
+        name, father_name, mother_name, phone, nid, photo,
     } = req.body;
     let empId = Math.floor(Math.random() * 10000)
 
     try {
         const data = await teamInfoSc.create({
             'empId': empId,
-            name, nid, photo, father_name, mother_name, phone
+            name, father_name, mother_name, phone, nid, photo,
         })
 
         res.status(201).json({
@@ -24,12 +24,12 @@ const postTeamInfo = async(req, res) => {
 const editTeamInfo = async(req, res) => {
     const id = req.params.id;
     const {
-        name, nid, photo, father_name, mother_name, phone
+        name, father_name, mother_name, phone, nid, photo,
     } = req.body;
 
     try {
         const oneData = await teamInfoSc.findByIdAndUpdate(id, {
-            name, nid, photo, father_name, mother_name, phone
+            name, father_name, mother_name, phone, nid, photo,
         })
         res.status(200).json({ oneData });
 

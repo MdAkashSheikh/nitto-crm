@@ -9,14 +9,6 @@ const teamInfoSc = new Schema({
         type: String,
         require: [true, 'Please Enter name']
     },
-    nid: {
-        type: Array,
-        default: [],
-    },
-    photo: {
-        type: Array,
-        default: [],
-    },
     father_name: {
         type: String,
     },
@@ -26,6 +18,14 @@ const teamInfoSc = new Schema({
     phone: {
         type: Array,
         require: [true, 'Please Enter phone number']
+    },
+    nid: {
+        type: Array,
+        default: [],
+    },
+    photo: {
+        type: Array,
+        default: [],
     },
     date: {
         type: Date,
