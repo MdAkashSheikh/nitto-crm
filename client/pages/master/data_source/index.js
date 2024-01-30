@@ -29,6 +29,7 @@ const Data_Source = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
+    const [selectEdit, setSelectEdit] = useState(false);
 
 
     useEffect(() => {
@@ -39,10 +40,17 @@ const Data_Source = () => {
 
     console.log(sourceDatas, "SOURCE DATAS")
 
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add Data Source' : 'Edit Data Source'
+        )
+    }
+
     const openNew = () => {
         setSourceData(emptySource);
         setSubmitted(false);
         setDataDialog(true);
+        setSelectEdit(true);
     };
 
     const hideDialog = () => {
@@ -85,6 +93,7 @@ const Data_Source = () => {
     const editData = (sourceData) => {
         setSourceData({ ...sourceData });
         setDataDialog(true);
+        setSelectEdit(false);
     };
 
 
@@ -274,7 +283,7 @@ const Data_Source = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "450px" }}
-                        header="Add Data Source"
+                        header={diaHeader}
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}

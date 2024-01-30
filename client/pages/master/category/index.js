@@ -29,6 +29,7 @@ const Category = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
+    const [selectEdit, setSelectEdit] = useState(false);
 
 
     useEffect(() => {
@@ -39,10 +40,17 @@ const Category = () => {
 
     console.log(categoryDatas, "SOURCE DATAS")
 
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add New Category' : 'Edit Category'
+        )
+    }
+
     const openNew = () => {
         setCategoryData(emptyZone);
         setSubmitted(false);
         setDataDialog(true);
+        setSelectEdit(true);
     };
 
     const hideDialog = () => {
@@ -85,6 +93,7 @@ const Category = () => {
     const editData = (categoryData) => {
         setCategoryData({ ...categoryData });
         setDataDialog(true);
+        setSelectEdit(false);
     };
 
 
@@ -274,7 +283,7 @@ const Category = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "450px" }}
-                        header="Add Category"
+                        header={diaHeader}
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}

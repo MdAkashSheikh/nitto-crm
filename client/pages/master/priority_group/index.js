@@ -30,6 +30,7 @@ const Priority_Group = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
+    const [selectEdit, setSelectEdit] = useState(false);
 
 
     useEffect(() => {
@@ -40,10 +41,17 @@ const Priority_Group = () => {
 
     console.log(priorityDatas, "SOURCE DATAS")
 
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add Priority Group' : 'Edit Priority Group'
+        )
+    }
+
     const openNew = () => {
         setPriorityData(emptyPriority);
         setSubmitted(false);
         setDataDialog(true);
+        setSelectEdit(true);
     };
 
     const hideDialog = () => {
@@ -86,6 +94,7 @@ const Priority_Group = () => {
     const editData = (priorityData) => {
         setPriorityData({ ...priorityData });
         setDataDialog(true);
+        setSelectEdit(false);
     };
 
     // console.log('priorityData--->', priorityData)
@@ -276,7 +285,7 @@ const Priority_Group = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "450px" }}
-                        header="Add Priority Group"
+                        header={diaHeader}
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}
