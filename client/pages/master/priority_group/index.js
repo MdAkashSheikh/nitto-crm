@@ -9,7 +9,6 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { DataGroupService } from '../../../demo/service/DataGroupService';
 import { PriorityGroupService } from '../../../demo/service/PriorityGroupService';
 
 const Priority_Group = () => {
@@ -79,6 +78,7 @@ const Priority_Group = () => {
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Priority Group is Updated', life: 3000 });
             })
+            
         } else if( priorityData.name && priorityData.details) {
             PriorityGroupService.postPriority(
                 priorityData.name,
@@ -250,9 +250,9 @@ const Priority_Group = () => {
                         rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Data-Source"
+                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Priority Data"
                         globalFilter={globalFilter}
-                        emptyMessage="Data Group is Empty."
+                        emptyMessage="Priority Group is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >

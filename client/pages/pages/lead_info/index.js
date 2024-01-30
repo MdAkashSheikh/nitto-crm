@@ -20,7 +20,7 @@ const Lead_Info = () => {
         zone: '',
         category: '',
         name: '',
-        address: [{val: '', id: 0}],
+        address: [{val: '', id: 0 , tank_con: '', house_con: ''}],
         asset: [''],
         phone: '',
         email: '',
@@ -144,10 +144,27 @@ const Lead_Info = () => {
         console.log('onAdrressChange-----------------',e.target?.value, name, i, previous_address)
         let val = (e.target && e.target.value) || ''; 
         let _data = {...infoData};
-        const num = Math.random().toString().slice(2);
+        const num = Date.now().toString();
         _data[name][i] = {add: val, id: previous_address?.id || num};
         setInfoData(_data);
+    }
 
+    const onHouseChange = (e, name, i, previous_address) => {
+        console.log('onAdrressChange-----------------',e.target?.value, name, i, previous_address)
+        let val = (e.target && e.target.value) || ''; 
+        let _data = {...infoData};
+        const num = Date.now().toString();
+        _data[name][i] = {house_con: val, id: previous_address?.id || num};
+        setInfoData(_data);
+    }
+
+    const onTankChange = (e, name, i, previous_address) => {
+        console.log('onAdrressChange-----------------',e.target?.value, name, i, previous_address)
+        let val = (e.target && e.target.value) || ''; 
+        let _data = {...infoData};
+        const num = Date.now().toString();
+        _data[name][i] = {tank_con: val, id: previous_address?.id || num};
+        setInfoData(_data);
     }
 
     const onAssetChange = ( e, name, i) => {
@@ -319,8 +336,8 @@ const Lead_Info = () => {
 
     function onAdd(){
         const newInfoData = {...infoData}
-        const num = Math.random().toString().slice(2);
-        const newAddr = {val: '', id: num}
+        const num = Date.now().toString();
+        const newAddr = {val: '', id: num, tank_con: '', house_con: ''}
         newInfoData.address = [...infoData.address, newAddr]
         setInfoData(newInfoData)
     }
@@ -416,8 +433,8 @@ const Lead_Info = () => {
 
                     <Dialog
                         visible={dataDialog}
-                        style={{ width: "550px" }}
-                        header="Add Information"
+                        style={{ width: "650px" }}
+                        header="Asset Information"
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}
@@ -519,29 +536,69 @@ const Lead_Info = () => {
                         {infoData.address.map((address, i) => {
                             console.log('val---------------------------------', address)
                             return (
-                                <div className="field" key={i}>
-                                    <label htmlFor="infoData">Address</label>
-                                    <InputText 
-                                        id="address" 
-                                        autoFocus={true}
-                                        value={address.add} 
-                                        onChange={(e) => onAdrressChange(e, "address", i, address)}
-                                        className={classNames({
-                                            "p-invalid": submitted && !infoData.address,
-                                        })} 
-                                    />
-                                    {submitted && !infoData.address && (
-                                        <small className="p-invalid">
-                                            Address is required.
-                                        </small>
-                                    )}
+                                <div className="formgrid grid card" key={i}>
+                                    <div className="field col">
+                                        <label htmlFor="infoData">House Condition</label>
+                                        <InputText 
+                                            id="address" 
+                                            autoFocus={true}
+                                            value={address.add} 
+                                            onChange={(e) => onHouseChange(e, "address", i, address)}
+                                            className={classNames({
+                                                "p-invalid": submitted && !infoData.address,
+                                            })} 
+                                        />
+                                        {submitted && !infoData.address && (
+                                            <small className="p-invalid">
+                                                Address is required.
+                                            </small>
+                                        )}
+                                    </div>
+                                    <div className="field col">
+                                        <label htmlFor="infoData">Tank Condition</label>
+                                        <Dropdown
+                                            value={address.tank_con}
+                                            name='doctor'
+                                            onChange={(e) => onTankChange(e, "address", i, address)}
+                                            options={categoryList}
+                                            optionLabel="label"
+                                            showClear
+                                            placeholder="Select a Tank"
+                                            required
+                                            className={classNames({
+                                                "p-invalid": submitted && !infoData.category,
+                                            })}
+                                        />
+                                        {submitted && !infoData.category && (
+                                            <small className="p-invalid">
+                                                Category is required.
+                                            </small>
+                                        )}
+                                    </div>
+                                    <div className='m-2 field w-full'>
+                                        <label htmlFor="infoData">Address</label>
+                                        <InputText 
+                                            id="address" 
+                                            autoFocus={true}
+                                            value={address.add} 
+                                            onChange={(e) => onAdrressChange(e, "address", i, address)}
+                                            className={classNames({
+                                                "p-invalid": submitted && !infoData.address,
+                                            })} 
+                                        />
+                                        {submitted && !infoData.address && (
+                                            <small className="p-invalid">
+                                                Address is required.
+                                            </small>
+                                        )}
+                                    </div>
                                 </div>
                             )   
                         })}
 
                         <Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2 mb-3 w-10rem" onClick={onAdd} />
                         
-                        {infoData.asset.map((val, i) => {
+                        {/* {infoData.asset.map((val, i) => {
                             return (
                                 <div className="field" key={i}>
                                     <label htmlFor="infoData">Asset</label>
@@ -561,9 +618,9 @@ const Lead_Info = () => {
                                     )}
                                 </div>
                             )   
-                        })}
+                        })} */}
 
-                        <Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2 mb-3 w-10rem" onClick={onAsset} />
+                        {/* <Button label="Add" icon="pi pi-plus" severity="sucess" className="mr-2 mb-3 w-10rem" onClick={onAsset} /> */}
 
                         <div className="field">
                             <label htmlFor="details">Details</label>
