@@ -37,8 +37,6 @@ const Data_Group = () => {
 
     }, [toggleRefresh]);
 
-    console.log(groupDatas, "SOURCE DATAS")
-
     const diaHeader = () => {
         return (
             selectEdit ? 'Add Data Group' : 'Edit Data Group'

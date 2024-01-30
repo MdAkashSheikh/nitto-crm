@@ -38,8 +38,6 @@ const Potential_Customer = () => {
 
     }, [toggleRefresh]);
 
-    console.log(potentialDatas, "SOURCE DATAS");
-
     const diaHeader = () => {
         return (
             selectEdit ? 'Add Potential Customer' : 'Edit Potential Customer'

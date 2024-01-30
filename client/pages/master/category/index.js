@@ -38,8 +38,6 @@ const Category = () => {
 
     }, [toggleRefresh]);
 
-    console.log(categoryDatas, "SOURCE DATAS")
-
     const diaHeader = () => {
         return (
             selectEdit ? 'Add New Category' : 'Edit Category'
