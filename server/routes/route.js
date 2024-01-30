@@ -156,9 +156,9 @@ router.post('/edit-manager-panel/:id', editManagerPanel);
 /*    Tank Information Route URL    */
 /* -------------------------------- */
 router.post('/post-tank', postTank);
-router.post('/edit-tank', editTank);
+router.post('/edit-tank/:id', editTank);
 router.get('/get-tank', getTank);
-router.post('/delete-tank', deleteTank);
-router.post('/toggle-tank', toggleTank);
+router.delete('/delete-tank/:id', deleteTank);
+router.post('/toggle-tank/:id', toggleTank);
 
 module.exports = router;

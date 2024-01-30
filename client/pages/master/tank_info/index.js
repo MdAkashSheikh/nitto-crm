@@ -9,7 +9,7 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { ZoneService } from '../../../demo/service/ZoneService';
+import { TankInfoService } from '../../../demo/service/TankInfoService';
 
 const Tank_Info = () => {
     let emptyTank = {
@@ -33,7 +33,8 @@ const Tank_Info = () => {
 
     useEffect(() => {
 
-        ZoneService.getZone().then((res) => setTankDatas(res.data.AllData));
+        // ZoneService.getZone().then((res) => setTankDatas(res.data.AllData));
+        TankInfoService.getTank().then((res) => setTankDatas(res.data.AllData));
 
     }, [toggleRefresh]);
 
@@ -68,7 +69,7 @@ const Tank_Info = () => {
         console.log("PPPP1",tankData)
 
         if( tankData.name && tankData.details, tankData._id) {
-            ZoneService.editZone(
+            TankInfoService.editTank(
                 tankData.name,
                 tankData.details,
                 tankData._id,
@@ -78,7 +79,7 @@ const Tank_Info = () => {
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Zone is Updated', life: 3000 });
             })
         } else if( tankData.name && tankData.details) {
-            ZoneService.postZone(
+            TankInfoService.postTank(
                 tankData.name,
                 tankData.details,
             ).then(() => {
@@ -102,7 +103,7 @@ const Tank_Info = () => {
     };
 
     const deleteData = () => {
-        ZoneService.deleteZone(tankData._id).then(() => {
+        TankInfoService.deleteTank(tankData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
             setTankData(emptyTank);
@@ -120,7 +121,7 @@ const Tank_Info = () => {
         setTankData(data);
     };
 
-    const priorityGroupBodyTemplate = (rowData) => {
+    const tankNameBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
@@ -146,7 +147,7 @@ const Tank_Info = () => {
                 if (rowData.is_active == '0') {
                     is_active = '1'
                 }
-                ZoneService.toggleZone(is_active, rowData._id).then(() => {
+                TankInfoService.toggleTank(is_active, rowData._id).then(() => {
                 setTogleRefresh(!toggleRefresh)
                 })
              }} />
@@ -176,7 +177,7 @@ const Tank_Info = () => {
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <Button
-                    label="Add Zone"
+                    label="Add Tank"
                     icon="pi pi-plus"
                     severity="sucess"
                     className="mr-2"
@@ -244,18 +245,18 @@ const Tank_Info = () => {
                         rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Data-Source"
+                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Tank Information"
                         globalFilter={globalFilter}
-                        emptyMessage="Data Group is Empty."
+                        emptyMessage="Tank Information is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >
 
                         <Column
                             field="name"
-                            header="Zone Name"
+                            header="Tank Name"
                             sortable
-                            body={priorityGroupBodyTemplate}
+                            body={tankNameBodyTemplate}
                             headerStyle={{ minWidth: "10rem" }}
                         ></Column>
                          <Column
@@ -287,7 +288,7 @@ const Tank_Info = () => {
                     >
                 
                         <div className="field">
-                            <label htmlFor="tankData">Zone Name</label>
+                            <label htmlFor="tankData">Tank Name</label>
                             <InputText 
                                 id="name" 
                                 value={tankData.name} 
@@ -297,7 +298,7 @@ const Tank_Info = () => {
                                 className={classNames({ 'p-invalid': submitted && !tankData.name })} 
                                 />
                             {submitted && !tankData.name && <small className="p-invalid">
-                                Zone Name is required.
+                                Tank Name is required.
                             </small>}
                         </div>
                         <div className="field">
