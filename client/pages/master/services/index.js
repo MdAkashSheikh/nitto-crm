@@ -32,18 +32,25 @@ const Service = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
-
+    const [selectEdit, setSelectEdit] = useState(false);
 
     useEffect(() => {
 
         ServiceGroupService.getService().then((res) => setServiceDatas(res.data.AllData));
 
     }, [toggleRefresh]);
+    
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add Service' : 'Edit Service'
+        )
+    }
 
     const openNew = () => {
         setServiceData(emptyService);
         setSubmitted(false);
         setDataDialog(true);
+        setSelectEdit(true);
     };
 
     const hideDialog = () => {
@@ -90,6 +97,7 @@ const Service = () => {
     const editData = (serviceData) => {
         setServiceData({ ...serviceData });
         setDataDialog(true);
+        setSelectEdit(false);
     };
 
 
@@ -310,7 +318,7 @@ const Service = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "450px" }}
-                        header="Add Service"
+                        header={diaHeader}
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}

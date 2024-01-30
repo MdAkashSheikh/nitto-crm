@@ -12,6 +12,8 @@ app.use(cors())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
+const PORT = process.env.PORT || 6300
+
 mongoose.connect(process.env.DB_CONN)
 .then(() => console.log("Database Connected"))
 .catch((err) => console.log(err));
@@ -22,6 +24,6 @@ app.get("/", (req, res) => {
 
 app.use(routeAll);
 
-app.listen('6300', () => {
-    console.log('listening on port:6300');
+app.listen(PORT, () => {
+    console.log(`listening on PORT ${PORT}`);
 })
