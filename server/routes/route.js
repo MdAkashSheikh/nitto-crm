@@ -56,6 +56,14 @@ const {
 } = require('../controllers/service');
 
 const { 
+    postTank, 
+    editTank, 
+    getTank, 
+    deleteTank,
+    toggleTank
+} = require('../controllers/tankInfo');
+
+const { 
     postZone, 
     getZone, 
     editZone, 
@@ -142,5 +150,15 @@ router.post('/edit-manager-panel/:id', editManagerPanel);
 /* -------------------------------- */
 /*    Team Information Route URL    */
 /* -------------------------------- */
+
+
+/* -------------------------------- */
+/*    Tank Information Route URL    */
+/* -------------------------------- */
+router.post('/post-tank', postTank);
+router.post('/edit-tank', editTank);
+router.get('/get-tank', getTank);
+router.post('/delete-tank', deleteTank);
+router.post('/toggle-tank', toggleTank);
 
 module.exports = router;
