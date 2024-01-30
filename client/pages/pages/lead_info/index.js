@@ -550,7 +550,7 @@ const Lead_Info = () => {
                                         />
                                         {submitted && !infoData.address && (
                                             <small className="p-invalid">
-                                                Address is required.
+                                                House Condition is required.
                                             </small>
                                         )}
                                     </div>
@@ -571,7 +571,7 @@ const Lead_Info = () => {
                                         />
                                         {submitted && !infoData.category && (
                                             <small className="p-invalid">
-                                                Category is required.
+                                                Tank Condition is required.
                                             </small>
                                         )}
                                     </div>

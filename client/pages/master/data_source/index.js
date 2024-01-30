@@ -38,8 +38,6 @@ const Data_Source = () => {
 
     }, [toggleRefresh]);
 
-    console.log(sourceDatas, "SOURCE DATAS")
-
     const diaHeader = () => {
         return (
             selectEdit ? 'Add Data Source' : 'Edit Data Source'

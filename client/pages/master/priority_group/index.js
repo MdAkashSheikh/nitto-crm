@@ -38,8 +38,6 @@ const Priority_Group = () => {
 
     }, [toggleRefresh]);
 
-    console.log(priorityDatas, "SOURCE DATAS")
-
     const diaHeader = () => {
         return (
             selectEdit ? 'Add Priority Group' : 'Edit Priority Group'
@@ -97,7 +95,6 @@ const Priority_Group = () => {
         setSelectEdit(false);
     };
 
-    // console.log('priorityData--->', priorityData)
 
     const confirmDeleteData = (priorityData) => {
         setPriorityData(priorityData);
@@ -112,8 +109,6 @@ const Priority_Group = () => {
             toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Priority Group is Deleted', life: 3000 });
         })
     };
-
-
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -226,8 +221,6 @@ const Priority_Group = () => {
             </div>
         )
     }
-   
-
 
 
     return (
