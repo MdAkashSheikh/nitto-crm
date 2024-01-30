@@ -1,4 +1,4 @@
-const tankInfoSc = require('../model/teamInfoSc');
+const tankInfoSc = require('../model/tankInfoSc');
 
 const postTank = async(req, res) => {
     const { name, details } = req.body;
