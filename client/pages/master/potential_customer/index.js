@@ -9,7 +9,6 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { DataSourceService } from '../../../demo/service/SourceDataService';
 import { PotentialCustomerService } from '../../../demo/service/PotentialCustomerService';
 
 const Potential_Customer = () => {
@@ -30,6 +29,7 @@ const Potential_Customer = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
+    const [selectEdit, setSelectEdit] = useState(false);
 
 
     useEffect(() => {
@@ -38,12 +38,19 @@ const Potential_Customer = () => {
 
     }, [toggleRefresh]);
 
-    console.log(potentialDatas, "SOURCE DATAS")
+    console.log(potentialDatas, "SOURCE DATAS");
+
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add Potential Customer' : 'Edit Potential Customer'
+        )
+    }
 
     const openNew = () => {
         setPotentialData(emptyPotential);
         setSubmitted(false);
         setDataDialog(true);
+        setSelectEdit(true);
     };
 
     const hideDialog = () => {
@@ -86,6 +93,7 @@ const Potential_Customer = () => {
     const editData = (potentialData) => {
         setPotentialData({ ...potentialData });
         setDataDialog(true);
+        setSelectEdit(false);
     };
 
 
@@ -275,7 +283,7 @@ const Potential_Customer = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "450px" }}
-                        header="Add Potential Customer"
+                        header={diaHeader}
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}

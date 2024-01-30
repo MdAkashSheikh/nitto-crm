@@ -67,7 +67,6 @@ const Team_Info = () => {
         setDeleteDataDialog(false);
     };
 
-
     const saveData = () => {
         setSubmitted(true);
 

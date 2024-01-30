@@ -29,7 +29,7 @@ const Zone = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
-
+    const [selectEdit, setSelectEdit] = useState(false);
 
     useEffect(() => {
 
@@ -39,10 +39,17 @@ const Zone = () => {
 
     console.log(zoneDatas, "SOURCE DATAS")
 
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add Zone' : 'Edit Zone'
+        )
+    }
+
     const openNew = () => {
         setZoneData(emptyZone);
         setSubmitted(false);
         setDataDialog(true);
+        setSelectEdit(true);
     };
 
     const hideDialog = () => {
@@ -85,6 +92,7 @@ const Zone = () => {
     const editData = (zoneData) => {
         setZoneData({ ...zoneData });
         setDataDialog(true);
+        setSelectEdit(false);
     };
 
 
@@ -215,9 +223,6 @@ const Zone = () => {
             </div>
         )
     }
-   
-
-
 
     return (
         <div className="grid crud-demo">
@@ -274,7 +279,7 @@ const Zone = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "450px" }}
-                        header="Add Zone"
+                        header={diaHeader}
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}

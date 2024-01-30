@@ -29,7 +29,7 @@ const Data_Group = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
-
+    const [selectEdit, setSelectEdit] = useState(false);
 
     useEffect(() => {
 
@@ -39,10 +39,17 @@ const Data_Group = () => {
 
     console.log(groupDatas, "SOURCE DATAS")
 
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add Data Group' : 'Edit Data Group'
+        )
+    }
+
     const openNew = () => {
         setGroupData(emptyGroup);
         setSubmitted(false);
         setDataDialog(true);
+        setSelectEdit(true)
     };
 
     const hideDialog = () => {
@@ -85,6 +92,7 @@ const Data_Group = () => {
     const editData = (groupData) => {
         setGroupData({ ...groupData });
         setDataDialog(true);
+        setSelectEdit(false);
     };
 
 
@@ -274,7 +282,7 @@ const Data_Group = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "450px" }}
-                        header="Add Data Group"
+                        header={diaHeader}
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}
