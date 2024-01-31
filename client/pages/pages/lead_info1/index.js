@@ -76,13 +76,12 @@ const Lead_Info = () => {
 
         console.log("PPPP1",infoData)
 
-        if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
+        if( infoData.zone && infoData.category && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
                 infoData.category,
                 infoData.name,
-                infoData.address,
-                infoData.asset,
+                mAddress,
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
@@ -93,13 +92,12 @@ const Lead_Info = () => {
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
-        } else if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset) {
+        } else if( infoData.zone && infoData.category && infoData.name && mAddress) {
             CustomerInformationService.postCustomerInfo(
                 infoData.zone,
                 infoData.category,
                 infoData.name,
-                infoData.address,
-                infoData.asset,
+                mAddress,
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
@@ -141,7 +139,6 @@ const Lead_Info = () => {
     const categoryList = filteredCategory?.map(item => {
         return { label: item.name, value: item.name}
     })
-    // console.log(msTank)
 
     const filterTank = msTank?.filter((item) => item.is_active == '1');
     const tankList = filterTank?.map(item => {
@@ -194,7 +191,7 @@ const Lead_Info = () => {
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address.map(item=><ul><li>{item.add}</li></ul>)}
+                {rowData.address.map(item=><ul><li>{item.address}</li></ul>)}
             </>
         );
     }
@@ -391,12 +388,6 @@ const Lead_Info = () => {
                             body={categoryBodyTemplate}
                             headerStyle={{ minWidth: "3rem" }}
                         ></Column>
-                         <Column
-                            field="details"
-                            header="Details"
-                            body={detailsBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
-                        ></Column>
                         <Column
                             header="Status"
                             body={statusBodyTemplate}
@@ -522,7 +513,8 @@ const Lead_Info = () => {
                                                                     />
                                                                 </div>
                                                             </div>
-                                                            {setMAddress(formik.values.address)};
+
+                                                            {setMAddress(formik.values.address)}
                                                             {formik.values.address.map((address, i) => (
                                                                 <div key={i}>
                                                                     <div className='card my-3'>
@@ -575,7 +567,7 @@ const Lead_Info = () => {
                                                             ))}
                                                             <div>
                                                                 <button 
-                                                                    type="submit" 
+                                                                    type="button" 
                                                                     onClick={() => arrayHelpers.insert(formik.values.address.length + 1, 
                                                                         {address: '', tank_con: '', house_con: ''}
                                                                     )}
