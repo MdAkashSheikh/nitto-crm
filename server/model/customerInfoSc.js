@@ -13,9 +13,6 @@ const customerInfoSc = new mongoose.Schema({
     address: {
         type: Array,
     },
-    asset: {
-        type: Array,
-    },
     phone: {
         type: String,
     },

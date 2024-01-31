@@ -5,7 +5,6 @@ const postCustomerInfo = async(req, res) => {
     const category = req.body.category;
     const name = req.body.name;
     const address = req.body.address;
-    const asset = req.body.asset;
     const phone = req.body.phone;
     const email = req.body.email;
     const whatsapp = req.body.whatsapp;
@@ -17,7 +16,6 @@ const postCustomerInfo = async(req, res) => {
             "category": category,
             "name": name,
             "address": address,
-            "asset": asset,
             "phone": phone,
             "email": email,
             "whatsapp": whatsapp,
@@ -36,7 +34,6 @@ const editCustomerInfo = async(req, res) => {
     const category = req.body.category;
     const name = req.body.name;
     const address = req.body.address;
-    const asset = req.body.asset;
     const phone = req.body.phone;
     const email = req.body.email;
     const whatsapp = req.body.whatsapp;
@@ -48,7 +45,6 @@ const editCustomerInfo = async(req, res) => {
             "category": category,
             "name": name,
             "address": address,
-            "asset": asset,
             "phone": phone,
             "email": email,
             "whatsapp": whatsapp,
