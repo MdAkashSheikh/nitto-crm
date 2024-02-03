@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-// Office Computer IP - 103.151.61.45
+// My VM IP - 103.151.61.45
+// Office Computer - 192.168.0.104
 // localhost
 
-export const URL = '//192.168.0.104:6300';
+export const URL = '//localhost:6300';
 
 export const DataSourceService = {
     async postDataSource(name, details) {

@@ -20,9 +20,8 @@ const Lead_Info = () => {
     let emptyInfo = {
         id: 0,
         zone: '',
-        category: '',
         name: '',
-        address: [{address: '', tank_con: '', house_con: ''}],
+        address: [{category: '', address: '', tank_con: '', house_con: ''}],
         phone: '',
         email: '',
         whatsapp: '',
@@ -42,7 +41,7 @@ const Lead_Info = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [msTank, setMSTank] = useState(null);
-    const [mAddress, setMAddress] = useState([{address: '', tank_con: '', house_con: ''}])
+    const [mAddress, setMAddress] = useState([{category: '', address: '', tank_con: '', house_con: ''}])
 
 
     useEffect(() => {
@@ -70,38 +69,35 @@ const Lead_Info = () => {
         setDeleteDataDialog(false);
     };
 
+    console.log('Data', infoData)
 
     const saveData = () => {
         setSubmitted(true);
 
         console.log("PPPP1",infoData)
 
-        if( infoData.zone && infoData.category && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
+        if( infoData.zone && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp, infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
-                infoData.category,
                 infoData.name,
                 mAddress,
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
-                infoData.details,
                 infoData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
-        } else if( infoData.zone && infoData.category && infoData.name && mAddress) {
+        } else if( infoData.zone && infoData.name && mAddress) {
             CustomerInformationService.postCustomerInfo(
                 infoData.zone,
-                infoData.category,
                 infoData.name,
                 mAddress,
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
-                infoData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
@@ -191,7 +187,7 @@ const Lead_Info = () => {
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address.map(item=><ul><li>{item.address}</li></ul>)}
+                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
             </>
         );
     }
@@ -209,7 +205,7 @@ const Lead_Info = () => {
         return (
             <>
                 <span className="p-column-title">Category</span>
-                {rowData.category}
+                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
             </>
         );
     }
@@ -444,27 +440,6 @@ const Lead_Info = () => {
                                                                         </small>
                                                                     )}
                                                                 </div>
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Category</label>
-                                                                    <Dropdown
-                                                                        value={infoData.category}
-                                                                        name='doctor'
-                                                                        onChange={(e) => onSelectionChange(e, "category")}
-                                                                        options={categoryList}
-                                                                        optionLabel="label"
-                                                                        showClear
-                                                                        placeholder="Select a Category"
-                                                                        required
-                                                                        className={classNames({
-                                                                            "p-invalid": submitted && !infoData.category,
-                                                                        })}
-                                                                    />
-                                                                    {submitted && !infoData.category && (
-                                                                        <small className="p-invalid">
-                                                                            Category is required.
-                                                                        </small>
-                                                                    )}
-                                                                </div>
                                                             </div>
 
                                                             <div className="formgrid grid">
@@ -519,14 +494,35 @@ const Lead_Info = () => {
                                                                 <div key={i}>
                                                                     <div className='card my-3'>
                                                                         <div className='field'>
-                                                                            <label htmlFor='address'>Address - {i+1}</label>
-                                                                            <InputText
-                                                                                id='address'
-                                                                                value={formik.values.address[i].address}
-                                                                                onChange={(e) => {
-                                                                                    formik.setFieldValue(`address.${i}.address`, e.target.value)
-                                                                                }}
-                                                                            />
+                                                                            <div className='formgrid grid'>
+                                                                                <div className='field col'>
+                                                                                    <label htmlFor='address'>Address - {i+1}</label>
+                                                                                    <InputText
+                                                                                        id='address'
+                                                                                        value={formik.values.address[i].address}
+                                                                                        onChange={(e) => {
+                                                                                            formik.setFieldValue(`address.${i}.address`, e.target.value)
+                                                                                        }}
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="formgrid grid">
+                                                                                <div className="field col">
+                                                                                    <label htmlFor='address'>Category</label>
+                                                                                    <Dropdown
+                                                                                        inputId="category"
+                                                                                        name="category"
+                                                                                        value={formik.values.address[i].category}
+                                                                                        options={categoryList}
+                                                                                        optionLabel="label"
+                                                                                        placeholder="Select a Category"
+                                                                                        onChange={(e) => {
+                                                                                            formik.setFieldValue(`address.${i}.category`, e.value)
+                                                                                        }}
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
 
                                                                             <div className='formgrid grid mt-2'>
                                                                                 <div className='field col'>
