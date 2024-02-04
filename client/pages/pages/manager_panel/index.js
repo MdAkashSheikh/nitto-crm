@@ -144,7 +144,7 @@ const Manager_Panel = () => {
     if(one == 1) {
         let m = managerData.address;
         addressList = m?.map(item => {
-            return { label: item.add, value: item.add, id: item.id }
+            return { label: item.address, value: item.address, id: item.id }
         })
         
     }
@@ -190,7 +190,7 @@ const Manager_Panel = () => {
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address?.map(item => <ul>{item.add}</ul>)}
+                {rowData.address?.map((item, i) => <ol start={i+1}><li>{item.address}</li></ol>)}
             </>
         );
     }
