@@ -20,7 +20,7 @@ const AppMenu = () => {
                 {
                     label: 'Lead Information',
                     icon: 'pi pi-fw pi-list',
-                    to: '/pages/lead_info'
+                    to: '/pages/lead_info1'
                 },
                 {
                     label: 'Manager Panel',
