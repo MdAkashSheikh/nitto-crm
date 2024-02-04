@@ -13,9 +13,7 @@ export default function BasicDemo() {
         { name: 'Paris', code: 'PRS' }
     ];
 
-    console.log(selectedCities, 'selectedCities')
-    console.log(typeof selectedCities, 'selectedCities')
-    console.log(a, "a")
+    console.log(selectedCities, 'selectedCities');
 
     return (
         <div className="card flex justify-content-center">

@@ -32,6 +32,14 @@ const {
 } = require('../controllers/dataSource');
 
 const { 
+    postPackage, 
+    editPackage, 
+    getPackage, 
+    deletePackage,
+    togglePackage
+} = require('../controllers/package_service');
+
+const { 
     postPotential, 
     getPotential, 
     editPotential, 
@@ -160,5 +168,14 @@ router.post('/edit-tank/:id', editTank);
 router.get('/get-tank', getTank);
 router.delete('/delete-tank/:id', deleteTank);
 router.post('/toggle-tank/:id', toggleTank);
+
+/* -------------------------------- */
+/*    Package Service Route URL     */
+/* -------------------------------- */
+router.post('/post-package', postPackage);
+router.post('/edit-package/:id', editPackage);
+router.get('/get-package', getPackage);
+router.delete('/delete-package/:id', deletePackage);
+router.post('toggle-package/:id', togglePackage);
 
 module.exports = router;

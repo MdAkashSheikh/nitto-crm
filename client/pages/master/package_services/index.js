@@ -3,6 +3,7 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
+import { MultiSelect } from 'primereact/multiselect';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import { ToggleButton } from 'primereact/togglebutton';
@@ -11,18 +12,17 @@ import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { TankInfoService } from '../../../demo/service/TankInfoService';
 
-const Tank_Info = () => {
-    let emptyTank = {
+const Package_Service = () => {
+    let emptyPackage = {
         id: 0,
         name: '',
-        is_active: '',
-        details: '',
+        pkg_details: [],
     };
 
-    const [tankDatas, setTankDatas] = useState(null);
+    const [packageDatas, setPackageDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
-    const [tankData, setTankData] = useState(emptyTank);
+    const [packageData, setPackageData] = useState(emptyPackage);
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -33,12 +33,12 @@ const Tank_Info = () => {
 
     useEffect(() => {
 
-        // ZoneService.getZone().then((res) => setTankDatas(res.data.AllData));
-        TankInfoService.getTank().then((res) => setTankDatas(res.data.AllData));
+        // ZoneService.getZone().then((res) => setPackageDatas(res.data.AllData));
+        TankInfoService.getTank().then((res) => setPackageDatas(res.data.AllData));
 
     }, [toggleRefresh]);
 
-    console.log(tankDatas, "SOURCE DATAS")
+    console.log(packageDatas, "SOURCE DATAS")
 
     const diaHeader = () => {
         return (
@@ -47,7 +47,7 @@ const Tank_Info = () => {
     }
 
     const openNew = () => {
-        setTankData(emptyTank);
+        setPackageData(emptyPackage);
         setSubmitted(false);
         setDataDialog(true);
         setSelectEdit(true);
@@ -66,22 +66,22 @@ const Tank_Info = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",tankData)
+        console.log("PPPP1",packageData)
 
-        if( tankData.name && tankData.details, tankData._id) {
+        if( packageData.name && packageData.details, packageData._id) {
             TankInfoService.editTank(
-                tankData.name,
-                tankData.details,
-                tankData._id,
+                packageData.name,
+                packageData.details,
+                packageData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Zone is Updated', life: 3000 });
             })
-        } else if( tankData.name && tankData.details) {
+        } else if( packageData.name && packageData.details) {
             TankInfoService.postTank(
-                tankData.name,
-                tankData.details,
+                packageData.name,
+                packageData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
@@ -90,36 +90,49 @@ const Tank_Info = () => {
         }
     };
 
-    const editData = (tankData) => {
-        setTankData({ ...tankData });
+    const editData = (packageData) => {
+        setPackageData({ ...packageData });
         setDataDialog(true);
         setSelectEdit(false);
     };
 
 
-    const confirmDeleteData = (tankData) => {
-        setTankData(tankData);
+    const confirmDeleteData = (packageData) => {
+        setPackageData(packageData);
         setDeleteDataDialog(true);
     };
 
     const deleteData = () => {
-        TankInfoService.deleteTank(tankData._id).then(() => {
+        TankInfoService.deleteTank(packageData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
-            setTankData(emptyTank);
+            setPackageData(emptyPackage);
             toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Zone is Deleted', life: 3000 });
         })
     };
 
-
+    const cities = [
+        { name: 'New York', code: 'NY' },
+        { name: 'Rome', code: 'RM' },
+        { name: 'London', code: 'LDN' },
+        { name: 'Istanbul', code: 'IST' },
+        { name: 'Paris', code: 'PRS' }
+    ];
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let data = { ...tankData };
+        let data = { ...packageData };
         data[`${name}`] = val;
 
-        setTankData(data);
+        setPackageData(data);
     };
+
+    const onSelectionChange = (e, name) => {
+        let data = {...packageData };
+        data[`${name}`] = e.value;
+        setPackageData(data);
+    }
+
 
     const tankNameBodyTemplate = (rowData) => {
         return (
@@ -204,7 +217,7 @@ const Tank_Info = () => {
         </>
     );
 
-    if(tankDatas == null) {
+    if(packageDatas == null) {
         return (
             <div className="card">
                 <div className="border-round border-1 surface-border p-4 surface-card">
@@ -237,7 +250,7 @@ const Tank_Info = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={tankDatas}
+                        value={packageDatas}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
@@ -289,25 +302,29 @@ const Tank_Info = () => {
                     >
                 
                         <div className="field">
-                            <label htmlFor="tankData">Tank Name</label>
+                            <label htmlFor="packageData">Package Name</label>
                             <InputText 
                                 id="name" 
-                                value={tankData.name} 
+                                value={packageData.name} 
                                 onChange={(e) => onInputChange(e, "name")} 
                                 required 
                                 autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !tankData.name })} 
+                                className={classNames({ 'p-invalid': submitted && !packageData.name })} 
                                 />
-                            {submitted && !tankData.name && <small className="p-invalid">
-                                Tank Name is required.
+                            {submitted && !packageData.name && <small className="p-invalid">
+                                Package Name is required.
                             </small>} 
                         </div> 
                         <div className="field"> 
                             <label htmlFor="details">Details</label> 
-                            <InputText 
-                                id="details" 
-                                value={tankData.details} 
-                                onChange={(e) => onInputChange(e, "details")} 
+                            <MultiSelect 
+                                value={packageData.pkg_details} 
+                                onChange={(e) => onSelectionChange(e, 'pkg_details')} 
+                                options={cities} 
+                                optionLabel="name" 
+                                placeholder="Select Cities" 
+                                maxSelectedLabels={3} 
+                                className="w-full md:w-20rem" 
                             />
                         </div>
                     </Dialog>
@@ -315,18 +332,17 @@ const Tank_Info = () => {
                     <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {tankData && (
+                            {packageData && (
                                 <span>
-                                    Are you sure you want to delete <b>{tankData.name}</b>?
+                                    Are you sure you want to delete <b>{packageData.name}</b>?
                                 </span>
                             )}
                         </div>
                     </Dialog>
-                    
                 </div>
             </div>
         </div>
     );
 };
 
-export default  Tank_Info;
+export default  Package_Service;
