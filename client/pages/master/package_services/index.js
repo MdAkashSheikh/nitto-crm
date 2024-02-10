@@ -11,6 +11,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { TankInfoService } from '../../../demo/service/TankInfoService';
+import { PackageService } from '../../../demo/service/PackageService';
 
 const Package_Service = () => {
     let emptyPackage = {
@@ -35,7 +36,7 @@ const Package_Service = () => {
     useEffect(() => {
 
         // ZoneService.getZone().then((res) => setPackageDatas(res.data.AllData));
-        TankInfoService.getTank().then((res) => setPackageDatas(res.data.AllData));
+        PackageService.getPackage().then((res) => setPackageDatas(res.data.AllData));
         TankInfoService.getTank().then((res) => setMSPackage(res.data.AllData));
 
     }, [toggleRefresh]);
@@ -69,18 +70,17 @@ const Package_Service = () => {
         console.log("PPPP1",packageData)
 
         if( packageData.name && packageData.pkg_details, packageData._id) {
-            TankInfoService.editTank(
+            PackageService.editPackage(
                 packageData.name,
-                packageData.details,
+                packageData.pkg_details,
                 packageData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Package is Updated', life: 3000 });
             })
-        } else if( packageData.name && packageData.pkg_details ) {
-            console.log('Ok')
-            TankInfoService.postTank(
+        } else if( packageData.name && packageData.pkg_details.length != 0 ) {
+            PackageService.postPackage(
                 packageData.name,
                 packageData.pkg_details,
             ).then(() => {
@@ -104,11 +104,11 @@ const Package_Service = () => {
     };
 
     const deleteData = () => {
-        TankInfoService.deleteTank(packageData._id).then(() => {
+        PackageService.deletePackage(packageData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
             setPackageData(emptyPackage);
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Zone is Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Package is Deleted', life: 3000 });
         })
     };
 
@@ -144,7 +144,7 @@ const Package_Service = () => {
         return (
             <>
                 <span className="p-column-title">Details</span>
-                {rowData.pkg_details}
+                {rowData.pkg_details.map((item)=><ul><li>{item}</li></ul>)}
             </>
         );
     }
@@ -157,7 +157,7 @@ const Package_Service = () => {
                 if (rowData.is_active == '0') {
                     is_active = '1'
                 }
-                TankInfoService.toggleTank(is_active, rowData._id).then(() => {
+                PackageService.togglePackage(is_active, rowData._id).then(() => {
                 setTogleRefresh(!toggleRefresh)
                 })
              }} />
@@ -256,9 +256,9 @@ const Package_Service = () => {
                         rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Tank Information"
+                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Package Service"
                         globalFilter={globalFilter}
-                        emptyMessage="Tank Information is Empty."
+                        emptyMessage="Package Service is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >
@@ -307,7 +307,7 @@ const Package_Service = () => {
                                 required 
                                 autoFocus 
                                 className={classNames({ 'p-invalid': submitted && !packageData.name })} 
-                                />
+                            />
                             {submitted && !packageData.name && <small className="p-invalid">
                                 Package Name is required.
                             </small>} 
@@ -317,14 +317,14 @@ const Package_Service = () => {
                             <MultiSelect 
                                 value={packageData.pkg_details} 
                                 onChange={(e) => onSelectionChange(e, 'pkg_details')} 
-                                options={packList} 
                                 required 
+                                options={packList} 
                                 optionLabel="name" 
                                 placeholder="Select Packages" 
                                 maxSelectedLabels={3} 
-                                className={classNames({ 'p-invalid': submitted && !packageData.name })}
+                                className={classNames({ 'p-invalid': submitted && packageData.pkg_details.length === 0 })}
                             />
-                             {submitted && !packageData.name && <small className="p-invalid">
+                             {submitted && packageData.pkg_details.length === 0 && <small className="p-invalid">
                                 Packages is required.
                             </small>} 
                         </div>
