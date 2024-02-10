@@ -19,7 +19,7 @@ const Package_Service = () => {
     let emptyPackage = {
         id: 0,
         name: '',
-        pkg_details: [{service_id: '', service_name: '', completion_time: '', base_price: ''}],
+        pkg_details: [],
     };
 
     const [packageDatas, setPackageDatas] = useState(null);
@@ -139,29 +139,13 @@ const Package_Service = () => {
 
     const onSelectionChange1 = (e, name) => {
         let data = {...packageData };
-        const newVal = msPackage?.filter(item => item.service_name == e.value);
+        const newVal = msPackage?.filter(item => e.value.includes(item.service_name));
 
         data[`${name}`] = newVal;
-        // console.log(data)
        
         const data3 = {...packageData} 
         setPackageData(data);
     }
-
-    const onAdd = ( data ) => {
-        console.log(packageData)
-        const filterData = msPackage?.filter(item => item.service_name == data);
-        const newData = {service_id: '', service_name: '', completion_time: '', base_price: ''};
-        packageData.pkg_details = filterData
-        const data2 = {...packageData, newData}
-        console.log('Object Data--->', filterData)
-        setPackageData(packageData)
-        // console.log(newPackageData)
-        // newPackageData.pkg_details = [...packageData.pkg_details, newData];
-        // setPackageData(newPackageData);
-    }
-
-    console.log(packageData, 'Nai')
 
     const tankNameBodyTemplate = (rowData) => {
         return (
@@ -176,7 +160,7 @@ const Package_Service = () => {
         return (
             <>
                 <span className="p-column-title">Details</span>
-                {/* {rowData.pkg_details.map((item)=><ul><li>{item}</li></ul>)} */}
+                {rowData.pkg_details?.map((item)=><ul><li>{item.service_name}</li></ul>)}
             </>
         );
     }
@@ -369,8 +353,8 @@ const Package_Service = () => {
 
                         <div className="field"> 
                             <label htmlFor="details">Details</label> 
-                            <Dropdown 
-                                value={packageData.pkg_details.service_name} 
+                            <MultiSelect 
+                                value={packageData.pkg_details.map(item => item.service_name)} 
                                 onChange={(e) => onSelectionChange1(e, "pkg_details")} 
                                 required 
                                 options={packList} 
