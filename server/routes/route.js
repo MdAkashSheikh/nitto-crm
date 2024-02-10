@@ -176,6 +176,6 @@ router.post('/post-package', postPackage);
 router.post('/edit-package/:id', editPackage);
 router.get('/get-package', getPackage);
 router.delete('/delete-package/:id', deletePackage);
-router.post('toggle-package/:id', togglePackage);
+router.post('/toggle-package/:id', togglePackage);
 
 module.exports = router;

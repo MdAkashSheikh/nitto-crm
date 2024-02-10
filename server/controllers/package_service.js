@@ -75,7 +75,6 @@ const togglePackage = async(req, res) => {
         res.status(200).json({
             oneData
         })
-
     } catch (error) {
         res.status(400).json({
             message: error.message
