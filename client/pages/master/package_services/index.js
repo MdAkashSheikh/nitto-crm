@@ -30,15 +30,15 @@ const Package_Service = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [selectEdit, setSelectEdit] = useState(false);
+    const [msPackage, setMSPackage] = useState(null);
 
     useEffect(() => {
 
         // ZoneService.getZone().then((res) => setPackageDatas(res.data.AllData));
         TankInfoService.getTank().then((res) => setPackageDatas(res.data.AllData));
+        TankInfoService.getTank().then((res) => setMSPackage(res.data.AllData));
 
     }, [toggleRefresh]);
-
-    console.log(packageDatas, "SOURCE DATAS")
 
     const diaHeader = () => {
         return (
@@ -68,7 +68,7 @@ const Package_Service = () => {
 
         console.log("PPPP1",packageData)
 
-        if( packageData.name && packageData.details, packageData._id) {
+        if( packageData.name && packageData.pkg_details, packageData._id) {
             TankInfoService.editTank(
                 packageData.name,
                 packageData.details,
@@ -76,16 +76,17 @@ const Package_Service = () => {
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Zone is Updated', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Package is Updated', life: 3000 });
             })
-        } else if( packageData.name && packageData.details) {
+        } else if( packageData.name && packageData.pkg_details ) {
+            console.log('Ok')
             TankInfoService.postTank(
                 packageData.name,
-                packageData.details,
+                packageData.pkg_details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Zone is Created', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Package is Created', life: 3000 });
             })
         }
     };
@@ -111,13 +112,9 @@ const Package_Service = () => {
         })
     };
 
-    const cities = [
-        { name: 'New York', code: 'NY' },
-        { name: 'Rome', code: 'RM' },
-        { name: 'London', code: 'LDN' },
-        { name: 'Istanbul', code: 'IST' },
-        { name: 'Paris', code: 'PRS' }
-    ];
+    const packList = msPackage?.filter(item => item.is_active == '1').map(item => {
+        return { name: item.name, value: item.name}
+    })
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -147,7 +144,7 @@ const Package_Service = () => {
         return (
             <>
                 <span className="p-column-title">Details</span>
-                {rowData.details}
+                {rowData.pkg_details}
             </>
         );
     }
@@ -320,12 +317,16 @@ const Package_Service = () => {
                             <MultiSelect 
                                 value={packageData.pkg_details} 
                                 onChange={(e) => onSelectionChange(e, 'pkg_details')} 
-                                options={cities} 
+                                options={packList} 
+                                required 
                                 optionLabel="name" 
-                                placeholder="Select Cities" 
+                                placeholder="Select Packages" 
                                 maxSelectedLabels={3} 
-                                className="w-full md:w-20rem" 
+                                className={classNames({ 'p-invalid': submitted && !packageData.name })}
                             />
+                             {submitted && !packageData.name && <small className="p-invalid">
+                                Packages is required.
+                            </small>} 
                         </div>
                     </Dialog>
 
