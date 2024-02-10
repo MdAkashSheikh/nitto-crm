@@ -88,7 +88,13 @@ const AppMenu = () => {
                             label: 'Services',
                             icon: 'pi pi-fw pi-truck',
                             to: '/master/services'
-                        },{
+                        },
+                        {
+                            label: 'Package Services',
+                            icon: 'pi pi-fw pi-truck',
+                            to: '/master/package_services'
+                        },
+                        {
                             label: 'Tank Information',
                             icon: 'pi pi-fw pi-clone',
                             to: '/master/tank_info'
