@@ -1,5 +1,6 @@
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
+import { useFormik } from 'formik';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -133,16 +134,6 @@ const Package_Service = () => {
         setPackageData(data);
     }
 
-    const onSelectionChange1 = (e, i, name) => {
-        let val = (e.target && e.target.value) || '';
-        let data = {...packageData };
-        console.log( name, val)
-        const newVal = msPackage?.filter(item => item.name == val);
-        data[name][i] = [...newVal, {}];
-        console.log(data)
-        setPackageData(data);
-    }
-
 
     const tankNameBodyTemplate = (rowData) => {
         return (
@@ -249,6 +240,26 @@ const Package_Service = () => {
         )
     }
 
+    const formik = useFormik({
+        initialValues: {
+            item: null
+        },
+        validate: (data) => {
+            let errors = {};
+
+            if (!data.item) {
+                errors.item = 'City is required.';
+            }
+
+            return errors;
+        },
+        onSubmit: (data) => {
+            data && show();
+
+            formik.resetForm();
+        }
+    });
+
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -325,31 +336,9 @@ const Package_Service = () => {
                                 Package Name is required.
                             </small>} 
                         </div> 
-
-                        {/* {packageData?.pkg_details?.map((item, i) => {
-                            return (
-                                <div className="field" key={i}> 
-                                    <label htmlFor="details">Details</label> 
-                                    {console.log('oooo', item)}
-                                    <MultiSelect 
-                                        value={item.name} 
-                                        onChange={(e) => onSelectionChange1(e, 'pkg_details', i )} 
-                                        required 
-                                        options={packList} 
-                                        optionLabel="name" 
-                                        placeholder="Select Packages" 
-                                        maxSelectedLabels={3} 
-                                        className={classNames({ 'p-invalid': submitted && item.length === 0 })}
-                                    />
-                                    {submitted && item.length === 0 && <small className="p-invalid">
-                                        Packages is required.
-                                    </small>} 
-                                </div>
-                            )
-                        })} */}
-                        
                         <div className="field"> 
                             <label htmlFor="details">Details</label> 
+                            {console.log('oooo',packageData.pkg_details)}
                             <MultiSelect 
                                 value={packageData.pkg_details.name} 
                                 onChange={(e) => onSelectionChange(e, 'pkg_details')} 

@@ -82,7 +82,6 @@ const togglePackage = async(req, res) => {
     }
 }
 
-
 module.exports = {
     postPackage,
     editPackage,
