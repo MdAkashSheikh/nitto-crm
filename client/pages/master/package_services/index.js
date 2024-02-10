@@ -12,12 +12,13 @@ import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { TankInfoService } from '../../../demo/service/TankInfoService';
 import { PackageService } from '../../../demo/service/PackageService';
+import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 
 const Package_Service = () => {
     let emptyPackage = {
         id: 0,
         name: '',
-        pkg_details: [{}],
+        pkg_details: [{service_id: '', service_name: '', completion_time: '', base_price: ''}],
     };
 
     const [packageDatas, setPackageDatas] = useState(null);
@@ -32,12 +33,13 @@ const Package_Service = () => {
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [selectEdit, setSelectEdit] = useState(false);
     const [msPackage, setMSPackage] = useState(null);
+    const [data1, setData1] = useState([]);
 
     useEffect(() => {
 
         // ZoneService.getZone().then((res) => setPackageDatas(res.data.AllData));
         PackageService.getPackage().then((res) => setPackageDatas(res.data.AllData));
-        TankInfoService.getTank().then((res) => setMSPackage(res.data.AllData));
+        ServiceGroupService.getService().then((res) => setMSPackage(res.data.AllData));
 
     }, [toggleRefresh]);
 
@@ -46,6 +48,7 @@ const Package_Service = () => {
             selectEdit ? 'Add Package Service' : 'Edit Package Service'
         )
     }
+    console.log(msPackage)
 
     const openNew = () => {
         setPackageData(emptyPackage);
@@ -113,7 +116,7 @@ const Package_Service = () => {
     };
 
     const packList = msPackage?.filter(item => item.is_active == '1').map(item => {
-        return { name: item.name, value: item.name}
+        return { name: item.service_name, value: item.service_name}
     })
 
     const onInputChange = (e, name) => {
@@ -127,20 +130,28 @@ const Package_Service = () => {
     const onSelectionChange = (e, name) => {
         let data = {...packageData };
         console.log( name, e.value)
-        const newVal = msPackage?.filter(item => item.name == e.value);
-        data[`${name}`] = [...newVal, {}];
+        const newVal = [msPackage?.filter(item => item.name == e.value), {}];
+        data[`${name}`] = newVal;
         console.log(data)
         setPackageData(data);
     }
 
-    const onSelectionChange1 = (e, i, name) => {
-        let val = (e.target && e.target.value) || '';
+    const onSelectionChange1 = (e, name) => {
         let data = {...packageData };
-        console.log( name, val)
-        const newVal = msPackage?.filter(item => item.name == val);
-        data[name][i] = [...newVal, {}];
-        console.log(data)
+        console.log( name, e.value)
+        // const newVal = msPackage?.filter(item => item.name == val);
+        onAdd(e.value);
+        data[`${name}`] = e.value;
+        // console.log(data)
         setPackageData(data);
+    }
+
+    const onAdd = ( data ) => {
+        const newPackageData = {...packageData};
+        console.log('KKKK', data);
+        const newData = {service_id: '', service_name: '', completion_time: '', base_price: ''};
+        newPackageData.pkg_details = [...packageData.pkg_details, newData];
+        setPackageData(newPackageData);
     }
 
 
@@ -157,7 +168,7 @@ const Package_Service = () => {
         return (
             <>
                 <span className="p-column-title">Details</span>
-                {rowData.pkg_details.map((item)=><ul><li>{item}</li></ul>)}
+                {/* {rowData.pkg_details.map((item)=><ul><li>{item}</li></ul>)} */}
             </>
         );
     }
@@ -347,12 +358,12 @@ const Package_Service = () => {
                                 </div>
                             )
                         })} */}
-                        
+
                         <div className="field"> 
                             <label htmlFor="details">Details</label> 
                             <MultiSelect 
-                                value={packageData.pkg_details.name} 
-                                onChange={(e) => onSelectionChange(e, 'pkg_details')} 
+                                value={packageData.pkg_details} 
+                                onChange={(e) => onSelectionChange1(e, "pkg_details")} 
                                 required 
                                 options={packList} 
                                 optionLabel="name" 
