@@ -2,6 +2,7 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { MultiSelect } from 'primereact/multiselect';
 import { Skeleton } from 'primereact/skeleton';
@@ -138,22 +139,29 @@ const Package_Service = () => {
 
     const onSelectionChange1 = (e, name) => {
         let data = {...packageData };
-        console.log( name, e.value)
-        // const newVal = msPackage?.filter(item => item.name == val);
-        onAdd(e.value);
-        data[`${name}`] = e.value;
+        const newVal = msPackage?.filter(item => item.service_name == e.value);
+
+        data[`${name}`] = newVal;
         // console.log(data)
+       
+        const data3 = {...packageData} 
         setPackageData(data);
     }
 
     const onAdd = ( data ) => {
-        const newPackageData = {...packageData};
-        console.log('KKKK', data);
+        console.log(packageData)
+        const filterData = msPackage?.filter(item => item.service_name == data);
         const newData = {service_id: '', service_name: '', completion_time: '', base_price: ''};
-        newPackageData.pkg_details = [...packageData.pkg_details, newData];
-        setPackageData(newPackageData);
+        packageData.pkg_details = filterData
+        const data2 = {...packageData, newData}
+        console.log('Object Data--->', filterData)
+        setPackageData(packageData)
+        // console.log(newPackageData)
+        // newPackageData.pkg_details = [...packageData.pkg_details, newData];
+        // setPackageData(newPackageData);
     }
 
+    console.log(packageData, 'Nai')
 
     const tankNameBodyTemplate = (rowData) => {
         return (
@@ -361,8 +369,8 @@ const Package_Service = () => {
 
                         <div className="field"> 
                             <label htmlFor="details">Details</label> 
-                            <MultiSelect 
-                                value={packageData.pkg_details} 
+                            <Dropdown 
+                                value={packageData.pkg_details.service_name} 
                                 onChange={(e) => onSelectionChange1(e, "pkg_details")} 
                                 required 
                                 options={packList} 
