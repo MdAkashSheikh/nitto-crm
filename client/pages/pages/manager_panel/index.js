@@ -208,7 +208,7 @@ const Manager_Panel = () => {
         return (
             <>
                 <span className="p-column-title">Category</span>
-                {rowData.category}
+                {rowData.address?.map((item, i) => <ol start={i+1}><li>{item.category}</li></ol>)}
             </>
         );
     }
@@ -287,6 +287,8 @@ const Manager_Panel = () => {
             </div>
         )
     }
+
+    console.log(managerDatas, 'pppppppppppppppppppp')
 
 
     return (

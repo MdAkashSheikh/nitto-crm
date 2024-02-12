@@ -11,7 +11,6 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { TankInfoService } from '../../../demo/service/TankInfoService';
 import { PackageService } from '../../../demo/service/PackageService';
 import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 
@@ -34,7 +33,6 @@ const Package_Service = () => {
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [selectEdit, setSelectEdit] = useState(false);
     const [msPackage, setMSPackage] = useState(null);
-    const [data1, setData1] = useState([]);
 
     useEffect(() => {
 
@@ -281,14 +279,14 @@ const Package_Service = () => {
 
                         <Column
                             field="name"
-                            header="Tank Name"
+                            header="Package Name"
                             sortable
                             body={tankNameBodyTemplate}
                             headerStyle={{ minWidth: "10rem" }}
                         ></Column>
                          <Column
                             field="details"
-                            header="Details"
+                            header="Package Details"
                             body={detailsBodyTemplate}
                             headerStyle={{ minWidth: "15rem" }}
                         ></Column>
