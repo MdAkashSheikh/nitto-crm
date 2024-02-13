@@ -227,7 +227,7 @@ const Manager_Panel = () => {
         return (
             <>
                 <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editData(rowData)} />
-                {/* <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} /> */}
+                <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} />
             </>
         );
     };
