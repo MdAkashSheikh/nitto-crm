@@ -72,6 +72,16 @@ const {
 } = require('../controllers/tankInfo');
 
 const { 
+    postTeamInfo, 
+    editTeamInfo,
+    getTeamInfo,
+    deleteTeamInfo,
+    toggleTeamInfo,
+    uploadEmpPic,
+    uploadEmpNid,
+} = require('../controllers/teamInfo');
+
+const { 
     postZone, 
     getZone, 
     editZone, 
@@ -81,6 +91,28 @@ const {
 
 const express = require('express');
 const router = express.Router();
+const path = require('path');
+const multer = require('multer');
+
+/* -------------------------------- */
+/*     Image Upload For Multer      */
+/* -------------------------------- */
+router.use(express.static('public'));
+router.use(express.static('files'));
+router.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
+
+let storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+})
+
+
+let upload = multer({ storage: storage });
+
 
 /* -------------------------------- */
 /*      Data Source Route URL       */
@@ -158,7 +190,13 @@ router.post('/edit-manager-panel/:id', editManagerPanel);
 /* -------------------------------- */
 /*    Team Information Route URL    */
 /* -------------------------------- */
-
+router.post('/post-team-info', postTeamInfo);
+router.post('/edit-team-info/:id', editTeamInfo);
+router.get('/get-team-info', getTeamInfo);
+router.delete('/delete-team-info/:id', deleteTeamInfo);
+router.post('/toggle-team-info/:id', toggleTeamInfo);
+router.post('/upload-emp-pic', upload.single('photo'), uploadEmpPic);
+router.post('/upload-emp-nid', uploadEmpNid);
 
 /* -------------------------------- */
 /*    Tank Information Route URL    */
