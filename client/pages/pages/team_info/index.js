@@ -12,6 +12,9 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { ZoneService } from '../../../demo/service/ZoneService';
+import { URL } from '../../../demo/service/SourceDataService';
+import { TeamInfoService } from '../../../demo/service/TeamInfoService';
+
 
 const Team_Info = () => {
     let empInfo = {
@@ -34,12 +37,14 @@ const Team_Info = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [selectEdit, setSelectEdit] = useState(false);
-    const [file, setFile] = useState([]);
+    const [emp_pic, setEmpPic] = useState('');
+    const [emp_nid, setEmpNid] = useState('');
 
 
     useEffect(() => {
 
-        ZoneService.getZone().then((res) => setTeamDatas(res.data.AllData));
+        // ZoneService.getZone().then((res) => setTeamDatas(res.data.AllData));
+        TeamInfoService.getTeamInfo().then((res) => setTeamDatas(res.data.AllData))
 
     }, [toggleRefresh]);
 
@@ -72,24 +77,30 @@ const Team_Info = () => {
 
         console.log("PPPP1",teamData)
 
-        if( teamData.name && teamData.details, teamData._id) {
-            ZoneService.editZone(
+        if( teamData.name && teamData.father_name && teamData.mother_name && teamData.phone, teamData._id) {
+            TeamInfoService.editTeamInfo(
                 teamData.name,
-                teamData.details,
+                teamData.father_name,
+                teamData.mother_name,
+                teamData.phone,
                 teamData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Team_Info is Updated', life: 3000 });
             })
-        } else if( teamData.name && teamData.details) {
-            ZoneService.postZone(
+        } else if( teamData.name && teamData.father_name && teamData.mother_name && teamData.phone ) {
+            TeamInfoService.postTeamInfo(
                 teamData.name,
-                teamData.details,
+                teamData.father_name,
+                teamData.mother_name,
+                teamData.phone,
+                emp_pic,
+                emp_nid,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Zone is Created', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Team Info is Created', life: 3000 });
             })
         }
     };
@@ -125,7 +136,7 @@ const Team_Info = () => {
         setTeamData(data);
     };
 
-    const priorityGroupBodyTemplate = (rowData) => {
+    const nameBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
@@ -134,11 +145,29 @@ const Team_Info = () => {
         );
     }
 
-    const detailsBodyTemplate = (rowData) => {
+    const fatherNameBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Details</span>
-                {rowData.details}
+                <span className="p-column-title">fatherName</span>
+                {rowData.father_name}
+            </>
+        );
+    }
+
+    const motherNameBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">motherName</span>
+                {rowData.mother_name}
+            </>
+        );
+    }
+
+    const phoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">motherName</span>
+                {rowData.phone}
             </>
         );
     }
@@ -151,7 +180,7 @@ const Team_Info = () => {
                 if (rowData.is_active == '0') {
                     is_active = '1'
                 }
-                ZoneService.toggleZone(is_active, rowData._id).then(() => {
+                TeamInfoService.toggleTeamInfo(is_active, rowData._id).then(() => {
                 setTogleRefresh(!toggleRefresh)
                 })
              }} />
@@ -263,7 +292,6 @@ const Team_Info = () => {
         )
     }
 
-
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -293,16 +321,29 @@ const Team_Info = () => {
 
                         <Column
                             field="name"
-                            header="Zone Name"
+                            header="Name"
                             sortable
-                            body={priorityGroupBodyTemplate}
-                            headerStyle={{ minWidth: "10rem" }}
+                            body={nameBodyTemplate}
+                            headerStyle={{ minWidth: "5rem" }}
                         ></Column>
-                         <Column
-                            field="details"
-                            header="Details"
-                            body={detailsBodyTemplate}
-                            headerStyle={{ minWidth: "15rem" }}
+                        <Column
+                            field="phone"
+                            header="Phone"
+                            sortable
+                            body={phoneBodyTemplate}
+                            headerStyle={{ minWidth: "5rem" }}
+                        ></Column>
+                        <Column
+                            field="father_name"
+                            header="Father Name"
+                            body={fatherNameBodyTemplate}
+                            headerStyle={{ minWidth: "5rem" }}
+                        ></Column>
+                        <Column
+                            field="mother_name"
+                            header="Mother Name"
+                            body={motherNameBodyTemplate}
+                            headerStyle={{ minWidth: "5rem" }}
                         ></Column>
                         <Column
                             header="Status"
@@ -398,15 +439,15 @@ const Team_Info = () => {
                                 multiple
                                 accept="image/*" 
                                 name='photo'
-                                url="/api/upload"
+                                url={`${URL}/upload-emp-pic`}
                                 maxFileSize={1000000} 
                                 emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} 
                                 className='mt-1'
                                 onUpload={(e)=> { 
                                     console.log( "slidufgoidh", e)
                                     const data = JSON.parse(e.xhr.responseText)
-                                    console.log(data)
-                                    setFile([...file, ...data.file1]);
+                                    console.log('Data---->',data)
+                                    setEmpPic(data.file1);
                                 }}
                                 onRemove={(e)=> { 
                                     console.log("remove", e)
@@ -420,7 +461,7 @@ const Team_Info = () => {
                                 multiple
                                 accept="image/*" 
                                 name='photo'
-                                url={`${URL}/post-follow-image`}
+                                url={`${URL}/upload-emp-nid`}
                                 maxFileSize={1000000} 
                                 emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} 
                                 className='mt-1'
@@ -428,7 +469,7 @@ const Team_Info = () => {
                                     console.log( "slidufgoidh", e)
                                     const data = JSON.parse(e.xhr.responseText)
                                     console.log(data)
-                                    setFile([...file, ...data.file1]);
+                                    setEmpNid(data.file1);
                                 }}
                                 onRemove={(e)=> { 
                                     console.log("remove", e)
