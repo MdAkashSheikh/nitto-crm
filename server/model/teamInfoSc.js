@@ -19,13 +19,17 @@ const teamInfoSc = new Schema({
         type: Array,
         require: [true, 'Please Enter phone number']
     },
-    nid: {
+    emp_pic: {
         type: Array,
         default: [],
     },
-    photo: {
+    emp_nid: {
         type: Array,
         default: [],
+    },
+    is_active: {
+        type: String,
+        default: "1"
     },
     date: {
         type: Date,
