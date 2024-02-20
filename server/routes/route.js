@@ -101,18 +101,27 @@ router.use(express.static('public'));
 router.use(express.static('files'));
 router.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 
-let storage = multer.diskStorage({
+let storage_pic = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        cb(null,"pic_" + Date.now() + path.extname(file.originalname));
+    }
+})
+
+let storage_nid = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null,"nid_" + Date.now() + path.extname(file.originalname));
     }
 })
 
 
-let upload = multer({ storage: storage });
-
+let upload_pic = multer({ storage: storage_pic });
+let upload_nid = multer({ storage: storage_nid });
 
 /* -------------------------------- */
 /*      Data Source Route URL       */
@@ -195,8 +204,8 @@ router.post('/edit-team-info/:id', editTeamInfo);
 router.get('/get-team-info', getTeamInfo);
 router.delete('/delete-team-info/:id', deleteTeamInfo);
 router.post('/toggle-team-info/:id', toggleTeamInfo);
-router.post('/upload-emp-pic', upload.single('photo'), uploadEmpPic);
-router.post('/upload-emp-nid', uploadEmpNid);
+router.post('/upload-emp-pic', upload_pic.single('photo'), uploadEmpPic);
+router.post('/upload-emp-nid', upload_nid.single('photo'), uploadEmpNid);
 
 /* -------------------------------- */
 /*    Tank Information Route URL    */
