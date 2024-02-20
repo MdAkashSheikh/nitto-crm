@@ -94,11 +94,11 @@ const uploadEmpPic = async(req, res) => {
 }
 
 const uploadEmpNid = async(req, res) => {
-    if(req.files == undefined) {
+    if(req.file == undefined) {
         return;
     }
 
-    const image = req.files.filename;
+    const image = req.file.filename;
 
     try {
         res.status(200).send({file1: image})
