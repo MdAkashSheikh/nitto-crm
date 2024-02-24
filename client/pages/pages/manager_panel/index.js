@@ -2,10 +2,12 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
 import { DataTable } from 'primereact/datatable';
+import { TreeSelect } from 'primereact/treeselect';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { MultiSelect } from 'primereact/multiselect';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -16,6 +18,7 @@ import { PriorityGroupService } from '../../../demo/service/PriorityGroupService
 import { PotentialCustomerService } from '../../../demo/service/PotentialCustomerService';
 import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 import { PackageService } from '../../../demo/service/PackageService';
+import { TeamInfoService } from '../../../demo/service/TeamInfoService';
 
 const Manager_Panel = () => {
     let managerInfo = {
@@ -24,7 +27,7 @@ const Manager_Panel = () => {
     };
 
     let customerInfo = {
-        customerId:'', address: '', service: '', customerName: '', price: '', slot: '', team_member: '', team_lead: ''
+        customerId:'', address: '', service: '', customerName: '', price: '', slot: '', team_member: [], team_lead: ''
     }
 
     const dataArr = [];
@@ -42,10 +45,12 @@ const Manager_Panel = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [one, setOne] = useState(null);
+    const [check, setCheck] = useState(null);
     const [selectedAddress, setSelectedAddress] = useState('');
     const [customer, setCustomer] = useState(customerInfo);
     const [mService, setMService] = useState(null);
     const [mPackage, setMPackage] = useState(null);
+    const [mteam, setMteam] = useState(null);
 
 
     useEffect(() => {
@@ -55,6 +60,7 @@ const Manager_Panel = () => {
         PotentialCustomerService.getPotential().then((res) => setMsPotential(res.data.AllData)); 
         ServiceGroupService.getService().then((res) => setMService(res.data.AllData));
         PackageService.getPackage().then((res) => setMPackage(res.data.AllData));
+        TeamInfoService.getTeamInfo().then((res) => setMteam(res.data.AllData));
 
     }, [toggleRefresh]);
 
@@ -97,7 +103,27 @@ const Manager_Panel = () => {
         }
     };
 
-    console.log("Manager Data", managerData);
+    const saveCustomerData = () => {
+        setSubmitted(true);
+
+        if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead) {
+            console.log('OK1')
+            CustomerInformationService.postfCustomer(
+                customer.name,
+                customer.address,
+                customer.service,
+                customer.slot,
+                customer.team_member,
+                customer.team_lead,
+                managerData._id
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setCustomerDaialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer Created', life: 3000 })
+            })
+        }
+    }
+
     const followDate = (managerData) => {
         setManagerData({ ...managerData });
         setDataDialog(true);
@@ -133,6 +159,23 @@ const Manager_Panel = () => {
         setManagerData(_infoData);
     }
 
+    const onCusSelectionChange = (e, name) => {
+        let _infoData = {...customer };
+        _infoData[`${name}`] = e.value;
+        
+        setCustomer(_infoData);
+    }
+
+    // const onSelectionChange1 = (e, name) => {
+    //     let data = {...customer };
+    //     const newVal = mteam?.filter(item => e.value.includes(item.service_name));
+
+    //     data[`${name}`] = newVal;
+       
+    //     const data3 = {...customer} 
+    //     setCustomer(data);
+    // }
+
     const onAddressChange = (e, prev_address) => {
         let id1 = prev_address?.filter(item => item.add == e.value)?.map(item=> item.id).toString();
         const num = Math.random().toString().slice(2);
@@ -142,7 +185,6 @@ const Manager_Panel = () => {
         _infoData.follows['add1'] = e.value;
         setManagerData(_infoData);
     }
-
 
     const onDateChange = (e) => {
         let _manageData = {...managerData };
@@ -157,12 +199,11 @@ const Manager_Panel = () => {
     }
 
     let addressList;
-    if(one == 1) {
+    if(one == 1 || check == 1) {
         let m = managerData.address;
         addressList = m?.map(item => {
             return { label: item.address, value: item.address, id: item.id }
         })
-        
     }
 
     const filteredPriority = msPriority?.filter((item) => item.is_active == '1');
@@ -177,15 +218,27 @@ const Manager_Panel = () => {
 
     const filteredService = mService?.filter((item) => item.is_active == '1');
     const filteredPackge = mPackage?.filter((item) => item.is_active == '1');
-    console.log('TYPE', typeof filteredService)
 
-    const serviceList = {
-        ...filteredService,
-        ...filteredPackge
+    let serviceList;
+    if(check == 1) {
+        serviceList = filteredService.concat(filteredPackge)
+
+        serviceList = serviceList?.map(item => {
+            return { label: item.service_name, value: item.service_name}
+        })
     }
 
-    console.log('ServiceLIST', serviceList)
- 
+    const slotList = [
+        {label: 'Moraning', value: 'Moraning'},
+        {label: 'Evening', value: 'Evening'}
+    ];
+
+    const filteredTeam = mteam?.filter(item => item.is_active == '1');
+    const teamList = filteredTeam?.map(item => {
+        return { label: item.name, value: item.name}
+    })
+
+    
     const nameBodyTemplate = (rowData) => {
         return (
             <>
@@ -251,7 +304,9 @@ const Manager_Panel = () => {
 
     const coustomerData = (customer) => {
         setCustomer({ ...customer });
+        setManagerData({ ...customer})
         setCustomerDaialog(true);
+        setCheck(1)
     };
 
 
@@ -293,7 +348,7 @@ const Manager_Panel = () => {
     const coustomerDialogFooter = (
         <>
             <Button label="Cancel" icon="pi pi-times" text onClick={hideCusDialog} />
-            <Button label="Save" icon="pi pi-check" text onClick={saveData} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveCustomerData} />
         </>
     )
 
@@ -328,12 +383,7 @@ const Manager_Panel = () => {
         )
     }
 
-    // console.log(managerDatas, 'pppppppppppppppppppp')
-
-    console.log(customer);
-    console.log(mPackage, "Package------>")
-    console.log(mService, "SERVICE")
-
+    console.log('Customer Data', customer);
 
     return (
         <div className="grid crud-demo">
@@ -563,14 +613,34 @@ const Manager_Panel = () => {
                     >
                         <div className="formgrid grid">
                             <div className="field col">
+                            <label htmlFor="customer">Address</label>
+                                <Dropdown
+                                    value={customer.address}
+                                    name='address'
+                                    onChange={e => onCusSelectionChange(e, 'address')}
+                                    options={addressList}
+                                    placeholder="Select a Service"
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !customer.address,
+                                    })}
+                                />
+                                {submitted && !customer.address && (
+                                    <small className="p-invalid">
+                                        Address is required.
+                                    </small>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="formgrid grid">
+                            <div className="field col">
                                 <label htmlFor="customer">Service</label>
                                 <Dropdown
                                     value={customer.service}
                                     name='service'
-                                    onChange={(e) => onSelectionChange(e, "service")}
-                                    options={priorityList}
-                                    optionLabel="value"
-                                    showClear
+                                    onChange={e => onCusSelectionChange(e, 'service')}
+                                    options={serviceList}
                                     placeholder="Select a Service"
                                     required
                                     className={classNames({
@@ -585,27 +655,66 @@ const Manager_Panel = () => {
                             </div>
 
                             <div className="field col">
-                                <label htmlFor="managerData">Potential Group</label>
+                                <label htmlFor="customer">Slot</label>
                                 <Dropdown
-                                    value={managerData.follows.potential}
-                                    name='potential'
-                                    onChange={(e) => onSelectionChange(e, "potential")}
-                                    options={potentialList}
-                                    optionLabel="value"
-                                    showClear
-                                    placeholder="Select a Potential"
+                                    value={customer.slot}
+                                    name='slot'
+                                    onChange={e => onCusSelectionChange(e, 'slot')}
+                                    options={slotList}
+                                    placeholder="Select a Service"
                                     required
                                     className={classNames({
-                                        "p-invalid": submitted && !managerData.potential,
+                                        "p-invalid": submitted && !customer.slot,
                                     })}
                                 />
-                                {submitted && !managerData.potential && (
+                                {submitted && !customer.slot && (
                                     <small className="p-invalid">
-                                        Potential is required.
+                                        slot is required.
                                     </small>
                                 )}
                             </div>
                         </div>
+
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="customer">Team Member</label> 
+                                <MultiSelect 
+                                    value={customer.team_member} 
+                                    onChange={(e) => onCusSelectionChange(e, "team_member")} 
+                                    required 
+                                    options={teamList} 
+                                    optionLabel="label" 
+                                    placeholder="Select Team Member" 
+                                    maxSelectedLabels={3} 
+                                    display="chip"
+                                    className={classNames({ 'p-invalid': submitted && customer.team_member.length === 0 })}
+                                />
+                                {submitted && customer.team_member.length === 0 && <small className="p-invalid">
+                                    Team Member is required.
+                                </small>} 
+                            </div>
+
+                            <div className="field col">
+                                <label htmlFor="customer">Team Lead</label>
+                                <Dropdown
+                                    value={customer.team_lead}
+                                    name='team_lead'
+                                    onChange={e => onCusSelectionChange(e, 'team_lead')}
+                                    options={teamList}
+                                    placeholder="Select a Service"
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !customer.team_lead,
+                                    })}
+                                />
+                                {submitted && !customer.team_lead && (
+                                    <small className="p-invalid">
+                                        Team Lead is required.
+                                    </small>
+                                )}
+                            </div>
+                        </div>
+
                     </Dialog>
                 </div>
             </div>
