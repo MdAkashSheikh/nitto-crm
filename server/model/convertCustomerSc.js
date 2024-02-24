@@ -28,6 +28,10 @@ const convertCustomerSc = new mongoose.Schema({
     customerId: {
         type: String,
         required: true,
+    },
+    is_active: {
+        type: String,
+        default: "1",
     }
 })
 
