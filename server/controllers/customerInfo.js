@@ -1,3 +1,4 @@
+const convertCustomerSc = require("../model/convertCustomerSc");
 const customerInfoSc = require("../model/customerInfoSc");
 
 const postCustomerInfo = async(req, res) => {
@@ -97,7 +98,6 @@ const toggleCustomerInfo = async(req, res) => {
 const editManagerPanel = async(req, res) => {
     const id = req.params.id;
     const follows = req.body.follows;
-    console.log(req.body);
 
     try {
         const oneData = await customerInfoSc.findByIdAndUpdate(id, {
@@ -110,6 +110,18 @@ const editManagerPanel = async(req, res) => {
     }
 }
 
+//POST Conver to Customer
+const postfCustomer = async(req, res) => {
+    
+    try {
+        await convertCustomerSc.create(req.body);
+        res.status(201).json({
+            message: 'Customer Created'
+        })
+    } catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+}
 module.exports = {
     postCustomerInfo,
     editCustomerInfo,
@@ -117,5 +129,7 @@ module.exports = {
     deleteCustomerInfo,
     toggleCustomerInfo,
     editManagerPanel,
+    
+    postfCustomer,
 
 }

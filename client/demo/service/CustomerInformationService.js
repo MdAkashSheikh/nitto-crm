@@ -41,5 +41,14 @@ export const CustomerInformationService = {
 
     async editManagerPanel(follows, _id) {
         await axios.post(`${URL}/edit-manager-panel/` + _id, { follows });
-    }
+    },
+
+    //Convert to Customer
+    async postfCustomer(name, address, service, slot, team_member, team_lead, customerId) {
+        console.log('Ok2222')
+        const data = {
+            name, address, service, slot, team_member, team_lead, customerId
+        }
+        await axios.post(`${URL}/post-fcustomer`, data);
+    },
 }
