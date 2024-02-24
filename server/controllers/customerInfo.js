@@ -122,6 +122,21 @@ const postfCustomer = async(req, res) => {
         res.status(400).json({ message: error.message })
     }
 }
+
+const getfCustomer = async(req, res) => {
+
+    try {
+        const AllData = await convertCustomerSc.find({});
+        res.status(200).send({ AllData });
+        
+    } catch (error) {
+        res.status(400).json({ 
+            message: error.message 
+        })
+    }    
+}
+
+
 module.exports = {
     postCustomerInfo,
     editCustomerInfo,
@@ -131,5 +146,5 @@ module.exports = {
     editManagerPanel,
     
     postfCustomer,
-
+    getfCustomer,
 }

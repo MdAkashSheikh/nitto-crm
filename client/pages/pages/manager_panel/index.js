@@ -32,6 +32,7 @@ const Manager_Panel = () => {
 
     const dataArr = [];
     const [managerDatas, setManagerDatas] = useState(null);
+    const [customerDatas, setCustomerDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [customerDaialog, setCustomerDaialog] = useState(false)
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
@@ -61,6 +62,7 @@ const Manager_Panel = () => {
         ServiceGroupService.getService().then((res) => setMService(res.data.AllData));
         PackageService.getPackage().then((res) => setMPackage(res.data.AllData));
         TeamInfoService.getTeamInfo().then((res) => setMteam(res.data.AllData));
+        CustomerInformationService.getfCustomer().then((res) => setCustomerDatas(res.data.AllData));
 
     }, [toggleRefresh]);
 
@@ -311,13 +313,37 @@ const Manager_Panel = () => {
 
 
     const actionBodyTemplate = (rowData) => {
-        
-        return (
-            <>
-                <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => followDate(rowData)} />
-                <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => coustomerData(rowData)} />
-            </>
-        );
+       
+        const filData = customerDatas?.filter(item => item.customerId == rowData._id)
+        if(rowData.follows.length > 0 && filData !=undefined && filData.length > 0  ) {
+            return (
+                <>
+                    <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => followDate(rowData)} />
+                    <Button icon="pi pi-pencil" severity="success" rounded onClick={() => coustomerData(rowData)} />
+                </>
+            );
+        } else if(rowData.follows.length > 0 && (filData == undefined || filData?.length == 0)) {
+            return (
+                <>
+                    <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => followDate(rowData)} />
+                    <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => coustomerData(rowData)} />
+                </>
+            );
+        } else if(rowData.follows.length == 0 && (filData !=undefined && filData?.length > 0)) {
+            return(
+                <>
+                    <Button icon="pi pi-pencil" severity="warning" rounded className="mr-2" onClick={() => followDate(rowData)} />
+                    <Button icon="pi pi-pencil" severity="success" rounded onClick={() => coustomerData(rowData)} />
+                </>
+            )
+        } else {
+            return(
+                <>
+                    <Button icon="pi pi-pencil" severity="warning" rounded className="mr-2" onClick={() => followDate(rowData)} />
+                    <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => coustomerData(rowData)} />
+                </>
+            )
+        }
     };
         
     const topHeader = () => {
@@ -384,7 +410,7 @@ const Manager_Panel = () => {
         )
     }
 
-    console.log('Customer Data', customer);
+    console.log('Customer Data', customerDatas);
 
     return (
         <div className="grid crud-demo">

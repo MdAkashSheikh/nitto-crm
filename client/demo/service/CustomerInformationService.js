@@ -45,10 +45,14 @@ export const CustomerInformationService = {
 
     //Convert to Customer
     async postfCustomer(name, address, service, slot, team_member, team_lead, customerId) {
-        console.log('Ok2222')
         const data = {
             name, address, service, slot, team_member, team_lead, customerId
         }
         await axios.post(`${URL}/post-fcustomer`, data);
     },
+
+    async getfCustomer() {
+        const response = await axios.get(`${URL}/get-fcustomer`);
+        return response;
+    }
 }
