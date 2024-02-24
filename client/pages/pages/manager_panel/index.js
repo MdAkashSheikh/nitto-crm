@@ -311,6 +311,7 @@ const Manager_Panel = () => {
 
 
     const actionBodyTemplate = (rowData) => {
+        
         return (
             <>
                 <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => followDate(rowData)} />
