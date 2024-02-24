@@ -14,6 +14,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
 import { PriorityGroupService } from '../../../demo/service/PriorityGroupService';
 import { PotentialCustomerService } from '../../../demo/service/PotentialCustomerService';
+import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
+import { PackageService } from '../../../demo/service/PackageService';
 
 const Manager_Panel = () => {
     let managerInfo = {
@@ -21,9 +23,14 @@ const Manager_Panel = () => {
         follows: [{id: 0, aid: 0, add1: '', priority: '', potential: '', followDate: '', ptime: '', feedback: ''}]
     };
 
+    let customerInfo = {
+        customerId:'', address: '', service: '', customerName: '', price: '', slot: '', team_member: '', team_lead: ''
+    }
+
     const dataArr = [];
     const [managerDatas, setManagerDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
+    const [customerDaialog, setCustomerDaialog] = useState(false)
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
     const [managerData, setManagerData] = useState(managerInfo);
     const [selectedDatas, setSelectedDatas] = useState(null);
@@ -36,6 +43,9 @@ const Manager_Panel = () => {
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [one, setOne] = useState(null);
     const [selectedAddress, setSelectedAddress] = useState('');
+    const [customer, setCustomer] = useState(customerInfo);
+    const [mService, setMService] = useState(null);
+    const [mPackage, setMPackage] = useState(null);
 
 
     useEffect(() => {
@@ -43,7 +53,8 @@ const Manager_Panel = () => {
         CustomerInformationService.getCustomerInfo().then((res) => setManagerDatas(res.data.AllData));
         PriorityGroupService.getPriority().then((res) => setMsPriority(res.data.AllData));
         PotentialCustomerService.getPotential().then((res) => setMsPotential(res.data.AllData)); 
-
+        ServiceGroupService.getService().then((res) => setMService(res.data.AllData));
+        PackageService.getPackage().then((res) => setMPackage(res.data.AllData));
 
     }, [toggleRefresh]);
 
@@ -57,6 +68,11 @@ const Manager_Panel = () => {
         setSubmitted(false);
         setDataDialog(false);
     };
+
+    const hideCusDialog = () => {
+        setSubmitted(false);
+        setCustomerDaialog(false);
+    }
 
     const hideDeleteProductDialog = () => {
         setDeleteDataDialog(false);
@@ -82,7 +98,7 @@ const Manager_Panel = () => {
     };
 
     console.log("Manager Data", managerData);
-    const editData = (managerData) => {
+    const followDate = (managerData) => {
         setManagerData({ ...managerData });
         setDataDialog(true);
         setOne(1);
@@ -158,6 +174,17 @@ const Manager_Panel = () => {
     const potentialList = filteredPotential?.map(item => {
         return { label: item.name, value: item.name };
     })
+
+    const filteredService = mService?.filter((item) => item.is_active == '1');
+    const filteredPackge = mPackage?.filter((item) => item.is_active == '1');
+    console.log('TYPE', typeof filteredService)
+
+    const serviceList = {
+        ...filteredService,
+        ...filteredPackge
+    }
+
+    console.log('ServiceLIST', serviceList)
  
     const nameBodyTemplate = (rowData) => {
         return (
@@ -222,12 +249,17 @@ const Manager_Panel = () => {
         );
     }
 
+    const coustomerData = (customer) => {
+        setCustomer({ ...customer });
+        setCustomerDaialog(true);
+    };
+
 
     const actionBodyTemplate = (rowData) => {
         return (
             <>
-                <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editData(rowData)} />
-                <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} />
+                <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => followDate(rowData)} />
+                <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => coustomerData(rowData)} />
             </>
         );
     };
@@ -257,6 +289,14 @@ const Manager_Panel = () => {
             <Button label="Save" icon="pi pi-check" text onClick={saveData} />
         </>
     );
+
+    const coustomerDialogFooter = (
+        <>
+            <Button label="Cancel" icon="pi pi-times" text onClick={hideCusDialog} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveData} />
+        </>
+    )
+
     const deleteDataDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductDialog} />
@@ -288,7 +328,11 @@ const Manager_Panel = () => {
         )
     }
 
-    console.log(managerDatas, 'pppppppppppppppppppp')
+    // console.log(managerDatas, 'pppppppppppppppppppp')
+
+    console.log(customer);
+    console.log(mPackage, "Package------>")
+    console.log(mService, "SERVICE")
 
 
     return (
@@ -423,7 +467,7 @@ const Manager_Panel = () => {
                                     </small>
                                 )}
                             </div>
-                            <div className="field col">
+                            {/* <div className="field col">
                                 <label htmlFor="managerData">Phone Time</label>
                                 <Calendar 
                                     id="calendar-timeonly" 
@@ -432,7 +476,7 @@ const Manager_Panel = () => {
                                     timeOnly 
                                     hourFormat="12" 
                                 />
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="formgrid grid">
@@ -505,6 +549,62 @@ const Manager_Panel = () => {
                                     Are you sure you want to delete <b>{managerData.name}</b>?
                                 </span>
                             )}
+                        </div>
+                    </Dialog>
+
+                    <Dialog
+                        visible={customerDaialog}
+                        style={{ width: "550px" }}
+                        header="Convert to Customer"
+                        modal
+                        className="p-fluid"
+                        footer={coustomerDialogFooter}
+                        onHide={hideCusDialog}
+                    >
+                        <div className="formgrid grid">
+                            <div className="field col">
+                                <label htmlFor="customer">Service</label>
+                                <Dropdown
+                                    value={customer.service}
+                                    name='service'
+                                    onChange={(e) => onSelectionChange(e, "service")}
+                                    options={priorityList}
+                                    optionLabel="value"
+                                    showClear
+                                    placeholder="Select a Service"
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !customer.service,
+                                    })}
+                                />
+                                {submitted && !customer.service && (
+                                    <small className="p-invalid">
+                                        Service is required.
+                                    </small>
+                                )}
+                            </div>
+
+                            <div className="field col">
+                                <label htmlFor="managerData">Potential Group</label>
+                                <Dropdown
+                                    value={managerData.follows.potential}
+                                    name='potential'
+                                    onChange={(e) => onSelectionChange(e, "potential")}
+                                    options={potentialList}
+                                    optionLabel="value"
+                                    showClear
+                                    placeholder="Select a Potential"
+                                    required
+                                    className={classNames({
+                                        "p-invalid": submitted && !managerData.potential,
+                                    })}
+                                />
+                                {submitted && !managerData.potential && (
+                                    <small className="p-invalid">
+                                        Potential is required.
+                                    </small>
+                                )}
+                            </div>
                         </div>
                     </Dialog>
                 </div>

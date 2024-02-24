@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const packageSc = new mongoose.Schema({
-    name: {
+    service_name: {
         type: String,
         required: true,
     },

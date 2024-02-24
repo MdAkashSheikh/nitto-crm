@@ -2,16 +2,16 @@ import axios from "axios";
 import { URL } from "./SourceDataService";
 
 export const PackageService = {
-    async postPackage( name, pkg_details ) {
+    async postPackage( service_name, pkg_details ) {
         const data = {
-            name, pkg_details
+            service_name, pkg_details
         }
         await axios.post(`${URL}/post-package`, data);
     },
 
-    async editPackage( name, pkg_details, id ) {
+    async editPackage( service_name, pkg_details, id ) {
         const data = {
-            name, pkg_details
+            service_name, pkg_details
         }
         await axios.post(`${URL}/edit-package/` + id, data);
     },

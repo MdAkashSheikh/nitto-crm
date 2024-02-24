@@ -97,7 +97,7 @@ export default function App() {
                             </li>
                             <li className="text-muted">
                                 <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
-                                <span className="fw-bold ms-1">Creation Date: </span>Jun 23,2021
+                                <span className="fw-bold ms-1">Creation Date: </span>Jan 23,2024
                             </li>
                             {/* <li className="text-muted">
                                 <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
@@ -126,22 +126,22 @@ export default function App() {
                         <MDBTableBody>
                             <tr>
                                 <th scope="row">1</th>
-                                <td>Pro Package</td>
+                                <td>Wasa Tank</td>
                                 <td>4</td>
                                 <td>$200</td>
                                 <td>$800</td>
                             </tr>
                             <tr>
                                 <th scope="row">2</th>
-                                <td>Web hosting</td>
+                                <td>Concrite</td>
                                 <td>1</td>
-                                <td>$10</td>
-                                <td>$10</td>
+                                <td>$500</td>
+                                <td>$500</td>
                             </tr>
                             <tr>
                                 <th scope="row">3</th>
-                                <td>Consulting</td>
-                                <td>1 year</td>
+                                <td>Reserve Tank</td>
+                                <td>1</td>
                                 <td>$300</td>
                                 <td>$300</td>
                             </tr>
@@ -156,16 +156,16 @@ export default function App() {
                         </MDBCol>
                         <MDBCol xl="3">
                         <MDBTypography listUnStyled>
-                            <li className="text-muted ms-3">
-                            <span class="text-black me-4">SubTotal</span>$1110
+                            <li className="text-muted ms-5">
+                            <span class="text-black me-4">SubTotal</span>$1600
                             </li>
-                            <li className="text-muted ms-3 mt-2">
-                            <span class="text-black me-4">Tax(15%)</span>$111
+                            <li className="text-muted ms-5 mt-2">
+                            <span class="text-black me-4">Tax(15%)</span>$240
                             </li>
                         </MDBTypography>
                         <p className="text-black float-start">
                             <span className="text-black me-3"> Total Amount</span>
-                            <span style={{ fontSize: "25px" }}>$1221</span>
+                            <span style={{ fontSize: "25px" }}>$1840</span>
                         </p>
                         </MDBCol>
                     </MDBRow>
