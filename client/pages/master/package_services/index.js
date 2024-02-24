@@ -17,7 +17,7 @@ import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 const Package_Service = () => {
     let emptyPackage = {
         id: 0,
-        name: '',
+        service_name: '',
         pkg_details: [],
     };
 
@@ -71,9 +71,9 @@ const Package_Service = () => {
 
         console.log("PPPP1",packageData)
 
-        if( packageData.name && packageData.pkg_details, packageData._id) {
+        if( packageData.service_name && packageData.pkg_details, packageData._id) {
             PackageService.editPackage(
-                packageData.name,
+                packageData.service_name,
                 packageData.pkg_details,
                 packageData._id,
             ).then(() => {
@@ -81,9 +81,9 @@ const Package_Service = () => {
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Package is Updated', life: 3000 });
             })
-        } else if( packageData.name && packageData.pkg_details.length != 0 ) {
+        } else if( packageData.service_name && packageData.pkg_details.length != 0 ) {
             PackageService.postPackage(
-                packageData.name,
+                packageData.service_name,
                 packageData.pkg_details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
@@ -149,7 +149,7 @@ const Package_Service = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.service_name}
             </>
         );
     }
@@ -315,14 +315,14 @@ const Package_Service = () => {
                         <div className="field">
                             <label htmlFor="packageData">Package Name</label>
                             <InputText 
-                                id="name" 
-                                value={packageData.name} 
-                                onChange={(e) => onInputChange(e, "name")} 
+                                id="service_name" 
+                                value={packageData.service_name} 
+                                onChange={(e) => onInputChange(e, "service_name")} 
                                 required 
                                 autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !packageData.name })} 
+                                className={classNames({ 'p-invalid': submitted && !packageData.service_name })} 
                             />
-                            {submitted && !packageData.name && <small className="p-invalid">
+                            {submitted && !packageData.service_name && <small className="p-invalid">
                                 Package Name is required.
                             </small>} 
                         </div> 

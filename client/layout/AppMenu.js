@@ -27,6 +27,12 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-pencil',
                     to: '/pages/manager_panel'
                 },
+                {
+                    label: 'Team Information',
+                    icon: 'pi pi-fw pi-users',
+                    to: '/pages/team_info'
+                },
+
                 // {
                 //     label: 'Timeline',
                 //     icon: 'pi pi-fw pi-calendar',
