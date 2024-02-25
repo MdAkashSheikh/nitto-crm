@@ -23,7 +23,7 @@ import { TeamInfoService } from '../../../demo/service/TeamInfoService';
 const Manager_Panel = () => {
     let managerInfo = {
         id: 0,
-        follows: [{id: 0, aid: 0, add1: '', priority: '', potential: '', followDate: '', ptime: '', feedback: ''}]
+        follows: {id: 0, aid: 0, add1: '', priority: '', potential: '', followDate: '', ptime: '', feedback: ''}
     };
 
     let customerInfo = {
@@ -107,11 +107,25 @@ const Manager_Panel = () => {
 
     const saveCustomerData = () => {
         setSubmitted(true);
-
-        if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead) {
+        if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead && customer._id) {
+            console.log('EDIT CUSTOMER', customer._id)
+            CustomerInformationService.editfCustomer(
+                customer.address,
+                customer.service,
+                customer.slot,
+                customer.team_member,
+                customer.team_lead,
+                customer._id
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setCustomerDaialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer Updated', life: 3000 })
+            })
+        }
+        else if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead) {
             console.log('OK1')
             CustomerInformationService.postfCustomer(
-                customer.name,
+                managerData.name,
                 customer.address,
                 customer.service,
                 customer.slot,
@@ -131,6 +145,12 @@ const Manager_Panel = () => {
         setDataDialog(true);
         setOne(1);
     };
+
+    const editFollowDat = (managerData) => {
+        setManagerData(managerData);
+        setDataDialog(true);
+        setOne(1);
+    }
 
     const confirmDeleteData = (managerData) => {
         setManagerData(managerData);
@@ -305,11 +325,19 @@ const Manager_Panel = () => {
     }
 
     const coustomerData = (customer) => {
-        setCustomer({ ...customer });
         setManagerData({ ...customer})
         setCustomerDaialog(true);
         setCheck(1)
     };
+
+    const editCustomerData = (customer) => {
+        console.log("Check Customer", customer)
+        const filteredData = customerDatas.filter(item => item.customerId == customer._id);
+        setCustomer(...filteredData);
+        setManagerData({...customer });
+        setCustomerDaialog(true);
+        setCheck(1);
+    }
 
 
     const actionBodyTemplate = (rowData) => {
@@ -318,8 +346,8 @@ const Manager_Panel = () => {
         if(rowData.follows.length > 0 && filData !=undefined && filData.length > 0  ) {
             return (
                 <>
-                    <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => followDate(rowData)} />
-                    <Button icon="pi pi-pencil" severity="success" rounded onClick={() => coustomerData(rowData)} />
+                    <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editFollowDat(rowData)} />
+                    <Button icon="pi pi-pencil" severity="success" rounded onClick={() => editCustomerData(rowData)} />
                 </>
             );
         } else if(rowData.follows.length > 0 && (filData == undefined || filData?.length == 0)) {
@@ -333,7 +361,7 @@ const Manager_Panel = () => {
             return(
                 <>
                     <Button icon="pi pi-pencil" severity="warning" rounded className="mr-2" onClick={() => followDate(rowData)} />
-                    <Button icon="pi pi-pencil" severity="success" rounded onClick={() => coustomerData(rowData)} />
+                    <Button icon="pi pi-pencil" severity="success" rounded onClick={() => editCustomerData(rowData)} />
                 </>
             )
         } else {
@@ -410,7 +438,7 @@ const Manager_Panel = () => {
         )
     }
 
-    console.log('Customer Data', customerDatas);
+    console.log('follow Data', managerData);
 
     return (
         <div className="grid crud-demo">
@@ -648,11 +676,9 @@ const Manager_Panel = () => {
                                     options={addressList}
                                     placeholder="Select a Service"
                                     required
-                                    className={classNames({
-                                        "p-invalid": submitted && !customer.address,
-                                    })}
+                                    className={classNames({ "p-invalid": submitted && customer.address.length < 1 || customer.address == undefined })}
                                 />
-                                {submitted && !customer.address && (
+                                {submitted && customer.address.length < 1 || customer.address == undefined && (
                                     <small className="p-invalid">
                                         Address is required.
                                     </small>
@@ -714,9 +740,9 @@ const Manager_Panel = () => {
                                     placeholder="Select Team Member" 
                                     maxSelectedLabels={3} 
                                     display="chip"
-                                    className={classNames({ 'p-invalid': submitted && customer.team_member.length === 0 })}
+                                    className={classNames({ 'p-invalid': submitted && customer.team_member == undefined })}
                                 />
-                                {submitted && customer.team_member.length === 0 && <small className="p-invalid">
+                                {submitted && customer.team_member == undefined && <small className="p-invalid">
                                     Team Member is required.
                                 </small>} 
                             </div>

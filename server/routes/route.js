@@ -14,7 +14,8 @@ const {
     toggleCustomerInfo,
     editManagerPanel,
     postfCustomer,
-    getfCustomer
+    getfCustomer,
+    editfCustomer
 } = require('../controllers/customerInfo');
 
 const { 
@@ -198,6 +199,7 @@ router.delete('/delete-customer-info/:id', deleteCustomerInfo);
 router.post('/toggle-customer-info/:id', toggleCustomerInfo);
 router.post('/edit-manager-panel/:id', editManagerPanel);
 router.post('/post-fcustomer', postfCustomer);
+router.post('/edit-fcustomer/:id', editfCustomer)
 router.get('/get-fcustomer', getfCustomer);
 
 /* -------------------------------- */
