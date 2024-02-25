@@ -112,14 +112,31 @@ const editManagerPanel = async(req, res) => {
 
 //POST Conver to Customer
 const postfCustomer = async(req, res) => {
-    
+    const { name, address, service, slot, team_member, team_lead, customerId } = req.body;
     try {
-        await convertCustomerSc.create(req.body);
-        res.status(201).json({
-            message: 'Customer Created'
-        })
+        await convertCustomerSc.create({
+            name, address, service, slot, team_member, team_lead, customerId
+        });
+        res.status(201).send(req.body)
     } catch (error) {
         res.status(400).json({ message: error.message })
+    }
+}
+
+const editfCustomer = async(req, res) => {
+    const id = req.params.id;
+    const { address, service, slot, team_member, team_lead } = req.body;
+
+    try {
+        const oneData = await convertCustomerSc.findByIdAndUpdate(id, {
+            address, service, slot, team_member, team_lead
+        })
+        res.status(200).send(oneData);
+
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        })
     }
 }
 
@@ -146,5 +163,6 @@ module.exports = {
     editManagerPanel,
     
     postfCustomer,
+    editfCustomer,
     getfCustomer,
 }
