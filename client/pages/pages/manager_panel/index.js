@@ -23,7 +23,7 @@ import { TeamInfoService } from '../../../demo/service/TeamInfoService';
 const Manager_Panel = () => {
     let managerInfo = {
         id: 0,
-        follows: {id: 0, aid: 0, add1: '', priority: '', potential: '', followDate: '', ptime: '', feedback: ''}
+        follows: {id: 0, aid: 0, add1: '', priority: '', potential: '', followDate: '', feedback: ''}
     };
 
     let customerInfo = {
@@ -147,7 +147,8 @@ const Manager_Panel = () => {
     };
 
     const editFollowDat = (managerData) => {
-        setManagerData(managerData);
+        console.log('MANAGER DATA------->',managerData)
+        setManagerData({...managerData});
         setDataDialog(true);
         setOne(1);
     }
@@ -325,6 +326,7 @@ const Manager_Panel = () => {
     }
 
     const coustomerData = (customer) => {
+        setCustomer(customerInfo)
         setManagerData({ ...customer})
         setCustomerDaialog(true);
         setCheck(1)
@@ -437,8 +439,6 @@ const Manager_Panel = () => {
             </div>
         )
     }
-
-    console.log('follow Data', managerData);
 
     return (
         <div className="grid crud-demo">
@@ -740,9 +740,9 @@ const Manager_Panel = () => {
                                     placeholder="Select Team Member" 
                                     maxSelectedLabels={3} 
                                     display="chip"
-                                    className={classNames({ 'p-invalid': submitted && customer.team_member == undefined })}
+                                    className={classNames({ 'p-invalid': submitted && customer.team_member.length < 1 || customer.team_member == undefined })}
                                 />
-                                {submitted && customer.team_member == undefined && <small className="p-invalid">
+                                {submitted && customer.team_member.length < 1 || customer.team_member == undefined && <small className="p-invalid">
                                     Team Member is required.
                                 </small>} 
                             </div>
