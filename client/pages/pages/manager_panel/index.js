@@ -22,7 +22,6 @@ import { TeamInfoService } from '../../../demo/service/TeamInfoService';
 
 const Manager_Panel = () => {
     let managerInfo = {
-        id: 0,
         follows: {id: 0, aid: 0, add1: '', priority: '', potential: '', followDate: '', feedback: ''}
     };
 
@@ -30,7 +29,7 @@ const Manager_Panel = () => {
         customerId:'', address: '', service: '', customerName: '', price: '', slot: '', team_member: [], team_lead: ''
     }
 
-    const dataArr = [];
+
     const [managerDatas, setManagerDatas] = useState(null);
     const [customerDatas, setCustomerDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
@@ -90,12 +89,10 @@ const Manager_Panel = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        dataArr.push(managerData.follows)
-        console.log("PPPPPPPPPPPP", typeof dataArr)
 
-        if( dataArr, managerData._id ) {
+        if( managerData.follows, managerData._id ) {
             CustomerInformationService.editManagerPanel(
-                dataArr,
+                managerData.follows,
                 managerData._id
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
@@ -202,7 +199,9 @@ const Manager_Panel = () => {
     const onAddressChange = (e, prev_address) => {
         let id1 = prev_address?.filter(item => item.add == e.value)?.map(item=> item.id).toString();
         const num = Math.random().toString().slice(2);
+        console.log(managerData, "MANAGE DATA")
         let _infoData = {...managerData };
+        _infoData.follows = {}
         _infoData.follows['id'] = num;
         _infoData.follows['aid'] = id1;
         _infoData.follows['add1'] = e.value;
@@ -211,7 +210,7 @@ const Manager_Panel = () => {
 
     const onDateChange = (e) => {
         let _manageData = {...managerData };
-        _manageData.follows = {followDate: e.value};
+        _manageData.follows.followDate = e.value;
         setManagerData(_manageData);
     }
 
@@ -345,21 +344,21 @@ const Manager_Panel = () => {
     const actionBodyTemplate = (rowData) => {
        
         const filData = customerDatas?.filter(item => item.customerId == rowData._id)
-        if(rowData.follows.length > 0 && filData !=undefined && filData.length > 0  ) {
+        if(Object.keys(rowData.follows).length > 0 && filData !=undefined && filData.length > 0  ) {
             return (
                 <>
                     <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editFollowDat(rowData)} />
                     <Button icon="pi pi-pencil" severity="success" rounded onClick={() => editCustomerData(rowData)} />
                 </>
             );
-        } else if(rowData.follows.length > 0 && (filData == undefined || filData?.length == 0)) {
+        } else if(Object.keys(rowData.follows).length > 0 && (filData == undefined || filData?.length == 0)) {
             return (
                 <>
                     <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => followDate(rowData)} />
                     <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => coustomerData(rowData)} />
                 </>
             );
-        } else if(rowData.follows.length == 0 && (filData !=undefined && filData?.length > 0)) {
+        } else if(Object.keys(rowData.follows).length === 0 && (filData !=undefined && filData?.length > 0)) {
             return(
                 <>
                     <Button icon="pi pi-pencil" severity="warning" rounded className="mr-2" onClick={() => followDate(rowData)} />
@@ -531,7 +530,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Address</label>
                                 <Dropdown
-                                    value={managerData.follows.add1}
+                                    value={managerData.follows?.add1}
                                     name='address'
                                     onChange={(e) => onAddressChange(e, managerData.address)}
                                     options={addressList}
@@ -555,7 +554,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Follow Up Date</label>
                                 <Calendar 
-                                    value={new Date(managerData.follows.followDate)}
+                                    value={new Date(managerData.follows?.followDate)}
                                     name='followDate' 
                                     onChange={(e) => onDateChange(e)} 
                                     dateFormat="dd/mm/yy" 
@@ -566,7 +565,7 @@ const Manager_Panel = () => {
                                         "p-invalid": submitted && !managerData.follows.followDate,
                                     })}
                                 />
-                                {submitted && !managerData.followDate && (
+                                {submitted && !managerData.follows.followDate && (
                                     <small className="p-invalid">
                                         Follow Up Date is required.
                                     </small>
@@ -588,7 +587,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Priority Group</label>
                                 <Dropdown
-                                    value={managerData.follows.priority}
+                                    value={managerData.follows?.priority}
                                     name='priority'
                                     onChange={(e) => onSelectionChange(e, "priority")}
                                     options={priorityList}
@@ -597,10 +596,10 @@ const Manager_Panel = () => {
                                     placeholder="Select a Priority"
                                     required
                                     className={classNames({
-                                        "p-invalid": submitted && !managerData.priority,
+                                        "p-invalid": submitted && !managerData.follows.priority,
                                     })}
                                 />
-                                {submitted && !managerData.priority && (
+                                {submitted && !managerData.follows.priority && (
                                     <small className="p-invalid">
                                         Priority is required.
                                     </small>
@@ -610,7 +609,7 @@ const Manager_Panel = () => {
                             <div className="field col">
                                 <label htmlFor="managerData">Potential Group</label>
                                 <Dropdown
-                                    value={managerData.follows.potential}
+                                    value={managerData.follows?.potential}
                                     name='potential'
                                     onChange={(e) => onSelectionChange(e, "potential")}
                                     options={potentialList}
@@ -619,10 +618,10 @@ const Manager_Panel = () => {
                                     placeholder="Select a Potential"
                                     required
                                     className={classNames({
-                                        "p-invalid": submitted && !managerData.potential,
+                                        "p-invalid": submitted && !managerData.follows.potential,
                                     })}
                                 />
-                                {submitted && !managerData.potential && (
+                                {submitted && !managerData.follows.potential && (
                                     <small className="p-invalid">
                                         Potential is required.
                                     </small>
@@ -635,7 +634,7 @@ const Manager_Panel = () => {
                             <label htmlFor="managerData">Feedback</label>
                             <InputTextarea
                                 id="feedback"
-                                value={managerData.feedback}
+                                value={managerData.follows.feedback}
                                 onChange={(e) =>
                                     onInputChange(e, "feedback")
                                 }

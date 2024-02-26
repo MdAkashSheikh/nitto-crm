@@ -26,7 +26,7 @@ const customerInfoSc = new mongoose.Schema({
         type: String,
     },
     follows: {
-        type: Array,
+        type: Object,
     },
     is_active: {
         type: String,
