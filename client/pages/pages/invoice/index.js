@@ -16,6 +16,16 @@ import {
 } from "mdb-react-ui-kit";
 
 export default function App() {
+
+    const CustomerData = [
+        { name: 'Rahim Ahmed', address: 'Dhaka, Bangladesh', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Karim', price: '2500'}
+    ];
+    
+
+    const printFn = () => {
+        window.print();
+    }
+
     return (
         <MDBContainer className="py-5">
             <MDBCard className="p-4">
@@ -34,6 +44,7 @@ export default function App() {
                         
                         <MDBCol xl="3" className="float-end">
                             <MDBBtn
+                                 onClick={() => printFn()}
                                 color="light"
                                 ripple="dark"
                                 className="text-capitalize border-0"
@@ -118,20 +129,24 @@ export default function App() {
                             <tr>
                             <th scope="col">#</th>
                             <th scope="col">Description</th>
-                            <th scope="col">Qty</th>
                             <th scope="col">Unit Price</th>
                             <th scope="col">Amount</th>
                             </tr>
                         </MDBTableHead>
                         <MDBTableBody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Wasa Tank</td>
-                                <td>4</td>
-                                <td>$200</td>
-                                <td>$800</td>
+                        {
+                            // console.log(CustomerData)
+                            CustomerData?.map((item, i) => (
+                                <tr index={i}>
+                                    <th scope="row">{i+1}</th>
+                                    <td>{item.service}</td>
+                                    <td>${item.price}</td>
+                                <td>${item.price}</td>
                             </tr>
-                            <tr>
+                            )) 
+                        }
+                           
+                            {/* <tr>
                                 <th scope="row">2</th>
                                 <td>Concrite</td>
                                 <td>1</td>
@@ -144,7 +159,7 @@ export default function App() {
                                 <td>1</td>
                                 <td>$300</td>
                                 <td>$300</td>
-                            </tr>
+                            </tr> */}
                         </MDBTableBody>
                         </MDBTable>
                     </MDBRow>
