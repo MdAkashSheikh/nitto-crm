@@ -20,7 +20,11 @@ export default function App() {
     const CustomerData = [
         { name: 'Rahim Ahmed', address: 'Dhaka, Bangladesh', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Karim', price: '2500'}
     ];
+
+    const CustomerInfo = { name: 'Rahim Ahmed', address: 'Dhaka, Bangladesh', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Karim', price: '2500'}
     
+    const vat = CustomerInfo.price * 0.15;
+
 
     const printFn = () => {
         window.print();
@@ -172,15 +176,15 @@ export default function App() {
                         <MDBCol xl="3">
                         <MDBTypography listUnStyled>
                             <li className="text-muted ms-5">
-                            <span class="text-black me-4">SubTotal</span>$1600
+                            <span class="text-black me-4">SubTotal</span>${CustomerInfo.price}
                             </li>
                             <li className="text-muted ms-5 mt-2">
-                            <span class="text-black me-4">Tax(15%)</span>$240
+                            <span class="text-black me-4">Tax(15%)</span>${vat}
                             </li>
                         </MDBTypography>
                         <p className="text-black float-start">
                             <span className="text-black me-3"> Total Amount</span>
-                            <span style={{ fontSize: "25px" }}>$1840</span>
+                            <span style={{ fontSize: "25px" }}>${CustomerInfo.price - 0 + CustomerInfo.price * 0.15}</span>
                         </p>
                         </MDBCol>
                     </MDBRow>
