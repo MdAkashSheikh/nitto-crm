@@ -1,5 +1,6 @@
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
+// import AppConfig from '../../layout/AppConfig';
 import React from "react";
 import {
     MDBCard,
@@ -15,13 +16,15 @@ import {
     MDBTableBody,
 } from "mdb-react-ui-kit";
 
-export default function App() {
+export default function Invoice({props}) {
+
+    console.log('PROPS',props)
 
     const CustomerData = [
-        { name: 'Rahim Ahmed', address: 'Dhaka, Bangladesh', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Karim', price: '2500'}
+        { name: 'Rahim Ahmed', address: 'Mirpur, Dhaka', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Karim', price: '4500'}
     ];
 
-    const CustomerInfo = { name: 'Rahim Ahmed', address: 'Dhaka, Bangladesh', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Karim', price: '2500'}
+    const CustomerInfo = { name: 'Rahim Ahmed', address: 'Mirpur, Dhaka', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Firoz', price: '4500'}
     
     const vat = CustomerInfo.price * 0.15;
 
@@ -96,15 +99,19 @@ export default function App() {
                             <li className="text-muted">
                                 <MDBIcon fas icon="phone-alt" /> +8801942000061
                             </li>
-                            <li className="text-muted">CRM - Feroz</li>
+                            <li className="text-muted">CRM - {CustomerInfo.team_lead}</li>
                         </MDBTypography>
                         </MDBCol>
                         <MDBCol xl="4">
-                        <p className="text-muted">Invoice</p>
+                        <p className="text-muted">Customer Info</p>
                         <MDBTypography listUnStyled>
-                        <li className="text-muted">
-                                <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
-                                <span className="fw-bold ms-1">ID:</span>#123-456
+                            <li className="text-muted">
+                                {/* <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} /> */}
+                                <span className="fw-bold ms-1">{CustomerInfo.name}</span>
+                            </li>
+                            <li className="text-muted">
+                                {/* <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} /> */}
+                                <span className="fw-bold ms-1">{CustomerInfo.address}</span>
                             </li>
                             <li className="text-muted">
                                 <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
@@ -207,3 +214,12 @@ export default function App() {
         </MDBContainer>
     );
 }
+
+// Invoice.getLayout = function getLayout(page) {
+//     return (
+//         <React.Fragment>
+//             {page}
+//             <AppConfig simple />
+//         </React.Fragment>
+//     );
+// };

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
@@ -19,6 +20,7 @@ import { PotentialCustomerService } from '../../../demo/service/PotentialCustome
 import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 import { PackageService } from '../../../demo/service/PackageService';
 import { TeamInfoService } from '../../../demo/service/TeamInfoService';
+import Invoice from '../invoice';
 
 const Manager_Panel = () => {
     let managerInfo = {
@@ -117,6 +119,7 @@ const Manager_Panel = () => {
                 setTogleRefresh(!toggleRefresh);
                 setCustomerDaialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer Updated', life: 3000 })
+                onNewPage(managerData._id);
             })
         }
         else if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead) {
@@ -133,6 +136,7 @@ const Manager_Panel = () => {
                 setTogleRefresh(!toggleRefresh);
                 setCustomerDaialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer Created', life: 3000 })
+                onNewPage(managerData._id);
             })
         }
     }
@@ -338,6 +342,11 @@ const Manager_Panel = () => {
         setManagerData({...customer });
         setCustomerDaialog(true);
         setCheck(1);
+    }
+
+    const onNewPage = (id) => {
+        console.log(id)
+        window.open('/pages/invoice', '_blank', 'noreferrer')
     }
 
 
