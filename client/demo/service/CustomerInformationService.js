@@ -48,7 +48,7 @@ export const CustomerInformationService = {
         const data = {
             name, address, service, slot, team_member, team_lead, customerId
         }
-        await axios.post(`${URL}/post-fcustomer`, data);
+        await axios.post(`${URL}/post-fcustomer/customer`, data);
     },
 
     async editfCustomer(address, service, slot, team_member, team_lead, _id) {
