@@ -20,7 +20,8 @@ import { PotentialCustomerService } from '../../../demo/service/PotentialCustome
 import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 import { PackageService } from '../../../demo/service/PackageService';
 import { TeamInfoService } from '../../../demo/service/TeamInfoService';
-import Invoice from '../invoice';
+// import Invoice from '../invoice';
+import Invoice from '../invoice/index';
 
 const Manager_Panel = () => {
     let managerInfo = {
@@ -119,7 +120,7 @@ const Manager_Panel = () => {
                 setTogleRefresh(!toggleRefresh);
                 setCustomerDaialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer Updated', life: 3000 })
-                onNewPage(managerData._id);
+                onNewPage(managerData);
             })
         }
         else if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead) {
@@ -136,7 +137,7 @@ const Manager_Panel = () => {
                 setTogleRefresh(!toggleRefresh);
                 setCustomerDaialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer Created', life: 3000 })
-                onNewPage(managerData._id);
+                onNewPage(managerData);
             })
         }
     }
@@ -344,8 +345,9 @@ const Manager_Panel = () => {
         setCheck(1);
     }
 
-    const onNewPage = (id) => {
-        console.log(id)
+    const onNewPage = (mdata) => {
+        console.log('On New Page',mdata)
+        Invoice(mdata)
         window.open('/pages/invoice', '_blank', 'noreferrer')
     }
 

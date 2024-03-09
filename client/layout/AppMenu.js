@@ -28,6 +28,11 @@ const AppMenu = () => {
                     to: '/pages/manager_panel'
                 },
                 {
+                    label: 'Report Information',
+                    icon: 'pi pi-fw pi-book',
+                    to: '/pages/report_info'
+                },
+                {
                     label: 'Team Information',
                     icon: 'pi pi-fw pi-users',
                     to: '/pages/team_info'

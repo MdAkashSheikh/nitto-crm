@@ -153,6 +153,19 @@ const getfCustomer = async(req, res) => {
     }    
 }
 
+const getfOneCustomer = async(req, res) => {
+    const id = req.params.id;
+    try {
+        const oneData = await convertCustomerSc.findById(id);
+        res.status(200).send(oneData);
+
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
 
 module.exports = {
     postCustomerInfo,
@@ -165,4 +178,5 @@ module.exports = {
     postfCustomer,
     editfCustomer,
     getfCustomer,
+    getfOneCustomer,
 }

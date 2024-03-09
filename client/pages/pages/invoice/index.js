@@ -1,6 +1,6 @@
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
-// import AppConfig from '../../layout/AppConfig';
+import AppConfig from '../../../layout/AppConfig';
 import React from "react";
 import {
     MDBCard,
@@ -16,7 +16,7 @@ import {
     MDBTableBody,
 } from "mdb-react-ui-kit";
 
-export default function Invoice({props}) {
+export default function Invoice(props) {
 
     console.log('PROPS',props)
 
@@ -215,11 +215,11 @@ export default function Invoice({props}) {
     );
 }
 
-// Invoice.getLayout = function getLayout(page) {
-//     return (
-//         <React.Fragment>
-//             {page}
-//             <AppConfig simple />
-//         </React.Fragment>
-//     );
-// };
+Invoice.getLayout = function getLayout(page) {
+    return (
+        <React.Fragment>
+            {page}
+            <AppConfig simple />
+        </React.Fragment>
+    );
+};

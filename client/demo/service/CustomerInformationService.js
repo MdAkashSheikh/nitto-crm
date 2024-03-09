@@ -62,5 +62,10 @@ export const CustomerInformationService = {
     async getfCustomer() {
         const response = await axios.get(`${URL}/get-fcustomer`);
         return response;
+    },
+
+    async getfOneCustomer(id) {
+        const response = await axios.get(`${URL}/get-onecutomer/` + id);
+        return response;
     }
 }

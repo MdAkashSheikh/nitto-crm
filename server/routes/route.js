@@ -15,7 +15,8 @@ const {
     editManagerPanel,
     postfCustomer,
     getfCustomer,
-    editfCustomer
+    editfCustomer,
+    getfOneCustomer
 } = require('../controllers/customerInfo');
 
 const { 
@@ -201,6 +202,7 @@ router.post('/edit-manager-panel/:id', editManagerPanel);
 router.post('/post-fcustomer', postfCustomer);
 router.post('/edit-fcustomer/:id', editfCustomer)
 router.get('/get-fcustomer', getfCustomer);
+router.get('/get-onecutomer/:id', getfOneCustomer);
 
 /* -------------------------------- */
 /*    Team Information Route URL    */
