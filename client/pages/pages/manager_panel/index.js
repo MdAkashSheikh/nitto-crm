@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
@@ -348,7 +348,7 @@ const Manager_Panel = () => {
     const onNewPage = (mdata) => {
         console.log('On New Page',mdata)
         Invoice(mdata)
-        window.open('/pages/invoice', '_blank', 'noreferrer')
+        window.open('/pages/invoice?name=b', '_blank', 'noreferrer')
     }
 
 

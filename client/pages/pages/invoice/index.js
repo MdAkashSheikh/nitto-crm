@@ -2,6 +2,7 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import AppConfig from '../../../layout/AppConfig';
 import React from "react";
+import { useParams, useLocation } from 'react-router-dom';
 import {
     MDBCard,
     MDBCardBody,
@@ -17,6 +18,12 @@ import {
 } from "mdb-react-ui-kit";
 
 export default function Invoice(props) {
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const paramValue = urlParams.get('name');
+    console.log('ache',paramValue);
+
 
     console.log('PROPS',props)
 
