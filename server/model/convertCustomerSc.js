@@ -29,6 +29,14 @@ const convertCustomerSc = new mongoose.Schema({
         type: String,
         required: true,
     },
+    confirm_status: {
+        type: String,
+        default: 'confirm'
+    },
+    cancel_cause: {
+        type: String,
+        default: '',
+    },
     is_active: {
         type: String,
         default: "1",

@@ -166,6 +166,32 @@ const getfOneCustomer = async(req, res) => {
     }
 }
 
+const cancellDeal = async(req, res) => {
+    const id = req.params.id;
+    const cancel_cause = req.body.cancel_cause;
+    const confirm_status = 'cancelled';
+    const is_active = '0';
+
+    try {
+        // const customer = await convertCustomerSc.findById(id);
+
+        const oneData = await convertCustomerSc.findByIdAndUpdate(id, {
+            cancel_cause, confirm_status, is_active
+        })
+
+        // const edit = await customerInfoSc.findByIdAndUpdate(customer.customerId, {
+        //     is_active
+        // })
+
+        res.status(200).send(oneData);
+
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
 
 module.exports = {
     postCustomerInfo,
@@ -179,4 +205,5 @@ module.exports = {
     editfCustomer,
     getfCustomer,
     getfOneCustomer,
+    cancellDeal,
 }

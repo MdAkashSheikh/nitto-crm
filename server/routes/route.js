@@ -16,7 +16,8 @@ const {
     postfCustomer,
     getfCustomer,
     editfCustomer,
-    getfOneCustomer
+    getfOneCustomer,
+    cancellDeal
 } = require('../controllers/customerInfo');
 
 const { 
@@ -199,10 +200,12 @@ router.get('/get-customer-info', getCustomerInfo);
 router.delete('/delete-customer-info/:id', deleteCustomerInfo);
 router.post('/toggle-customer-info/:id', toggleCustomerInfo);
 router.post('/edit-manager-panel/:id', editManagerPanel);
+
 router.post('/post-fcustomer', postfCustomer);
 router.post('/edit-fcustomer/:id', editfCustomer)
 router.get('/get-fcustomer', getfCustomer);
 router.get('/get-onecutomer/:id', getfOneCustomer);
+router.post('/cancel-deal/:id', cancellDeal);
 
 /* -------------------------------- */
 /*    Team Information Route URL    */

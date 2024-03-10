@@ -1,8 +1,7 @@
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import AppConfig from '../../../layout/AppConfig';
-import React from "react";
-import { useParams, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
 import {
     MDBCard,
     MDBCardBody,
@@ -16,17 +15,28 @@ import {
     MDBTableHead,
     MDBTableBody,
 } from "mdb-react-ui-kit";
+import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
+import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 
-export default function Invoice(props) {
+export default function Invoice() {
 
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const paramValue = urlParams.get('name');
+    const paramValue = urlParams.get('id');
     console.log('ache',paramValue);
 
+    const [invoceDatas, setInvoiceDatas] = useState(null);
+    const [serviceDatas, setServiceDatas] = useState(null);
 
-    console.log('PROPS',props)
 
+    useEffect(() => {
+        CustomerInformationService.getfCustomer().then((res) => setInvoiceDatas(res.data.AllData));
+        ServiceGroupService.getService().then((res) => setServiceDatas(res.data.AllData));
+
+    }, [])
+
+    console.log('SERVICE DATA',serviceDatas)
+    
     const CustomerData = [
         { name: 'Rahim Ahmed', address: 'Mirpur, Dhaka', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Karim', price: '4500'}
     ];
@@ -35,13 +45,29 @@ export default function Invoice(props) {
     
     const vat = CustomerInfo.price * 0.15;
 
+    const oneData = invoceDatas?.filter(item => item.customerId == paramValue)
+
+    console.log('One DATA', oneData)
+
+    const serviceName = oneData?.map(item => item.service).toString();
+
+
+    const oneService = serviceDatas?.filter(item => item.service_name == serviceName)
+
+
+    console.log('Service DATA', oneService)
+
+    let bPrice = oneService?.map(item => item.base_price).toString();
+
+    console.log(bPrice)
+
 
     const printFn = () => {
         window.print();
     }
 
     return (
-        <MDBContainer className="py-5">
+        <MDBContainer className="py-5 container">
             <MDBCard className="p-4">
                 <MDBCardBody>
                     <MDBContainer className="mb-2 mt-3">
@@ -57,29 +83,8 @@ export default function Invoice(props) {
                         </MDBCol>
                         
                         <MDBCol xl="3" className="float-end">
-                            <MDBBtn
-                                 onClick={() => printFn()}
-                                color="light"
-                                ripple="dark"
-                                className="text-capitalize border-0"
-                            >
-                            <MDBIcon fas icon="print" color="primary" className="me-1" />
-                                Print
-                            </MDBBtn>
-                            <MDBBtn
-                                color="light"
-                                ripple="dark"
-                                className="text-capitalize border-0 ms-2"
-                            >
-                            <MDBIcon
-                                far
-                                icon="file-pdf"
-                                color="danger"
-                                className="me-1"
-                            />
-                                Export
-                            </MDBBtn>
-                            <hr />
+                            <h1 className='bold'>Money Receipt</h1>
+                            <p style={{ color: "#5d9fc5" }}>ID - 00000456</p>
                         </MDBCol>
                         </MDBRow>
                     </MDBContainer>
@@ -107,6 +112,9 @@ export default function Invoice(props) {
                                 <MDBIcon fas icon="phone-alt" /> +8801942000061
                             </li>
                             <li className="text-muted">CRM - {CustomerInfo.team_lead}</li>
+                            <li className="text-muted">
+                                <span className="fw-bold ms-1">Creation Date: </span>Jan 23,2024
+                            </li>
                         </MDBTypography>
                         </MDBCol>
                         <MDBCol xl="4">
@@ -119,14 +127,6 @@ export default function Invoice(props) {
                             <li className="text-muted">
                                 {/* <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} /> */}
                                 <span className="fw-bold ms-1">{CustomerInfo.address}</span>
-                            </li>
-                            <li className="text-muted">
-                                <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
-                                <span className="fw-bold ms-1">ID:</span>#123-456
-                            </li>
-                            <li className="text-muted">
-                                <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
-                                <span className="fw-bold ms-1">Creation Date: </span>Jan 23,2024
                             </li>
                             {/* <li className="text-muted">
                                 <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
@@ -154,13 +154,13 @@ export default function Invoice(props) {
                         <MDBTableBody>
                         {
                             // console.log(CustomerData)
-                            CustomerData?.map((item, i) => (
+                            oneData?.map((item, i) => (
                                 <tr index={i}>
                                     <th scope="row">{i+1}</th>
                                     <td>{item.service}</td>
-                                    <td>${item.price}</td>
-                                <td>${item.price}</td>
-                            </tr>
+                                    <td>${bPrice}</td>
+                                     <td>${bPrice}</td>
+                                </tr>
                             )) 
                         }
                            
@@ -190,15 +190,15 @@ export default function Invoice(props) {
                         <MDBCol xl="3">
                         <MDBTypography listUnStyled>
                             <li className="text-muted ms-5">
-                            <span class="text-black me-4">SubTotal</span>${CustomerInfo.price}
+                            <span class="text-black me-4">SubTotal</span>${bPrice}
                             </li>
                             <li className="text-muted ms-5 mt-2">
-                            <span class="text-black me-4">Tax(15%)</span>${vat}
+                            <span class="text-black me-4">Tax(15%)</span>${bPrice * 0.15}
                             </li>
                         </MDBTypography>
                         <p className="text-black float-start">
                             <span className="text-black me-3"> Total Amount</span>
-                            <span style={{ fontSize: "25px" }}>${CustomerInfo.price - 0 + CustomerInfo.price * 0.15}</span>
+                            <span style={{ fontSize: "25px" }}>${bPrice - 0 + bPrice * 0.15}</span>
                         </p>
                         </MDBCol>
                     </MDBRow>
@@ -208,11 +208,14 @@ export default function Invoice(props) {
                             <p>Thank you for your purchase</p>
                         </MDBCol>
                         <MDBCol xl="2">
-                            <MDBBtn
-                                className="text-capitalize"
-                                style={{ backgroundColor: "#60bdf3" }}
+                        <MDBBtn
+                                 onClick={() => printFn()}
+                                color="light"
+                                ripple="dark"
+                                className="text-capitalize border-0"
                             >
-                                Pay Now
+                            <MDBIcon fas icon="print" color="primary" className="me-1" />
+                                Print
                             </MDBBtn>
                         </MDBCol>
                     </MDBRow>

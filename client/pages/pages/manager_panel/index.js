@@ -29,7 +29,7 @@ const Manager_Panel = () => {
     };
 
     let customerInfo = {
-        customerId:'', address: '', service: '', customerName: '', price: '', slot: '', team_member: [], team_lead: ''
+        customerId:'', address: '', service: '', customerName: '', price: '', slot: '', team_member: [], team_lead: '', cancel_cause: ''
     }
 
 
@@ -37,6 +37,7 @@ const Manager_Panel = () => {
     const [customerDatas, setCustomerDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [customerDaialog, setCustomerDaialog] = useState(false)
+    const [cancelDialog, setCancelDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
     const [managerData, setManagerData] = useState(managerInfo);
     const [selectedDatas, setSelectedDatas] = useState(null);
@@ -82,6 +83,13 @@ const Manager_Panel = () => {
     const hideCusDialog = () => {
         setSubmitted(false);
         setCustomerDaialog(false);
+        setCancelDialog(false)
+    }
+
+
+    const hideCancelDialog = () => {
+        setSubmitted(false);
+        setCancelDialog(false);
     }
 
     const hideDeleteProductDialog = () => {
@@ -91,8 +99,6 @@ const Manager_Panel = () => {
 
     const saveData = () => {
         setSubmitted(true);
-
-
         if( managerData.follows, managerData._id ) {
             CustomerInformationService.editManagerPanel(
                 managerData.follows,
@@ -104,6 +110,21 @@ const Manager_Panel = () => {
             })
         }
     };
+
+    const saveCancelData = () => {
+        setSubmitted(true);
+
+        if(customer.cancel_cause && customer._id) {
+            CustomerInformationService.cancelDeal(
+                customer.cancel_cause,
+                customer._id
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setCancelDialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Deal Cancel', life: 3000 })
+            })
+        }
+    }
 
     const saveCustomerData = () => {
         setSubmitted(true);
@@ -120,7 +141,7 @@ const Manager_Panel = () => {
                 setTogleRefresh(!toggleRefresh);
                 setCustomerDaialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer Updated', life: 3000 })
-                onNewPage(managerData);
+                onNewPage(managerData._id);
             })
         }
         else if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead) {
@@ -137,7 +158,7 @@ const Manager_Panel = () => {
                 setTogleRefresh(!toggleRefresh);
                 setCustomerDaialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer Created', life: 3000 })
-                onNewPage(managerData);
+                onNewPage(managerData._id);
             })
         }
     }
@@ -191,6 +212,14 @@ const Manager_Panel = () => {
         setCustomer(_infoData);
     }
 
+    const onCancelChange = (e, name) => {
+        const val = (e.target && e.target.value) || '';
+        let _infoData = {...customer };
+        _infoData[`${name}`] = val;
+
+        setCustomer(_infoData);
+    };
+
     // const onSelectionChange1 = (e, name) => {
     //     let data = {...customer };
     //     const newVal = mteam?.filter(item => e.value.includes(item.service_name));
@@ -200,6 +229,7 @@ const Manager_Panel = () => {
     //     const data3 = {...customer} 
     //     setCustomer(data);
     // }
+
 
     const onAddressChange = (e, prev_address) => {
         let id1 = prev_address?.filter(item => item.add == e.value)?.map(item=> item.id).toString();
@@ -336,19 +366,22 @@ const Manager_Panel = () => {
         setCheck(1)
     };
 
-    const editCustomerData = (customer) => {
+    const editCustomerData = (customer, ch1) => {
         console.log("Check Customer", customer)
         const filteredData = customerDatas.filter(item => item.customerId == customer._id);
         setCustomer(...filteredData);
         setManagerData({...customer });
-        setCustomerDaialog(true);
+        if(ch1 == 'edit') {
+            setCustomerDaialog(true);
+        } else {
+            setCancelDialog(true);
+        }
         setCheck(1);
     }
 
-    const onNewPage = (mdata) => {
-        console.log('On New Page',mdata)
-        Invoice(mdata)
-        window.open('/pages/invoice?name=b', '_blank', 'noreferrer')
+    const onNewPage = (id) => {
+       
+        window.open(`/pages/invoice?id=${id}`, '_blank', 'noreferrer')
     }
 
 
@@ -358,29 +391,33 @@ const Manager_Panel = () => {
         if(Object.keys(rowData.follows).length > 0 && filData !=undefined && filData.length > 0  ) {
             return (
                 <>
-                    <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editFollowDat(rowData)} />
-                    <Button icon="pi pi-pencil" severity="success" rounded onClick={() => editCustomerData(rowData)} />
+                    <Button label='Follow' severity="success"  className="m-1" onClick={() => editFollowDat(rowData)} />
+                    <Button label='Make deal' severity="success" className="m-1"  onClick={() => editCustomerData(rowData, 'edit')} />
+                    <Button label='Deal Cancel' severity="danger" className="m-1" onClick={() => editCustomerData(rowData, 'cancel')} />
                 </>
             );
         } else if(Object.keys(rowData.follows).length > 0 && (filData == undefined || filData?.length == 0)) {
             return (
                 <>
-                    <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => followDate(rowData)} />
-                    <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => coustomerData(rowData)} />
+                    <Button label='Follow' severity="success"  className="m-1" onClick={() => followDate(rowData)} />
+                    <Button label='Make deal' severity="warning" className="m-1" onClick={() => coustomerData(rowData, 'edit')} />
+                    <Button label='Deal Cancel' disabled severity="danger" className="m-1" onClick={() => editCustomerData(rowData, 'cancel')} />
                 </>
             );
         } else if(Object.keys(rowData.follows).length === 0 && (filData !=undefined && filData?.length > 0)) {
             return(
                 <>
-                    <Button icon="pi pi-pencil" severity="warning" rounded className="mr-2" onClick={() => followDate(rowData)} />
-                    <Button icon="pi pi-pencil" severity="success" rounded onClick={() => editCustomerData(rowData)} />
+                    <Button label='Follow' severity="warning"  className="m-1" onClick={() => followDate(rowData)} />
+                    <Button label='Make deal' severity="success" className="m-1" onClick={() => editCustomerData(rowData, 'edit')} />
+                    <Button label='Deal Cancel' severity="danger" className="m-1" onClick={() => editCustomerData(rowData, 'cancel')} />
                 </>
             )
         } else {
             return(
                 <>
-                    <Button icon="pi pi-pencil" severity="warning" rounded className="mr-2" onClick={() => followDate(rowData)} />
-                    <Button icon="pi pi-pencil" severity="warning" rounded onClick={() => coustomerData(rowData)} />
+                    <Button label='Follow' severity="warning"  className="m-1" onClick={() => followDate(rowData)} />
+                    <Button label='Make deal' severity="warning" className="m-1" onClick={() => coustomerData(rowData)} />
+                    <Button label='Deal Cancel' disabled severity="danger" className="m-1" onClick={() => editCustomerData(rowData)} />
                 </>
             )
         }
@@ -419,6 +456,13 @@ const Manager_Panel = () => {
         </>
     )
 
+    const cancelDialogFooter = (
+        <>
+            <Button label="Cancel" icon="pi pi-times" text onClick={hideCancelDialog} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveCancelData} />
+        </>
+    )
+
     const deleteDataDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductDialog} />
@@ -449,6 +493,7 @@ const Manager_Panel = () => {
             </div>
         )
     }
+
 
     return (
         <div className="grid crud-demo">
@@ -776,6 +821,32 @@ const Manager_Panel = () => {
                                     </small>
                                 )}
                             </div>
+                        </div>
+
+                    </Dialog>
+
+                    <Dialog
+                        visible={cancelDialog}
+                        style={{ width: "550px" }}
+                        header="Cancel Customer"
+                        modal
+                        className="p-fluid"
+                        footer={cancelDialogFooter}
+                        onHide={hideCusDialog}
+                    >
+
+                        <div className="field">
+                            <label htmlFor="customer">Cancelling Cause</label>
+                            <InputTextarea
+                                id="cancel_cause"
+                                value={customer.cancel_cause}
+                                onChange={(e) =>
+                                    onCancelChange(e, "cancel_cause")
+                                }
+                                required
+                                rows={3}
+                                cols={20}
+                            />
                         </div>
 
                     </Dialog>

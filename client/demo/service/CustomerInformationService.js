@@ -67,5 +67,9 @@ export const CustomerInformationService = {
     async getfOneCustomer(id) {
         const response = await axios.get(`${URL}/get-onecutomer/` + id);
         return response;
+    },
+
+    async cancelDeal(cancel_cause, id) {
+        axios.post(`${URL}/cancel-deal/` + id, { cancel_cause });
     }
 }

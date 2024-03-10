@@ -147,8 +147,8 @@ const Report_Info = () => {
     const fatherNameBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">fatherName</span>
-                {rowData.father_name}
+                <span className="p-column-title">Address</span>
+                {rowData.address}
             </>
         );
     }
@@ -157,16 +157,7 @@ const Report_Info = () => {
         return (
             <>
                 <span className="p-column-title">motherName</span>
-                {rowData.mother_name}
-            </>
-        );
-    }
-
-    const phoneBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">motherName</span>
-                {rowData.phone}
+                {rowData.confirm_status}
             </>
         );
     }
@@ -208,13 +199,13 @@ const Report_Info = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <Button
-                    label="Add Report"
-                    icon="pi pi-plus"
-                    severity="sucess"
-                    className="mr-2"
-                    onClick={openNew}
-                />
+            {/* <Button
+                label="Add Report"
+                icon="pi pi-plus"
+                severity="sucess"
+                className="mr-2"
+                onClick={openNew}
+            /> */}
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -234,40 +225,6 @@ const Report_Info = () => {
             <Button label="Yes" icon="pi pi-check" text onClick={deleteData} />
         </>
     );
-
-    const imageShow = () => {
-        if(reportData.photo) {
-            return reportData.photo.map((item, i) => {
-                return (
-                    <div className="p-fileupload-content px-1 py-1" key={i}>
-                        <div>
-                            <div>
-                                </div>
-                        </div>
-                        <div>
-                            <div className="p-fileupload-row">
-                                <img role="presentation" className="p-fileupload-file-thumbnail mr-2" src={`${URL}/uploads/` + item}  width="50"></img>
-                                <div>
-                                    <span>{item}</span>
-                                    <span className="p-badge p-component p-badge-success p-fileupload-file-badge">Completed</span>
-                                </div>
-                                <div>
-                                    <button type="button" className="p-button p-component p-button-danger p-button-text p-button-rounded p-button-icon-only">
-                                        <span className="p-button-icon p-c pi pi-times" onClick={()=> deleteImage(item, follow._id)}></span>
-                                        <span className="p-button-label p-c">&nbsp;</span><span role="presentation" className="p-ink" style={{height: '42px', width: '42px'}}></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    // <div className='formgrid grid'>
-                    //     <img src={`${URL}/uploads/` + item} width={100} height={60}/>
-                    //     <button className='m-4' onClick={()=> deleteImage(item, follow._id)}>delete</button>
-                    // </div>
-                )
-            })
-        }
-    }
 
     if(reportDatas == null) {
         return (
@@ -326,33 +283,16 @@ const Report_Info = () => {
                             headerStyle={{ minWidth: "5rem" }}
                         ></Column>
                         <Column
-                            field="phone"
-                            header="Phone"
-                            sortable
-                            body={phoneBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
-                        ></Column>
-                        <Column
                             field="father_name"
                             header="Father Name"
                             body={fatherNameBodyTemplate}
                             headerStyle={{ minWidth: "5rem" }}
                         ></Column>
                         <Column
-                            field="mother_name"
-                            header="Mother Name"
+                            field="report_status"
+                            header="Report Status"
                             body={motherNameBodyTemplate}
                             headerStyle={{ minWidth: "5rem" }}
-                        ></Column>
-                        <Column
-                            header="Status"
-                            body={statusBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
-                        ></Column>
-                        <Column
-                            header="Action"
-                            body={actionBodyTemplate}
-                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                     </DataTable>
 
