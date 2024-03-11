@@ -33,10 +33,18 @@ const AppMenu = () => {
                     to: '/pages/report_info'
                 },
                 {
+                    label: 'Invoice Information',
+                    icon: 'pi pi-fw pi-print',
+                    to: '/pages/invoice_info'
+                },
+                {
                     label: 'Team Information',
                     icon: 'pi pi-fw pi-users',
                     to: '/pages/team_info'
                 },
+
+
+                //invoice_info
 
                 // {
                 //     label: 'Timeline',
