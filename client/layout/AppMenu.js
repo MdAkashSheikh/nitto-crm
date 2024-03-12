@@ -23,7 +23,28 @@ const AppMenu = () => {
                     to: '/pages/lead_info1'
                 },
                 {
-                    label: 'Manager Panel',
+                    label: 'Follow Up',
+                    icon: 'pi pi-fw pi-pencil',
+                    to: '/pages/manager_panel'
+                },
+                {
+                    label: 'Invoice Information',
+                    icon: 'pi pi-fw pi-print',
+                    to: '/pages/invoice_info'
+                },
+                {
+                    label: 'Customer',
+                    icon: 'pi pi-fw pi-pencil',
+                    to: '/pages/manager_panel'
+                },
+                {
+                    label: 'Booking',
+                    icon: 'pi pi-fw pi-pencil',
+                    to: '/pages/manager_panel'
+                },
+                
+                {
+                    label: 'Cancel',
                     icon: 'pi pi-fw pi-pencil',
                     to: '/pages/manager_panel'
                 },
@@ -33,14 +54,14 @@ const AppMenu = () => {
                     to: '/pages/report_info'
                 },
                 {
-                    label: 'Invoice Information',
-                    icon: 'pi pi-fw pi-print',
-                    to: '/pages/invoice_info'
-                },
-                {
                     label: 'Team Information',
                     icon: 'pi pi-fw pi-users',
                     to: '/pages/team_info'
+                },
+                {
+                    label: 'Manager Panel',
+                    icon: 'pi pi-fw pi-pencil',
+                    to: '/pages/manager_panel'
                 },
 
 
