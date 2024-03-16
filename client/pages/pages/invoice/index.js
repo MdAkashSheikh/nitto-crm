@@ -209,7 +209,7 @@ export default function Invoice() {
                         </MDBCol>
                         <MDBCol xl="2">
                         <MDBBtn
-                                 onClick={() => printFn()}
+                                onClick={() => printFn()}
                                 color="light"
                                 ripple="dark"
                                 className="text-capitalize border-0"

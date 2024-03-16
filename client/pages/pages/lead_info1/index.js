@@ -21,7 +21,7 @@ const Lead_Info = () => {
         id: 0,
         zone: '',
         name: '',
-        address: [{category: '', address: '', tank_con: '', house_con: ''}],
+        address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ''}],
         phone: '',
         email: '',
         whatsapp: '',
@@ -41,7 +41,7 @@ const Lead_Info = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [msTank, setMSTank] = useState(null);
-    const [mAddress, setMAddress] = useState([{category: '', address: '', tank_con: '', house_con: ''}])
+    const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ''}])
 
 
     useEffect(() => {
@@ -407,7 +407,7 @@ const Lead_Info = () => {
                     >
                             <Formik
                                 initialValues={{
-                                    address: !infoData.address?.length ? [{address: '', tank_con: '', house_con: ''}] : infoData.address
+                                    address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ''}] : infoData.address
                                 }}
                             >
                                 {(formik) => (
@@ -507,7 +507,7 @@ const Lead_Info = () => {
                                                                                 </div>
                                                                             </div>
 
-                                                                            <div className="formgrid grid">
+                                                                            <div className="formgrid grid mt-2">
                                                                                 <div className="field col">
                                                                                     <label htmlFor='address'>Category</label>
                                                                                     <Dropdown
@@ -522,25 +522,9 @@ const Lead_Info = () => {
                                                                                         }}
                                                                                     />
                                                                                 </div>
-                                                                            </div>
 
-                                                                            <div className='formgrid grid mt-2'>
                                                                                 <div className='field col'>
-                                                                                    <label htmlFor='address'>Tank Condition</label>
-                                                                                    <Dropdown
-                                                                                        inputId="tank_con"
-                                                                                        name="tank_con"
-                                                                                        value={formik.values.address[i].tank_con}
-                                                                                        options={tankList}
-                                                                                        optionLabel="label"
-                                                                                        placeholder="Select a Tank"
-                                                                                        onChange={(e) => {
-                                                                                            formik.setFieldValue(`address.${i}.tank_con`, e.value)
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-                                                                                <div className='field col'>
-                                                                                    <label htmlFor='address'>House Condition</label>
+                                                                                    <label htmlFor='address'>Building Status</label>
                                                                                     <InputText
                                                                                         id='house_con'
                                                                                         value={formik.values.address[i].house_con}
@@ -551,26 +535,69 @@ const Lead_Info = () => {
                                                                                     />
                                                                                 </div>
                                                                             </div>
+
+                                                                            <div className='formgrid grid mt-2'> 
+                                                                                <div className='field col'>
+                                                                                    <label htmlFor='address'>Reserve Tank</label>
+                                                                                    <Dropdown
+                                                                                        inputId="reserve_tank"
+                                                                                        name="reserve_tank"
+                                                                                        value={formik.values.address[i].reserve_tank}
+                                                                                        options={tankList}
+                                                                                        optionLabel="label"
+                                                                                        placeholder="Select a Tank"
+                                                                                        onChange={(e) => {
+                                                                                            formik.setFieldValue(`address.${i}.reserve_tank`, e.value)
+                                                                                        }}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className='field col'>
+                                                                                    <label htmlFor='address'>Over Head Tank</label>
+                                                                                    <Dropdown
+                                                                                        inputId="overhead_tank"
+                                                                                        name="overhead_tank"
+                                                                                        value={formik.values.address[i].overhead_tank}
+                                                                                        options={tankList}
+                                                                                        optionLabel="label"
+                                                                                        placeholder="Select a Tank"
+                                                                                        onChange={(e) => {
+                                                                                            formik.setFieldValue(`address.${i}.overhead_tank`, e.value)
+                                                                                        }}
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        {i > 0 && <button 
-                                                                            type='sunmit'
-                                                                            onClick={() => arrayHelpers.remove(i)}
-                                                                        >
-                                                                            ❌
-                                                                        </button>}
+                                                                        <div className='formgrid grid mt-2'>
+                                                                            <div className='field col'>
+                                                                                {i > 0 && <Button 
+                                                                                    label="Remove" 
+                                                                                    icon="pi pi-times" 
+                                                                                    text onClick={() => arrayHelpers.remove(i)} 
+                                                                                />}
+                                                                            </div>
+                                                                            <div className='field col'></div>
+                                                                            <div className='field col'></div>
+                                                                            <div className='field col'></div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             ))}
-                                                            <div>
-                                                                <button 
-                                                                    type="button" 
-                                                                    onClick={() => arrayHelpers.insert(formik.values.address.length + 1, 
-                                                                        {address: '', tank_con: '', house_con: ''}
-                                                                    )}
-                                                                >
-                                                                    + Add
-                                                                </button>
-                                                            </div>  
+                                                            <div className='formgrid grid mt-2'>
+                                                                <div className='field col'>
+                                                                    <Button 
+                                                                        label='add' 
+                                                                        icon="pi pi-plus" 
+                                                                        text 
+                                                                        onClick={() => arrayHelpers.insert(formik.values.address.length + 1, 
+                                                                            {category:'', address: '', tank_con: '', house_con: ''}
+                                                                        )}
+                                                                    />
+                                                                </div>
+                                                                <div className='field col'></div>
+                                                                <div className='field col'></div>
+                                                                <div className='field col'></div>
+                                                                <div className='field col'></div>
+                                                            </div>
                                                         </div>
                                                     )
                                                 }}
