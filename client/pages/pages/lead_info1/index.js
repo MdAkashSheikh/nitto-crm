@@ -15,11 +15,13 @@ import { CategoryService } from '../../../demo/service/CategoryService';
 import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
 import { ZoneService } from '../../../demo/service/ZoneService';
 import { TankInfoService } from '../../../demo/service/TankInfoService';
+import { DataSourceService } from '../../../demo/service/SourceDataService';
 
 const Lead_Info = () => {
     let emptyInfo = {
         id: 0,
         zone: '',
+        dataSource: '',
         name: '',
         address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ''}],
         phone: '',
@@ -37,6 +39,7 @@ const Lead_Info = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const [msZone, setMsZone] = useState(null);
     const [msCategory, setMsCategory] = useState(null);
+    const [msDataSource, setMSDataSource] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
@@ -50,6 +53,7 @@ const Lead_Info = () => {
         ZoneService.getZone().then((res) => setMsZone(res.data.AllData));
         CategoryService.getCategory().then((res) => setMsCategory(res.data.AllData));
         TankInfoService.getTank().then((res) => setMSTank(res.data.AllData));
+        DataSourceService.getSourceData().then((res) => setMSDataSource(res.data.AllData));
 
 
     }, [toggleRefresh]);
@@ -68,8 +72,6 @@ const Lead_Info = () => {
     const hideDeleteProductDialog = () => {
         setDeleteDataDialog(false);
     };
-
-    console.log('Data', infoData)
 
     const saveData = () => {
         setSubmitted(true);
@@ -128,6 +130,11 @@ const Lead_Info = () => {
  
     const filteredZone = msZone?.filter((item) => item.is_active == '1');
     const zoneList = filteredZone?.map(item => {
+        return { label: item.name, value: item.name }
+    })
+
+    const filterSource = msDataSource?.filter((item) => item.is_active == '1');
+    const dataSourceList = filterSource?.map(item => {
         return { label: item.name, value: item.name }
     })
 
@@ -318,7 +325,7 @@ const Lead_Info = () => {
         setInfoData(newInfoData);
     }
 
-    console.log(mAddress, "Ok")
+    // console.log(msDataSource, "Ok")
 
     return (
         <div className="grid crud-demo">
@@ -437,6 +444,27 @@ const Lead_Info = () => {
                                                                     {submitted && !infoData.zone && (
                                                                         <small className="p-invalid">
                                                                             Zone is required.
+                                                                        </small>
+                                                                    )}
+                                                                </div>
+                                                                <div className="field col">
+                                                                    <label htmlFor="infoData">Data Source</label>
+                                                                    <Dropdown
+                                                                        value={infoData.dataSource}
+                                                                        name='dataSource'
+                                                                        onChange={(e) => onSelectionChange(e, "dataSource")}
+                                                                        options={dataSourceList}
+                                                                        optionLabel="value"
+                                                                        showClear
+                                                                        placeholder="Select a Data Source"
+                                                                        required
+                                                                        className={classNames({
+                                                                            "p-invalid": submitted && !infoData.dataSource,
+                                                                        })}
+                                                                    />
+                                                                    {submitted && !infoData.dataSource && (
+                                                                        <small className="p-invalid">
+                                                                            Data Source is required.
                                                                         </small>
                                                                     )}
                                                                 </div>
