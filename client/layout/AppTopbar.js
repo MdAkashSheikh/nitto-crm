@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import { useState } from 'react';
 import Router, { useRouter } from 'next/router';
+import { Calendar } from 'primereact/calendar';
 import { classNames } from 'primereact/utils';
 import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { LayoutContext } from './context/layoutcontext';
@@ -15,6 +17,19 @@ const AppTopbar = forwardRef((props, ref) => {
         topbarmenu: topbarmenuRef.current,
         topbarmenubutton: topbarmenubuttonRef.current
     }));
+    const [date, setDate] = useState(null);
+
+    const [date3, setDate3] = useState();
+    const [isVisible, setIsVisible] = useState(false);
+    
+    const handleVisibility = (e) => {
+      setIsVisible(!isVisible);
+    };
+
+    const handleVisibleChange = (e) => {
+        console.log(e);
+    };
+    
 
     return (
         <div className="layout-topbar">
@@ -32,10 +47,20 @@ const AppTopbar = forwardRef((props, ref) => {
             </button>
 
             <div ref={topbarmenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
-                <button type="button" className="p-link layout-topbar-button">
+                <button type="button" onClick={handleVisibility}  className="p-link layout-topbar-button">
                     <i className="pi pi-calendar"></i>
                     <span>Calendar</span>
                 </button>
+                <Calendar
+                    id="icon"
+                    value={date3}
+                    onChange={(e) => setDate3(e.value)}
+                    showOnFocus={false}
+                    visible={isVisible}
+                    onVisibleChange={handleVisibleChange}
+                    numberOfMonths={3}
+                    hidden
+                />
                 <button type="button" className="p-link layout-topbar-button">
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
