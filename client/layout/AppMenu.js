@@ -24,8 +24,8 @@ const AppMenu = () => {
                 },
                 {
                     label: 'Follow Up',
-                    icon: 'pi pi-fw pi-pencil',
-                    to: '/pages/manager_panel'
+                    icon: 'pi pi-fw pi-box',
+                    to: '/pages/follow_up'
                 },
                 {
                     label: 'Invoice Information',
@@ -39,14 +39,14 @@ const AppMenu = () => {
                 },
                 {
                     label: 'Booking',
-                    icon: 'pi pi-fw pi-pencil',
-                    to: '/pages/manager_panel'
+                    icon: 'pi pi-fw pi-briefcase',
+                    to: '/pages/booking_info'
                 },
                 
                 {
                     label: 'Cancel',
-                    icon: 'pi pi-fw pi-pencil',
-                    to: '/pages/manager_panel'
+                    icon: 'pi pi-fw pi-delete-left',
+                    to: '/pages/cancel_info'
                 },
                 {
                     label: 'Report Information',
