@@ -4,6 +4,8 @@ import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from "primereact/inputtextarea";
+import { MultiSelect } from 'primereact/multiselect';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import { ToggleButton } from 'primereact/togglebutton';
@@ -23,7 +25,7 @@ const Lead_Info = () => {
         zone: '',
         dataSource: '',
         name: '',
-        address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ''}],
+        address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: []}],
         phone: '',
         email: '',
         whatsapp: '',
@@ -44,7 +46,7 @@ const Lead_Info = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [msTank, setMSTank] = useState(null);
-    const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ''}])
+    const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ['']}])
 
 
     useEffect(() => {
@@ -78,9 +80,10 @@ const Lead_Info = () => {
 
         console.log("PPPP1",infoData)
 
-        if( infoData.zone && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp, infoData._id ) {
+        if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp, infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
+                infoData.dataSource,
                 infoData.name,
                 mAddress,
                 infoData.phone,
@@ -92,9 +95,10 @@ const Lead_Info = () => {
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
-        } else if( infoData.zone && infoData.name && mAddress) {
+        } else if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
             CustomerInformationService.postCustomerInfo(
                 infoData.zone,
+                infoData.dataSource,
                 infoData.name,
                 mAddress,
                 infoData.phone,
@@ -147,6 +151,11 @@ const Lead_Info = () => {
     const tankList = filterTank?.map(item => {
         return { label: item.name, value: item.name }
     })
+
+    const rerserveList = [
+        { label: 'Yes', value: 'Reserve Tank'},
+        { label: 'No', value: ''},
+    ]
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
@@ -325,8 +334,6 @@ const Lead_Info = () => {
         setInfoData(newInfoData);
     }
 
-    // console.log(msDataSource, "Ok")
-
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -406,7 +413,7 @@ const Lead_Info = () => {
                     <Dialog
                         visible={dataDialog}
                         style={{ width: "650px" }}
-                        header="Asset Information"
+                        header="Lead Information"
                         modal
                         className="p-fluid"
                         footer={dataDialogFooter}
@@ -414,7 +421,7 @@ const Lead_Info = () => {
                     >
                             <Formik
                                 initialValues={{
-                                    address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ''}] : infoData.address
+                                    address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: []}] : infoData.address
                                 }}
                             >
                                 {(formik) => (
@@ -571,7 +578,7 @@ const Lead_Info = () => {
                                                                                         inputId="reserve_tank"
                                                                                         name="reserve_tank"
                                                                                         value={formik.values.address[i].reserve_tank}
-                                                                                        options={tankList}
+                                                                                        options={rerserveList}
                                                                                         optionLabel="label"
                                                                                         placeholder="Select a Tank"
                                                                                         onChange={(e) => {
@@ -581,13 +588,14 @@ const Lead_Info = () => {
                                                                                 </div>
                                                                                 <div className='field col'>
                                                                                     <label htmlFor='address'>Over Head Tank</label>
-                                                                                    <Dropdown
+                                                                                    <MultiSelect
                                                                                         inputId="overhead_tank"
                                                                                         name="overhead_tank"
                                                                                         value={formik.values.address[i].overhead_tank}
                                                                                         options={tankList}
                                                                                         optionLabel="label"
                                                                                         placeholder="Select a Tank"
+                                                                                        display="chip"
                                                                                         onChange={(e) => {
                                                                                             formik.setFieldValue(`address.${i}.overhead_tank`, e.value)
                                                                                         }}
@@ -625,6 +633,17 @@ const Lead_Info = () => {
                                                                 <div className='field col'></div>
                                                                 <div className='field col'></div>
                                                                 <div className='field col'></div>
+                                                            </div>
+                                                            <div className="formgrid grid">
+                                                                <div className="field col">
+                                                                    <label htmlFor="infoData">Details</label>
+                                                                    <InputTextarea
+                                                                        id="details"
+                                                                        value={infoData.details}
+                                                                        onChange={(e) => onInputChange(e, "details")}
+                                                                        rows={3} cols={30}
+                                                                    />
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     )

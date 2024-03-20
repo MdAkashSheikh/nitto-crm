@@ -4,6 +4,9 @@ const customerInfoSc = new mongoose.Schema({
     zone: {
         type: String,
     },
+    dataSource: {
+        type: String,
+    },
     category: {
         type: String,
     },

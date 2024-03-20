@@ -3,7 +3,6 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
 import { DataTable } from 'primereact/datatable';
-import { TreeSelect } from 'primereact/treeselect';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
@@ -20,8 +19,6 @@ import { PotentialCustomerService } from '../../../demo/service/PotentialCustome
 import { ServiceGroupService } from '../../../demo/service/ServiceGroupService';
 import { PackageService } from '../../../demo/service/PackageService';
 import { TeamInfoService } from '../../../demo/service/TeamInfoService';
-// import Invoice from '../invoice';
-import Invoice from '../invoice/index';
 
 const Manager_Panel = () => {
     let managerInfo = {
@@ -388,7 +385,7 @@ const Manager_Panel = () => {
     const actionBodyTemplate = (rowData) => {
        
         const filData = customerDatas?.filter(item => item.customerId == rowData._id)
-        if(Object.keys(rowData.follows).length > 0 && filData !=undefined && filData.length > 0  ) {
+        if(JSON.stringify(rowData.follows) !== '{}' && filData !=undefined && filData.length > 0  ) {
             return (
                 <>
                     <Button label='Follow' severity="success"  className="m-1" onClick={() => editFollowDat(rowData)} />
@@ -396,7 +393,7 @@ const Manager_Panel = () => {
                     <Button label='Deal Cancel' severity="danger" className="m-1" onClick={() => editCustomerData(rowData, 'cancel')} />
                 </>
             );
-        } else if(Object.keys(rowData.follows).length > 0 && (filData == undefined || filData?.length == 0)) {
+        } else if(JSON.stringify(rowData.follows) !== '{}' && (filData == undefined || filData?.length == 0)) {
             return (
                 <>
                     <Button label='Follow' severity="success"  className="m-1" onClick={() => followDate(rowData)} />
@@ -404,7 +401,7 @@ const Manager_Panel = () => {
                     <Button label='Deal Cancel' disabled severity="danger" className="m-1" onClick={() => editCustomerData(rowData, 'cancel')} />
                 </>
             );
-        } else if(Object.keys(rowData.follows).length === 0 && (filData !=undefined && filData?.length > 0)) {
+        } else if(JSON.stringify(rowData.follows) === '{}' && (filData !=undefined && filData?.length > 0)) {
             return(
                 <>
                     <Button label='Follow' severity="warning"  className="m-1" onClick={() => followDate(rowData)} />
@@ -527,43 +524,43 @@ const Manager_Panel = () => {
                             header="Name"
                             sortable
                             body={nameBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                         <Column
                             field="phone"
                             header="Phone"
                             body={phoneBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                         <Column
                             field="email"
                             header="Email"
                             body={emailBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                         <Column
                             field="address"
                             header="Address"
                             body={addressBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                         <Column
                             field="zone"
                             header="Zone"
                             body={zoneBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                         <Column
                             field="category"
                             header="Category"
                             body={categoryBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                          <Column
                             field="details"
                             header="Details"
                             body={detailsBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                         <Column
                             header="Action"
@@ -690,7 +687,7 @@ const Manager_Panel = () => {
                             <label htmlFor="managerData">Feedback</label>
                             <InputTextarea
                                 id="feedback"
-                                value={managerData.follows.feedback}
+                                value={managerData.follows?.feedback}
                                 onChange={(e) =>
                                     onInputChange(e, "feedback")
                                 }
