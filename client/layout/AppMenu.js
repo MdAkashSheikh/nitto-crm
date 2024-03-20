@@ -35,7 +35,7 @@ const AppMenu = () => {
                 {
                     label: 'Customer',
                     icon: 'pi pi-fw pi-pencil',
-                    to: '/pages/manager_panel'
+                    to: '/pages/cutomer'
                 },
                 {
                     label: 'Booking',
@@ -45,7 +45,7 @@ const AppMenu = () => {
                 
                 {
                     label: 'Cancel',
-                    icon: 'pi pi-fw pi-delete-left',
+                    icon: 'pi pi-fw pi-times',
                     to: '/pages/cancel_info'
                 },
                 {
@@ -60,7 +60,7 @@ const AppMenu = () => {
                 },
                 {
                     label: 'Manager Panel',
-                    icon: 'pi pi-fw pi-pencil',
+                    icon: 'pi pi-fw pi-stop-circle',
                     to: '/pages/manager_panel'
                 },
 
