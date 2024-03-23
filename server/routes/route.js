@@ -94,11 +94,15 @@ const {
     toggleZone
 } = require('../controllers/zone');
 
+const { 
+    postFollow, 
+    editFollow 
+} = require('../controllers/followup');
+
 const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { postFollow } = require('../controllers/followup');
 
 /* -------------------------------- */
 /*     Image Upload For Multer      */
@@ -241,6 +245,7 @@ router.post('/cancel-deal/:id', cancellDeal);
 /*  Follow Up Information Route URL */
 /* -------------------------------- */
 router.post('/post-follow', postFollow);
+router.post('/edit-follow', editFollow)
 
 
 module.exports = router;
