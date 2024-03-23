@@ -28,6 +28,14 @@ const customerInfoSc = new mongoose.Schema({
     details:{
         type: String,
     },
+    followCheck: {
+        type: String,
+        default: 'empty'
+    },
+    is_customer: {
+        type: String,
+        default: '0'
+    },
     follows: {
         type: Object,
     },

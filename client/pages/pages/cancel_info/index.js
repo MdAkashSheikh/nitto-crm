@@ -221,8 +221,6 @@ const Cancel_Info = () => {
             </div>
         )
     }
-   
-
 
 
     return (
