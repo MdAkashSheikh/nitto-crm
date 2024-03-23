@@ -2,266 +2,184 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
-import { FileUpload } from 'primereact/fileupload';
-import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
-import { Rating } from 'primereact/rating';
+import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
+import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { ProductService } from '../../../demo/service/ProductService';
+import { DataGroupService } from '../../../demo/service/DataGroupService';
 
-const Crud = () => {
-    let emptyProduct = {
-        id: null,
+const Booking_Info = () => {
+    let emptyGroup = {
+        id: 0,
         name: '',
-        image: null,
-        description: '',
-        category: null,
-        price: 0,
-        quantity: 0,
-        rating: 0,
-        inventoryStatus: 'INSTOCK'
+        is_active: '',
+        details: '',
     };
 
-    const [products, setProducts] = useState(null);
-    const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-    const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-    const [product, setProduct] = useState(emptyProduct);
-    const [selectedProducts, setSelectedProducts] = useState(null);
+    const [groupDatas, setGroupDatas] = useState(null);
+    const [dataDialog, setDataDialog] = useState(false);
+    const [deleteDataDialog, setDeleteDataDialog] = useState(false);
+    const [groupData, setGroupData] = useState(emptyGroup);
+    const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+    const [toggleRefresh, setTogleRefresh] = useState(false);
+    const [selectEdit, setSelectEdit] = useState(false);
 
     useEffect(() => {
-        ProductService.getProducts().then((data) => setProducts(data));
-    }, []);
 
-    const formatCurrency = (value) => {
-        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    };
+        DataGroupService.getDataGroup().then((res) => setGroupDatas(res.data.AllData));
+
+    }, [toggleRefresh]);
+
+    const diaHeader = () => {
+        return (
+            selectEdit ? 'Add Data Group' : 'Edit Data Group'
+        )
+    }
 
     const openNew = () => {
-        setProduct(emptyProduct);
+        setGroupData(emptyGroup);
         setSubmitted(false);
-        setProductDialog(true);
+        setDataDialog(true);
+        setSelectEdit(true)
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setProductDialog(false);
+        setDataDialog(false);
     };
 
     const hideDeleteProductDialog = () => {
-        setDeleteProductDialog(false);
+        setDeleteDataDialog(false);
     };
 
-    const hideDeleteProductsDialog = () => {
-        setDeleteProductsDialog(false);
-    };
 
-    const saveProduct = () => {
+    const saveData = () => {
         setSubmitted(true);
 
-        if (product.name.trim()) {
-            let _products = [...products];
-            let _product = { ...product };
-            if (product.id) {
-                const index = findIndexById(product.id);
+        console.log("PPPP1",groupData)
 
-                _products[index] = _product;
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            } else {
-                _product.id = createId();
-                _product.code = createId();
-                _product.image = 'product-placeholder.svg';
-                _products.push(_product);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
-
-            setProducts(_products);
-            setProductDialog(false);
-            setProduct(emptyProduct);
+        if( groupData.name && groupData.details, groupData._id) {
+            DataGroupService.editDataGroup(
+                groupData.name,
+                groupData.details,
+                groupData._id,
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setDataDialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Updated', life: 3000 });
+            })
+        } else if( groupData.name && groupData.details) {
+            DataGroupService.postDataGroup(
+                groupData.name,
+                groupData.details,
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setDataDialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Data Group is Created', life: 3000 });
+            })
         }
     };
 
-    const editProduct = (product) => {
-        setProduct({ ...product });
-        setProductDialog(true);
+    const editData = (groupData) => {
+        setGroupData({ ...groupData });
+        setDataDialog(true);
+        setSelectEdit(false);
     };
 
-    const confirmDeleteProduct = (product) => {
-        setProduct(product);
-        setDeleteProductDialog(true);
+
+    const confirmDeleteData = (groupData) => {
+        setGroupData(groupData);
+        setDeleteDataDialog(true);
     };
 
-    const deleteProduct = () => {
-        let _products = products.filter((val) => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+    const deleteData = () => {
+        DataGroupService.deleteDataGroup(groupData._id).then(() => {
+            setTogleRefresh(!toggleRefresh);
+            setDeleteDataDialog(false);
+            setGroupData(emptyGroup);
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Deleted', life: 3000 });
+        })
     };
 
-    const findIndexById = (id) => {
-        let index = -1;
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].id === id) {
-                index = i;
-                break;
-            }
-        }
 
-        return index;
-    };
-
-    const createId = () => {
-        let id = '';
-        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    };
-
-    const exportCSV = () => {
-        dt.current.exportCSV();
-    };
-
-    const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
-    };
-
-    const deleteSelectedProducts = () => {
-        let _products = products.filter((val) => !selectedProducts.includes(val));
-        setProducts(_products);
-        setDeleteProductsDialog(false);
-        setSelectedProducts(null);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-    };
-
-    const onCategoryChange = (e) => {
-        let _product = { ...product };
-        _product['category'] = e.value;
-        setProduct(_product);
-    };
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let _product = { ...product };
-        _product[`${name}`] = val;
+        let data = { ...groupData };
+        data[`${name}`] = val;
 
-        setProduct(_product);
+        setGroupData(data);
     };
 
-    const onInputNumberChange = (e, name) => {
-        const val = e.value || 0;
-        let _product = { ...product };
-        _product[`${name}`] = val;
-
-        setProduct(_product);
-    };
-
-    const leftToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <div className="my-2">
-                    <Button label="New" icon="pi pi-plus" severity="sucess" className="mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
-                </div>
-            </React.Fragment>
-        );
-    };
-
-    const rightToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} label="Import" chooseLabel="Import" className="mr-2 inline-block" />
-                <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportCSV} />
-            </React.Fragment>
-        );
-    };
-
-    const codeBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Code</span>
-                {rowData.code}
-            </>
-        );
-    };
-
-    const nameBodyTemplate = (rowData) => {
+    const dataGroupBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
                 {rowData.name}
             </>
         );
-    };
+    }
 
-    const imageBodyTemplate = (rowData) => {
+    const detailsBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Image</span>
-                <img src={`/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                <span className="p-column-title">Details</span>
+                {rowData.details}
             </>
         );
-    };
-
-    const priceBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
-            </>
-        );
-    };
-
-    const categoryBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Category</span>
-                {rowData.category}
-            </>
-        );
-    };
-
-    const ratingBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Reviews</span>
-                <Rating value={rowData.rating} readOnly cancel={false} />
-            </>
-        );
-    };
+    }
 
     const statusBodyTemplate = (rowData) => {
         return (
-            <>
-                <span className="p-column-title">Status</span>
-                <span className={`product-badge status-${rowData.inventoryStatus.toLowerCase()}`}>{rowData.inventoryStatus}</span>
-            </>
+            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
+            checked={rowData.is_active != '0'} onChange={(e) => {
+                let is_active = '0';
+                if (rowData.is_active == '0') {
+                    is_active = '1'
+                }
+                DataGroupService.toggleDataGroup(is_active, rowData._id).then(() => {
+                setTogleRefresh(!toggleRefresh)
+                })
+             }} />
         );
-    };
+    }
 
     const actionBodyTemplate = (rowData) => {
         return (
             <>
-                <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteProduct(rowData)} />
+                <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editData(rowData)} />
+                <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} />
             </>
+        );
+    };
+
+        
+    const topHeader = () => {
+        return (
+            <React.Fragment>
+                <div className="my-2">
+                    <h2 className="m-0">Booking Information</h2>
+                </div>
+            </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Booking Information</h5>
+            <Button
+                    label="Add Data Group"
+                    icon="pi pi-plus"
+                    severity="sucess"
+                    className="mr-2"
+                    onClick={openNew}
+                />
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -269,127 +187,145 @@ const Crud = () => {
         </div>
     );
 
-    const productDialogFooter = (
+    const dataDialogFooter = (
         <>
             <Button label="Cancel" icon="pi pi-times" text onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" text onClick={saveProduct} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveData} />
         </>
     );
-    const deleteProductDialogFooter = (
+    const deleteDataDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductDialog} />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteProduct} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deleteData} />
         </>
     );
-    const deleteProductsDialogFooter = (
-        <>
-            <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductsDialog} />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteSelectedProducts} />
-        </>
-    );
+
+    if(groupDatas == null) {
+        return (
+            <div className="card">
+                <div className="border-round border-1 surface-border p-4 surface-card">
+                    <div className="flex mb-3">
+                        <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
+                        <div>
+                            <Skeleton width="10rem" className="mb-2"></Skeleton>
+                            <Skeleton width="5rem" className="mb-2"></Skeleton>
+                            <Skeleton height=".5rem"></Skeleton>
+                        </div>
+                    </div>
+                    <Skeleton width="100%" height="570px"></Skeleton>
+                    <div className="flex justify-content-between mt-3">
+                        <Skeleton width="4rem" height="2rem"></Skeleton>
+                        <Skeleton width="4rem" height="2rem"></Skeleton>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+   
+
+
 
     return (
         <div className="grid crud-demo">
             <div className="col-12">
                 <div className="card">
                     <Toast ref={toast} />
-                    <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-
+                    <Toolbar
+                        className="mb-4"
+                        left={topHeader}
+                    ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={products}
-                        selection={selectedProducts}
-                        onSelectionChange={(e) => setSelectedProducts(e.value)}
+                        value={groupDatas}
+                        selection={selectedDatas}
+                        onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
                         paginator
                         rows={10}
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Data-Source"
                         globalFilter={globalFilter}
-                        emptyMessage="No products found."
+                        emptyMessage="Data Group is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >
-                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column field="code" header="Code" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column header="Image" body={imageBodyTemplate}></Column>
-                        <Column field="price" header="Price" body={priceBodyTemplate} sortable></Column>
-                        <Column field="category" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="rating" header="Reviews" body={ratingBodyTemplate} sortable></Column>
-                        <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+
+                        <Column
+                            field="name"
+                            header="Data Group"
+                            sortable
+                            body={dataGroupBodyTemplate}
+                            headerStyle={{ minWidth: "10rem" }}
+                        ></Column>
+                         <Column
+                            field="details"
+                            header="Details"
+                            body={detailsBodyTemplate}
+                            headerStyle={{ minWidth: "15rem" }}
+                        ></Column>
+                        <Column
+                            header="Status"
+                            body={statusBodyTemplate}
+                            headerStyle={{ minWidth: "5rem" }}
+                        ></Column>
+                        <Column
+                            header="Action"
+                            body={actionBodyTemplate}
+                            headerStyle={{ minWidth: "2rem" }}
+                        ></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        {product.image && <img src={`/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
+                    <Dialog
+                        visible={dataDialog}
+                        style={{ width: "450px" }}
+                        header={diaHeader}
+                        modal
+                        className="p-fluid"
+                        footer={dataDialogFooter}
+                        onHide={hideDialog}
+                    >
+                
                         <div className="field">
-                            <label htmlFor="name">Name</label>
-                            <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                            <label htmlFor="groupData">Data Group</label>
+                            <InputText 
+                                id="name" 
+                                value={groupData.name} 
+                                onChange={(e) => onInputChange(e, "name")} 
+                                required 
+                                autoFocus 
+                                className={classNames({ 'p-invalid': submitted && !groupData.name })} 
+                                />
+                            {submitted && !groupData.name && <small className="p-invalid">
+                                Data Group is required.
+                            </small>}
                         </div>
                         <div className="field">
-                            <label htmlFor="description">Description</label>
-                            <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
-                        </div>
-
-                        <div className="field">
-                            <label className="mb-3">Category</label>
-                            <div className="formgrid grid">
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category1" name="category" value="Accessories" onChange={onCategoryChange} checked={product.category === 'Accessories'} />
-                                    <label htmlFor="category1">Accessories</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category2" name="category" value="Clothing" onChange={onCategoryChange} checked={product.category === 'Clothing'} />
-                                    <label htmlFor="category2">Clothing</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category3" name="category" value="Electronics" onChange={onCategoryChange} checked={product.category === 'Electronics'} />
-                                    <label htmlFor="category3">Electronics</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category4" name="category" value="Fitness" onChange={onCategoryChange} checked={product.category === 'Fitness'} />
-                                    <label htmlFor="category4">Fitness</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="formgrid grid">
-                            <div className="field col">
-                                <label htmlFor="price">Price</label>
-                                <InputNumber id="price" value={product.price} onValueChange={(e) => onInputNumberChange(e, 'price')} mode="currency" currency="USD" locale="en-US" />
-                            </div>
-                            <div className="field col">
-                                <label htmlFor="quantity">Quantity</label>
-                                <InputNumber id="quantity" value={product.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} integeronly />
-                            </div>
+                            <label htmlFor="details">Details</label>
+                            <InputText 
+                                id="details" 
+                                value={groupData.details} 
+                                onChange={(e) => onInputChange(e, "details")} 
+                            />
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+                    <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {product && (
+                            {groupData && (
                                 <span>
-                                    Are you sure you want to delete <b>{product.name}</b>?
+                                    Are you sure you want to delete <b>{groupData.name}</b>?
                                 </span>
                             )}
                         </div>
                     </Dialog>
-
-                    <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
-                        <div className="flex align-items-center justify-content-center">
-                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {product && <span>Are you sure you want to delete the selected products?</span>}
-                        </div>
-                    </Dialog>
+                    
                 </div>
             </div>
         </div>
     );
 };
 
-export default Crud;
+export default  Booking_Info;

@@ -18,6 +18,7 @@ import { CustomerInformationService } from '../../../demo/service/CustomerInform
 import { ZoneService } from '../../../demo/service/ZoneService';
 import { TankInfoService } from '../../../demo/service/TankInfoService';
 import { DataSourceService } from '../../../demo/service/SourceDataService';
+import { FolloUpService } from '../../../demo/service/FollowUpService';
 
 const Lead_Info = () => {
     let emptyInfo = {
@@ -25,11 +26,12 @@ const Lead_Info = () => {
         zone: '',
         dataSource: '',
         name: '',
-        address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: []}],
+        address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}],
         phone: '',
         email: '',
         whatsapp: '',
         details: '',
+        followCheck: '',
     };
 
     const [infoDatas, setInfoDatas] = useState(null);
@@ -46,7 +48,8 @@ const Lead_Info = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [msTank, setMSTank] = useState(null);
-    const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: ['']}])
+    const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [''], price: ''}])
+    const [show, setShow] = useState(false);
 
 
     useEffect(() => {
@@ -69,6 +72,7 @@ const Lead_Info = () => {
     const hideDialog = () => {
         setSubmitted(false);
         setDataDialog(false);
+        setShow(false);
     };
 
     const hideDeleteProductDialog = () => {
@@ -80,7 +84,7 @@ const Lead_Info = () => {
 
         console.log("PPPP1",infoData)
 
-        if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp, infoData._id ) {
+        if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.details, infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
                 infoData.dataSource,
@@ -89,10 +93,12 @@ const Lead_Info = () => {
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
+                infoData.details,
                 infoData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
+                setShow(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
         } else if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
@@ -104,6 +110,7 @@ const Lead_Info = () => {
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
+                infoData.details
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
@@ -112,10 +119,32 @@ const Lead_Info = () => {
         }
     };
 
+    const followCreate = () => {
+        setSubmitted(true);
+
+        if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
+            FolloUpService.postFollow(
+                infoData.zone,
+                infoData.dataSource,
+                infoData.name,
+                mAddress,
+                infoData.phone,
+                infoData.email,
+                infoData.whatsapp,
+                infoData.details,
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setDataDialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Follow is Created', life: 3000 });
+            })
+        }
+    }
+
     const editData = (infoData) => {
         setInfoData({ ...infoData });
         setMAddress(infoData.address)
         setDataDialog(true);
+        setShow(true);
     };
 
     const confirmDeleteData = (infoData) => {
@@ -235,21 +264,6 @@ const Lead_Info = () => {
         );
     }
 
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
-            checked={rowData.is_active != '0'} onChange={(e) => {
-                let is_active = '0';
-                if (rowData.is_active == '0') {
-                    is_active = '1'
-                }
-                CustomerInformationService.toggleCustomerInfo(is_active, rowData._id).then(() => {
-                setTogleRefresh(!toggleRefresh)
-                })
-             }} />
-        );
-    }
-
     const actionBodyTemplate = (rowData) => {
         return (
             <>
@@ -288,6 +302,7 @@ const Lead_Info = () => {
     const dataDialogFooter = (
         <>
             <Button label="Cancel" icon="pi pi-times" text onClick={hideDialog} />
+            <Button label="Follow" icon="pi pi-megaphone" text onClick={followCreate} />
             <Button label="Save" icon="pi pi-check" text onClick={saveData} />
         </>
     );
@@ -399,11 +414,6 @@ const Lead_Info = () => {
                             headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
-                            header="Status"
-                            body={statusBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
-                        ></Column>
-                        <Column
                             header="Action"
                             body={actionBodyTemplate}
                             headerStyle={{ minWidth: "2rem" }}
@@ -421,7 +431,7 @@ const Lead_Info = () => {
                     >
                             <Formik
                                 initialValues={{
-                                    address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: []}] : infoData.address
+                                    address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}] : infoData.address
                                 }}
                             >
                                 {(formik) => (
@@ -598,6 +608,18 @@ const Lead_Info = () => {
                                                                                         display="chip"
                                                                                         onChange={(e) => {
                                                                                             formik.setFieldValue(`address.${i}.overhead_tank`, e.value)
+                                                                                        }}
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className='formgrid grid' hidden={!show}>
+                                                                                <div className='field col'>
+                                                                                    <label htmlFor='address'>Price</label>
+                                                                                    <InputText
+                                                                                        id='address'
+                                                                                        value={formik.values.address[i].price}
+                                                                                        onChange={(e) => {
+                                                                                            formik.setFieldValue(`address.${i}.price`, e.target.value)
                                                                                         }}
                                                                                     />
                                                                                 </div>

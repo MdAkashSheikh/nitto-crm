@@ -15,7 +15,7 @@ export const CustomerInformationService = {
         await axios.post(`${URL}/post-customer-info`, data);
     },
 
-    async editCustomerInfo(zone, dataSource, name, address, phone, email, whatsapp, _id) {
+    async editCustomerInfo(zone, dataSource, name, address, phone, email, whatsapp, detail, _id) {
         const data = {
             zone,
             dataSource,
@@ -24,6 +24,7 @@ export const CustomerInformationService = {
             phone,
             email,
             whatsapp,
+            detail,
         }
         await axios.post(`${URL}/edit-customer-info/` + _id, data);
     },

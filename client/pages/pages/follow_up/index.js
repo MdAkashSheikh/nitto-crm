@@ -2,199 +2,203 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
-import { FileUpload } from 'primereact/fileupload';
-import { InputNumber } from 'primereact/inputnumber';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
-import { Rating } from 'primereact/rating';
+import { InputTextarea } from "primereact/inputtextarea";
+import { MultiSelect } from 'primereact/multiselect';
+import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
+import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { ProductService } from '../../../demo/service/ProductService';
+import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
+import { CategoryService } from '../../../demo/service/CategoryService';
+import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
+import { ZoneService } from '../../../demo/service/ZoneService';
+import { TankInfoService } from '../../../demo/service/TankInfoService';
+import { DataSourceService } from '../../../demo/service/SourceDataService';
+import { FolloUpService } from '../../../demo/service/FollowUpService';
 
-const Crud = () => {
-    let emptyProduct = {
-        id: null,
+const Lead_Info = () => {
+    let emptyInfo = {
+        id: 0,
+        zone: '',
+        dataSource: '',
         name: '',
-        image: null,
-        description: '',
-        category: null,
-        price: 0,
-        quantity: 0,
-        rating: 0,
-        inventoryStatus: 'INSTOCK'
+        address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}],
+        phone: '',
+        email: '',
+        whatsapp: '',
+        details: '',
+        followCheck: '',
     };
 
-    const [products, setProducts] = useState(null);
-    const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-    const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-    const [product, setProduct] = useState(emptyProduct);
-    const [selectedProducts, setSelectedProducts] = useState(null);
+    const [infoDatas, setInfoDatas] = useState(null);
+    const [dataDialog, setDataDialog] = useState(false);
+    const [deleteDataDialog, setDeleteDataDialog] = useState(false);
+    const [infoData, setInfoData] = useState(emptyInfo);
+    const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
+    const [msZone, setMsZone] = useState(null);
+    const [msCategory, setMsCategory] = useState(null);
+    const [msDataSource, setMSDataSource] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+    const [toggleRefresh, setTogleRefresh] = useState(false);
+    const [msTank, setMSTank] = useState(null);
+    const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [''], price: ''}])
+    const [show, setShow] = useState(false);
+
 
     useEffect(() => {
-        ProductService.getProducts().then((data) => setProducts(data));
-    }, []);
 
-    const formatCurrency = (value) => {
-        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    };
+        CustomerInformationService.getCustomerInfo().then((res) => setInfoDatas(res.data.AllData));
+        ZoneService.getZone().then((res) => setMsZone(res.data.AllData));
+        CategoryService.getCategory().then((res) => setMsCategory(res.data.AllData));
+        TankInfoService.getTank().then((res) => setMSTank(res.data.AllData));
+        DataSourceService.getSourceData().then((res) => setMSDataSource(res.data.AllData));
+
+
+    }, [toggleRefresh]);
 
     const openNew = () => {
-        setProduct(emptyProduct);
+        setInfoData(emptyInfo);
         setSubmitted(false);
-        setProductDialog(true);
+        setDataDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setProductDialog(false);
+        setDataDialog(false);
+        setShow(false);
     };
 
     const hideDeleteProductDialog = () => {
-        setDeleteProductDialog(false);
+        setDeleteDataDialog(false);
     };
 
-    const hideDeleteProductsDialog = () => {
-        setDeleteProductsDialog(false);
-    };
-
-    const saveProduct = () => {
+    const saveData = () => {
         setSubmitted(true);
 
-        if (product.name.trim()) {
-            let _products = [...products];
-            let _product = { ...product };
-            if (product.id) {
-                const index = findIndexById(product.id);
+        console.log("PPPP1",infoData)
 
-                _products[index] = _product;
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            } else {
-                _product.id = createId();
-                _product.code = createId();
-                _product.image = 'product-placeholder.svg';
-                _products.push(_product);
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
-
-            setProducts(_products);
-            setProductDialog(false);
-            setProduct(emptyProduct);
+        if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.details, infoData._id ) {
+            CustomerInformationService.editCustomerInfo(
+                infoData.zone,
+                infoData.dataSource,
+                infoData.name,
+                mAddress,
+                infoData.phone,
+                infoData.email,
+                infoData.whatsapp,
+                infoData.details,
+                infoData._id,
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setDataDialog(false);
+                setShow(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
+            })
+        } else if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
+            CustomerInformationService.postCustomerInfo(
+                infoData.zone,
+                infoData.dataSource,
+                infoData.name,
+                mAddress,
+                infoData.phone,
+                infoData.email,
+                infoData.whatsapp,
+                infoData.details
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setDataDialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Information is Created', life: 3000 });
+            })
         }
     };
 
-    const editProduct = (product) => {
-        setProduct({ ...product });
-        setProductDialog(true);
-    };
+    const followCreate = () => {
+        setSubmitted(true);
 
-    const confirmDeleteProduct = (product) => {
-        setProduct(product);
-        setDeleteProductDialog(true);
-    };
-
-    const deleteProduct = () => {
-        let _products = products.filter((val) => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-    };
-
-    const findIndexById = (id) => {
-        let index = -1;
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].id === id) {
-                index = i;
-                break;
-            }
+        if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
+            FolloUpService.postFollow(
+                infoData.zone,
+                infoData.dataSource,
+                infoData.name,
+                mAddress,
+                infoData.phone,
+                infoData.email,
+                infoData.whatsapp,
+                infoData.details,
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setDataDialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Follow is Created', life: 3000 });
+            })
         }
+    }
 
-        return index;
+    const editData = (infoData) => {
+        setInfoData({ ...infoData });
+        setMAddress(infoData.address)
+        setDataDialog(true);
+        setShow(true);
     };
 
-    const createId = () => {
-        let id = '';
-        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
+    const confirmDeleteData = (infoData) => {
+        setInfoData(infoData);
+        setDeleteDataDialog(true);
     };
 
-    const exportCSV = () => {
-        dt.current.exportCSV();
+    const deleteData = () => {
+        CustomerInformationService.deleteCustomerInfo(infoData._id).then(() => {
+            setTogleRefresh(!toggleRefresh);
+            setDeleteDataDialog(false);
+            setInfoData(emptyInfo);
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Customer is Deleted', life: 3000 });
+        })
     };
+ 
+    const filteredZone = msZone?.filter((item) => item.is_active == '1');
+    const zoneList = filteredZone?.map(item => {
+        return { label: item.name, value: item.name }
+    })
 
-    const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
-    };
+    const filterSource = msDataSource?.filter((item) => item.is_active == '1');
+    const dataSourceList = filterSource?.map(item => {
+        return { label: item.name, value: item.name }
+    })
 
-    const deleteSelectedProducts = () => {
-        let _products = products.filter((val) => !selectedProducts.includes(val));
-        setProducts(_products);
-        setDeleteProductsDialog(false);
-        setSelectedProducts(null);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-    };
+    const filteredCategory = msCategory?.filter((item) => item.is_active == '1');
+    const categoryList = filteredCategory?.map(item => {
+        return { label: item.name, value: item.name}
+    })
 
-    const onCategoryChange = (e) => {
-        let _product = { ...product };
-        _product['category'] = e.value;
-        setProduct(_product);
-    };
+    const filterTank = msTank?.filter((item) => item.is_active == '1');
+    const tankList = filterTank?.map(item => {
+        return { label: item.name, value: item.name }
+    })
+
+    const rerserveList = [
+        { label: 'Yes', value: 'Reserve Tank'},
+        { label: 'No', value: ''},
+    ]
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let _product = { ...product };
-        _product[`${name}`] = val;
+        let data = { ...infoData };
+        data[`${name}`] = val;
 
-        setProduct(_product);
+        setInfoData(data);
     };
 
-    const onInputNumberChange = (e, name) => {
-        const val = e.value || 0;
-        let _product = { ...product };
-        _product[`${name}`] = val;
-
-        setProduct(_product);
-    };
-
-    const leftToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <div className="my-2">
-                    <Button label="New" icon="pi pi-plus" severity="sucess" className="mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
-                </div>
-            </React.Fragment>
-        );
-    };
-
-    const rightToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} label="Import" chooseLabel="Import" className="mr-2 inline-block" />
-                <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportCSV} />
-            </React.Fragment>
-        );
-    };
-
-    const codeBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Code</span>
-                {rowData.code}
-            </>
-        );
-    };
+    const onSelectionChange = (e, name) => {
+        let _infoData = {...infoData };
+        _infoData[`${name}`] = e.value;
+        setInfoData(_infoData);
+    }
 
     const nameBodyTemplate = (rowData) => {
         return (
@@ -203,65 +207,91 @@ const Crud = () => {
                 {rowData.name}
             </>
         );
-    };
+    }
 
-    const imageBodyTemplate = (rowData) => {
+    const phoneBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Image</span>
-                <img src={`/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                <span className="p-column-title">Phone</span>
+                {rowData.phone}
             </>
         );
-    };
+    }
 
-    const priceBodyTemplate = (rowData) => {
+    const emailBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                <span className="p-column-title">Email</span>
+                {rowData.email}
             </>
         );
-    };
+    }
+    
+    const addressBodyTemplate = (rowData) => {
+
+        return (
+            <>
+                <span className="p-column-title">Address</span>
+                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
+            </>
+        );
+    }
+
+    const zoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Zone</span>
+                {rowData.zone}
+            </>
+        );
+    }
 
     const categoryBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Category</span>
-                {rowData.category}
+                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
             </>
         );
-    };
+    }
 
-    const ratingBodyTemplate = (rowData) => {
+    const detailsBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Reviews</span>
-                <Rating value={rowData.rating} readOnly cancel={false} />
+                <span className="p-column-title">Details</span>
+                {rowData.details}
             </>
         );
-    };
-
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Status</span>
-                <span className={`product-badge status-${rowData.inventoryStatus.toLowerCase()}`}>{rowData.inventoryStatus}</span>
-            </>
-        );
-    };
+    }
 
     const actionBodyTemplate = (rowData) => {
         return (
             <>
-                <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteProduct(rowData)} />
+                <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editData(rowData)} />
+                {/* <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} /> */}
             </>
+        );
+    };
+        
+    const topHeader = () => {
+        return (
+            <React.Fragment>
+                <div className="my-2">
+                    <h2 className="m-0">Follow Sheet</h2>
+                </div>
+            </React.Fragment>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Follow Up</h5>
+            <Button
+                    label="Add Follow"
+                    icon="pi pi-plus"
+                    severity="sucess"
+                    className="mr-2"
+                    onClick={openNew}
+                />
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -269,127 +299,399 @@ const Crud = () => {
         </div>
     );
 
-    const productDialogFooter = (
+    const dataDialogFooter = (
         <>
             <Button label="Cancel" icon="pi pi-times" text onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" text onClick={saveProduct} />
+            <Button label="Save" icon="pi pi-check" text onClick={followCreate} />
         </>
     );
-    const deleteProductDialogFooter = (
+    const deleteDataDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductDialog} />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteProduct} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deleteData} />
         </>
     );
-    const deleteProductsDialogFooter = (
-        <>
-            <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductsDialog} />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteSelectedProducts} />
-        </>
-    );
+
+    if(infoDatas == null) {
+        return (
+            <div className="card">
+                <div className="border-round border-1 surface-border p-4 surface-card">
+                    <div className="flex mb-3">
+                        <Skeleton shape="circle" size="4rem" className="mr-2"></Skeleton>
+                        <div>
+                            <Skeleton width="10rem" className="mb-2"></Skeleton>
+                            <Skeleton width="5rem" className="mb-2"></Skeleton>
+                            <Skeleton height=".5rem"></Skeleton>
+                        </div>
+                    </div>
+                    <Skeleton width="100%" height="570px"></Skeleton>
+                    <div className="flex justify-content-between mt-3">
+                        <Skeleton width="4rem" height="2rem"></Skeleton>
+                        <Skeleton width="4rem" height="2rem"></Skeleton>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    function onAdd(){
+        const newInfoData = {...infoData}
+        const num = Date.now().toString();
+        const newAddr = {val: '', id: num, tank_con: '', house_con: ''}
+        newInfoData.address = [...infoData.address, newAddr]
+        setInfoData(newInfoData)
+    }
+
+    function onAsset() {
+        const newInfoData = {...infoData}
+        newInfoData.asset = [...infoData.asset, '']
+        setInfoData(newInfoData);
+    }
 
     return (
         <div className="grid crud-demo">
             <div className="col-12">
                 <div className="card">
                     <Toast ref={toast} />
-                    <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-
+                    <Toolbar
+                        className="mb-4"
+                        left={topHeader}
+                    ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={products}
-                        selection={selectedProducts}
-                        onSelectionChange={(e) => setSelectedProducts(e.value)}
+                        value={infoDatas}
+                        selection={selectedDatas}
+                        onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
                         paginator
                         rows={10}
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPageOptions={[5, 10, 25, 50]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                        currentPageReportTemplate="Showing {first} to {last} Out of {totalRecords} Category"
                         globalFilter={globalFilter}
-                        emptyMessage="No products found."
+                        emptyMessage="Customer Information is Empty."
                         header={header}
                         responsiveLayout="scroll"
                     >
-                        <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
-                        <Column field="code" header="Code" sortable body={codeBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column header="Image" body={imageBodyTemplate}></Column>
-                        <Column field="price" header="Price" body={priceBodyTemplate} sortable></Column>
-                        <Column field="category" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="rating" header="Reviews" body={ratingBodyTemplate} sortable></Column>
-                        <Column field="inventoryStatus" header="Status" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+
+                        <Column
+                            field="name"
+                            header="Name"
+                            sortable
+                            body={nameBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="phone"
+                            header="Phone"
+                            body={phoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="email"
+                            header="Email"
+                            body={emailBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="address"
+                            header="Address"
+                            body={addressBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="zone"
+                            header="Zone"
+                            body={zoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="category"
+                            header="Category"
+                            body={categoryBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            header="Action"
+                            body={actionBodyTemplate}
+                            headerStyle={{ minWidth: "2rem" }}
+                        ></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        {product.image && <img src={`/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
-                        <div className="field">
-                            <label htmlFor="name">Name</label>
-                            <InputText id="name" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
-                        </div>
-                        <div className="field">
-                            <label htmlFor="description">Description</label>
-                            <InputTextarea id="description" value={product.description} onChange={(e) => onInputChange(e, 'description')} required rows={3} cols={20} />
-                        </div>
+                    <Dialog
+                        visible={dataDialog}
+                        style={{ width: "650px" }}
+                        header="Follow Information"
+                        modal
+                        className="p-fluid"
+                        footer={dataDialogFooter}
+                        onHide={hideDialog}
+                    >
 
-                        <div className="field">
-                            <label className="mb-3">Category</label>
-                            <div className="formgrid grid">
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category1" name="category" value="Accessories" onChange={onCategoryChange} checked={product.category === 'Accessories'} />
-                                    <label htmlFor="category1">Accessories</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category2" name="category" value="Clothing" onChange={onCategoryChange} checked={product.category === 'Clothing'} />
-                                    <label htmlFor="category2">Clothing</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category3" name="category" value="Electronics" onChange={onCategoryChange} checked={product.category === 'Electronics'} />
-                                    <label htmlFor="category3">Electronics</label>
-                                </div>
-                                <div className="field-radiobutton col-6">
-                                    <RadioButton inputId="category4" name="category" value="Fitness" onChange={onCategoryChange} checked={product.category === 'Fitness'} />
-                                    <label htmlFor="category4">Fitness</label>
-                                </div>
-                            </div>
-                        </div>
+                        <Formik
+                            initialValues={{
+                                address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}] : infoData.address
+                            }}
+                        >
+                            {(formik) => (
+                                <Form>
+                                    <div>
+                                        <FieldArray
+                                            name='address'
+                                            render={(arrayHelpers) => {
+                                                return (
+                                                    <div>
+                                                        <div className="formgrid grid">
+                                                            <div className="field col">
+                                                                <label htmlFor="infoData">Zone</label>
+                                                                <Dropdown
+                                                                    value={infoData.zone}
+                                                                    name='zone'
+                                                                    onChange={(e) => onSelectionChange(e, "zone")}
+                                                                    options={zoneList}
+                                                                    optionLabel="value"
+                                                                    showClear
+                                                                    placeholder="Select a Zone"
+                                                                    required
+                                                                    className={classNames({
+                                                                        "p-invalid": submitted && !infoData.zone,
+                                                                    })}
+                                                                />
+                                                                {submitted && !infoData.zone && (
+                                                                    <small className="p-invalid">
+                                                                        Zone is required.
+                                                                    </small>
+                                                                )}
+                                                            </div>
+                                                            <div className="field col">
+                                                                <label htmlFor="infoData">Data Source</label>
+                                                                <Dropdown
+                                                                    value={infoData.dataSource}
+                                                                    name='dataSource'
+                                                                    onChange={(e) => onSelectionChange(e, "dataSource")}
+                                                                    options={dataSourceList}
+                                                                    optionLabel="value"
+                                                                    showClear
+                                                                    placeholder="Select a Data Source"
+                                                                    required
+                                                                    className={classNames({
+                                                                        "p-invalid": submitted && !infoData.dataSource,
+                                                                    })}
+                                                                />
+                                                                {submitted && !infoData.dataSource && (
+                                                                    <small className="p-invalid">
+                                                                        Data Source is required.
+                                                                    </small>
+                                                                )}
+                                                            </div>
+                                                        </div>
 
-                        <div className="formgrid grid">
-                            <div className="field col">
-                                <label htmlFor="price">Price</label>
-                                <InputNumber id="price" value={product.price} onValueChange={(e) => onInputNumberChange(e, 'price')} mode="currency" currency="USD" locale="en-US" />
-                            </div>
-                            <div className="field col">
-                                <label htmlFor="quantity">Quantity</label>
-                                <InputNumber id="quantity" value={product.quantity} onValueChange={(e) => onInputNumberChange(e, 'quantity')} integeronly />
-                            </div>
-                        </div>
+                                                        <div className="formgrid grid">
+                                                            <div className="field col">
+                                                                <label htmlFor="infoData">Name</label>
+                                                                <InputText
+                                                                    id="name"
+                                                                    value={infoData.name}
+                                                                    onChange={(e) => onInputChange(e, "name")}
+                                                                    required
+                                                                    className={classNames({
+                                                                        "p-invalid": submitted && !infoData.name,
+                                                                    })}
+                                                                />
+                                                                {submitted && !infoData.name && (
+                                                                    <small className="p-invalid">
+                                                                        Name is required.
+                                                                    </small>
+                                                                )}
+                                                            </div>
+                                                            <div className="field col">
+                                                                <label htmlFor="infoData">Phone</label>
+                                                                <InputText
+                                                                    id="age"
+                                                                    value={infoData.phone}
+                                                                    onChange={(e) => onInputChange(e, "phone")}
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="formgrid grid">
+                                                            <div className="field col">
+                                                                <label htmlFor="infoData">Email</label>
+                                                                <InputText
+                                                                    id="email"
+                                                                    value={infoData.email}
+                                                                    onChange={(e) => onInputChange(e, "email")}
+                                                                />
+                                                            </div>
+                                                            <div className="field col">
+                                                                <label htmlFor="infoData">What's App</label>
+                                                                <InputText
+                                                                    id="whatsapp"
+                                                                    value={infoData.whatsapp}
+                                                                    onChange={(e) => onInputChange(e, "whatsapp")}
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        {setMAddress(formik.values.address)}
+                                                        {formik.values.address.map((address, i) => (
+                                                            <div key={i}>
+                                                                <div className='card my-3'>
+                                                                    <div className='field'>
+                                                                        <div className='formgrid grid'>
+                                                                            <div className='field col'>
+                                                                                <label htmlFor='address'>Address - {i+1}</label>
+                                                                                <InputText
+                                                                                    id='address'
+                                                                                    value={formik.values.address[i].address}
+                                                                                    onChange={(e) => {
+                                                                                        formik.setFieldValue(`address.${i}.address`, e.target.value)
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div className="formgrid grid mt-2">
+                                                                            <div className="field col">
+                                                                                <label htmlFor='address'>Category</label>
+                                                                                <Dropdown
+                                                                                    inputId="category"
+                                                                                    name="category"
+                                                                                    value={formik.values.address[i].category}
+                                                                                    options={categoryList}
+                                                                                    optionLabel="label"
+                                                                                    placeholder="Select a Category"
+                                                                                    onChange={(e) => {
+                                                                                        formik.setFieldValue(`address.${i}.category`, e.value)
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+
+                                                                            <div className='field col'>
+                                                                                <label htmlFor='address'>Building Status</label>
+                                                                                <InputText
+                                                                                    id='house_con'
+                                                                                    value={formik.values.address[i].house_con}
+                                                                                    placeholder='Num of floor'
+                                                                                    onChange={(e) => {
+                                                                                        formik.setFieldValue(`address.${i}.house_con`, e.target.value)
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div className='formgrid grid mt-2'> 
+                                                                            <div className='field col'>
+                                                                                <label htmlFor='address'>Reserve Tank</label>
+                                                                                <Dropdown
+                                                                                    inputId="reserve_tank"
+                                                                                    name="reserve_tank"
+                                                                                    value={formik.values.address[i].reserve_tank}
+                                                                                    options={rerserveList}
+                                                                                    optionLabel="label"
+                                                                                    placeholder="Select a Tank"
+                                                                                    onChange={(e) => {
+                                                                                        formik.setFieldValue(`address.${i}.reserve_tank`, e.value)
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                            <div className='field col'>
+                                                                                <label htmlFor='address'>Over Head Tank</label>
+                                                                                <MultiSelect
+                                                                                    inputId="overhead_tank"
+                                                                                    name="overhead_tank"
+                                                                                    value={formik.values.address[i].overhead_tank}
+                                                                                    options={tankList}
+                                                                                    optionLabel="label"
+                                                                                    placeholder="Select a Tank"
+                                                                                    display="chip"
+                                                                                    onChange={(e) => {
+                                                                                        formik.setFieldValue(`address.${i}.overhead_tank`, e.value)
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className='formgrid grid' hidden={!show}>
+                                                                            <div className='field col'>
+                                                                                <label htmlFor='address'>Price</label>
+                                                                                <InputText
+                                                                                    id='address'
+                                                                                    value={formik.values.address[i].price}
+                                                                                    onChange={(e) => {
+                                                                                        formik.setFieldValue(`address.${i}.price`, e.target.value)
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className='formgrid grid mt-2'>
+                                                                        <div className='field col'>
+                                                                            {i > 0 && <Button 
+                                                                                label="Remove" 
+                                                                                icon="pi pi-times" 
+                                                                                text onClick={() => arrayHelpers.remove(i)} 
+                                                                            />}
+                                                                        </div>
+                                                                        <div className='field col'></div>
+                                                                        <div className='field col'></div>
+                                                                        <div className='field col'></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        <div className='formgrid grid mt-2'>
+                                                            <div className='field col'>
+                                                                <Button 
+                                                                    label='add' 
+                                                                    icon="pi pi-plus" 
+                                                                    text 
+                                                                    onClick={() => arrayHelpers.insert(formik.values.address.length + 1, 
+                                                                        {category:'', address: '', tank_con: '', house_con: ''}
+                                                                    )}
+                                                                />
+                                                            </div>
+                                                            <div className='field col'></div>
+                                                            <div className='field col'></div>
+                                                            <div className='field col'></div>
+                                                            <div className='field col'></div>
+                                                        </div>
+                                                        <div className="formgrid grid">
+                                                            <div className="field col">
+                                                                <label htmlFor="infoData">Details</label>
+                                                                <InputTextarea
+                                                                    id="details"
+                                                                    value={infoData.details}
+                                                                    onChange={(e) => onInputChange(e, "details")}
+                                                                    rows={3} cols={30}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }}
+                                        />
+                                    </div>
+                                </Form>
+                            )}
+                        </Formik>
                     </Dialog>
 
-                    <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+                    <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {product && (
+                            {infoData && (
                                 <span>
-                                    Are you sure you want to delete <b>{product.name}</b>?
+                                    Are you sure you want to delete <b>{infoData.name}</b>?
                                 </span>
                             )}
                         </div>
                     </Dialog>
-
-                    <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
-                        <div className="flex align-items-center justify-content-center">
-                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {product && <span>Are you sure you want to delete the selected products?</span>}
-                        </div>
-                    </Dialog>
+                    
                 </div>
             </div>
         </div>
     );
 };
 
-export default Crud;
+export default  Lead_Info;

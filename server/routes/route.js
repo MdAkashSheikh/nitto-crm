@@ -98,6 +98,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
+const { postFollow } = require('../controllers/followup');
 
 /* -------------------------------- */
 /*     Image Upload For Multer      */
@@ -192,22 +193,6 @@ router.delete('/delete-service/:id', deleteService);
 router.post('/toggle-service/:id', toggleService);
 
 /* -------------------------------- */
-/*  Customer Information Route URL  */
-/* -------------------------------- */
-router.post('/post-customer-info', postCustomerInfo);
-router.post('/edit-customer-info/:id', editCustomerInfo);
-router.get('/get-customer-info', getCustomerInfo);
-router.delete('/delete-customer-info/:id', deleteCustomerInfo);
-router.post('/toggle-customer-info/:id', toggleCustomerInfo);
-router.post('/edit-manager-panel/:id', editManagerPanel);
-
-router.post('/post-fcustomer', postfCustomer);
-router.post('/edit-fcustomer/:id', editfCustomer)
-router.get('/get-fcustomer', getfCustomer);
-router.get('/get-onecutomer/:id', getfOneCustomer);
-router.post('/cancel-deal/:id', cancellDeal);
-
-/* -------------------------------- */
 /*    Team Information Route URL    */
 /* -------------------------------- */
 router.post('/post-team-info', postTeamInfo);
@@ -235,5 +220,27 @@ router.post('/edit-package/:id', editPackage);
 router.get('/get-package', getPackage);
 router.delete('/delete-package/:id', deletePackage);
 router.post('/toggle-package/:id', togglePackage);
+
+/* -------------------------------- */
+/*  Customer Information Route URL  */
+/* -------------------------------- */
+router.post('/post-customer-info', postCustomerInfo);
+router.post('/edit-customer-info/:id', editCustomerInfo);
+router.get('/get-customer-info', getCustomerInfo);
+router.delete('/delete-customer-info/:id', deleteCustomerInfo);
+router.post('/toggle-customer-info/:id', toggleCustomerInfo);
+router.post('/edit-manager-panel/:id', editManagerPanel);
+
+router.post('/post-fcustomer', postfCustomer);
+router.post('/edit-fcustomer/:id', editfCustomer)
+router.get('/get-fcustomer', getfCustomer);
+router.get('/get-onecutomer/:id', getfOneCustomer);
+router.post('/cancel-deal/:id', cancellDeal);
+
+/* -------------------------------- */
+/*  Follow Up Information Route URL */
+/* -------------------------------- */
+router.post('/post-follow', postFollow);
+
 
 module.exports = router;

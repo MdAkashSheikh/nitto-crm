@@ -43,6 +43,13 @@ const editCustomerInfo = async(req, res) => {
     const whatsapp = req.body.whatsapp;
     const details = req.body.details;
 
+    const price = req.body.address[0].price
+    let is_customer;
+
+    if(price) {
+        is_customer = '1'
+    }
+
     try {
         const oneData = await customerInfoSc.findByIdAndUpdate(id, {
             "zone": zone,
@@ -54,6 +61,7 @@ const editCustomerInfo = async(req, res) => {
             "email": email,
             "whatsapp": whatsapp,
             "details": details,
+            "is_customer": is_customer,
         })
         res.send(oneData);
 
