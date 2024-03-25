@@ -36,6 +36,15 @@ const customerInfoSc = new mongoose.Schema({
         type: String,
         default: '0'
     },
+    followUpDate: {
+        type: Date,
+    },
+    reFollowUpDate:{
+        type: String,
+    },
+    serviceDate: {
+        type: Date,
+    },
     follows: {
         type: Object,
     },

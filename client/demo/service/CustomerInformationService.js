@@ -2,7 +2,7 @@ import axios from "axios";
 import { URL } from "./SourceDataService";
 
 export const CustomerInformationService = {
-    async postCustomerInfo(zone, dataSource, name, address, phone, email, whatsapp ) {
+    async postCustomerInfo(zone, dataSource, name, address, phone, email, whatsapp, reFollowUpDate, serviceDate, details ) {
         const data = {
             zone,
             dataSource,
@@ -11,11 +11,14 @@ export const CustomerInformationService = {
             phone, 
             email,
             whatsapp,
+            reFollowUpDate,
+            serviceDate,
+            details,
         }
         await axios.post(`${URL}/post-customer-info`, data);
     },
 
-    async editCustomerInfo(zone, dataSource, name, address, phone, email, whatsapp, detail, _id) {
+    async editCustomerInfo(zone, dataSource, name, address, phone, email, whatsapp, reFollowUpDate, serviceDate, detail, _id) {
         const data = {
             zone,
             dataSource,
@@ -24,6 +27,8 @@ export const CustomerInformationService = {
             phone,
             email,
             whatsapp,
+            reFollowUpDate,
+            serviceDate,
             detail,
         }
         await axios.post(`${URL}/edit-customer-info/` + _id, data);

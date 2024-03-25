@@ -10,7 +10,18 @@ const postCustomerInfo = async(req, res) => {
     const phone = req.body.phone;
     const email = req.body.email;
     const whatsapp = req.body.whatsapp;
+    const reFollowUpDate = req.body.reFollowUpDate;
+    const serviceDate = req.body.serviceDate;
     const details = req.body.details;
+
+    const price = req.body.address[0].price
+    let is_customer;
+
+    if(price) {
+        is_customer = '1'
+    } else {
+        is_customer = '0'
+    }
 
     try {
         await customerInfoSc.create({
@@ -22,7 +33,10 @@ const postCustomerInfo = async(req, res) => {
             "phone": phone,
             "email": email,
             "whatsapp": whatsapp,
+            "reFollowUpDate": reFollowUpDate,
+            "serviceDate": serviceDate,
             "details": details,
+            'is_customer': is_customer
         })
         res.send(req.body);
 
@@ -42,12 +56,16 @@ const editCustomerInfo = async(req, res) => {
     const email = req.body.email;
     const whatsapp = req.body.whatsapp;
     const details = req.body.details;
+    const reFollowUpDate = req.body.reFollowUpDate;
+    const serviceDate = req.body.serviceDate;
 
     const price = req.body.address[0].price
     let is_customer;
 
     if(price) {
         is_customer = '1'
+    } else {
+        is_customer = '0'
     }
 
     try {
@@ -60,6 +78,8 @@ const editCustomerInfo = async(req, res) => {
             "phone": phone,
             "email": email,
             "whatsapp": whatsapp,
+            'reFollowUpDate': reFollowUpDate,
+            "serviceDate": serviceDate,
             "details": details,
             "is_customer": is_customer,
         })

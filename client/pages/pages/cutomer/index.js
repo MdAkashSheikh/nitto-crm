@@ -10,6 +10,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { DataGroupService } from '../../../demo/service/DataGroupService';
+import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
 
 const Customer = () => {
     let emptyGroup = {
@@ -19,10 +20,11 @@ const Customer = () => {
         details: '',
     };
 
-    const [groupDatas, setGroupDatas] = useState(null);
+    const [customerDatas, setCustomerDatas] = useState(null);
+    const [allLeadSheet, setAllLeadSheed] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
-    const [groupData, setGroupData] = useState(emptyGroup);
+    const [customerData, setCustomerData] = useState(emptyGroup);
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -33,9 +35,13 @@ const Customer = () => {
 
     useEffect(() => {
 
-        DataGroupService.getDataGroup().then((res) => setGroupDatas(res.data.AllData));
+        DataGroupService.getDataGroup().then((res) => setCustomerDatas(res.data.AllData));
+        CustomerInformationService.getCustomerInfo().then((res) => setAllLeadSheed(res.data.AllData));
 
     }, [toggleRefresh]);
+
+    const filteredCustomer = allLeadSheet?.filter((item) => item.is_customer === '1');
+
 
     const diaHeader = () => {
         return (
@@ -44,7 +50,7 @@ const Customer = () => {
     }
 
     const openNew = () => {
-        setGroupData(emptyGroup);
+        setCustomerData(emptyGroup);
         setSubmitted(false);
         setDataDialog(true);
         setSelectEdit(true)
@@ -63,22 +69,22 @@ const Customer = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",groupData)
+        console.log("PPPP1",customerData)
 
-        if( groupData.name && groupData.details, groupData._id) {
+        if( customerData.name && customerData.details, customerData._id) {
             DataGroupService.editDataGroup(
-                groupData.name,
-                groupData.details,
-                groupData._id,
+                customerData.name,
+                customerData.details,
+                customerData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Updated', life: 3000 });
             })
-        } else if( groupData.name && groupData.details) {
+        } else if( customerData.name && customerData.details) {
             DataGroupService.postDataGroup(
-                groupData.name,
-                groupData.details,
+                customerData.name,
+                customerData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
@@ -87,35 +93,34 @@ const Customer = () => {
         }
     };
 
-    const editData = (groupData) => {
-        setGroupData({ ...groupData });
+    const editData = (customerData) => {
+        setCustomerData({ ...customerData });
         setDataDialog(true);
         setSelectEdit(false);
     };
 
 
-    const confirmDeleteData = (groupData) => {
-        setGroupData(groupData);
+    const confirmDeleteData = (customerData) => {
+        setCustomerData(customerData);
         setDeleteDataDialog(true);
     };
 
     const deleteData = () => {
-        DataGroupService.deleteDataGroup(groupData._id).then(() => {
+        DataGroupService.deleteDataGroup(customerData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
-            setGroupData(emptyGroup);
+            setCustomerData(emptyGroup);
             toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Deleted', life: 3000 });
         })
     };
 
 
-
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let data = { ...groupData };
+        let data = { ...customerData };
         data[`${name}`] = val;
 
-        setGroupData(data);
+        setCustomerData(data);
     };
 
     const dataGroupBodyTemplate = (rowData) => {
@@ -133,21 +138,6 @@ const Customer = () => {
                 <span className="p-column-title">Details</span>
                 {rowData.details}
             </>
-        );
-    }
-
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
-            checked={rowData.is_active != '0'} onChange={(e) => {
-                let is_active = '0';
-                if (rowData.is_active == '0') {
-                    is_active = '1'
-                }
-                DataGroupService.toggleDataGroup(is_active, rowData._id).then(() => {
-                setTogleRefresh(!toggleRefresh)
-                })
-             }} />
         );
     }
 
@@ -200,7 +190,7 @@ const Customer = () => {
         </>
     );
 
-    if(groupDatas == null) {
+    if(filteredCustomer == null) {
         return (
             <div className="card">
                 <div className="border-round border-1 surface-border p-4 surface-card">
@@ -221,9 +211,6 @@ const Customer = () => {
             </div>
         )
     }
-   
-
-
 
     return (
         <div className="grid crud-demo">
@@ -236,7 +223,7 @@ const Customer = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={groupDatas}
+                        value={filteredCustomer}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
@@ -266,11 +253,6 @@ const Customer = () => {
                             headerStyle={{ minWidth: "15rem" }}
                         ></Column>
                         <Column
-                            header="Status"
-                            body={statusBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
-                        ></Column>
-                        <Column
                             header="Action"
                             body={actionBodyTemplate}
                             headerStyle={{ minWidth: "2rem" }}
@@ -288,16 +270,16 @@ const Customer = () => {
                     >
                 
                         <div className="field">
-                            <label htmlFor="groupData">Data Group</label>
+                            <label htmlFor="customerData">Data Group</label>
                             <InputText 
                                 id="name" 
-                                value={groupData.name} 
+                                value={customerData.name} 
                                 onChange={(e) => onInputChange(e, "name")} 
                                 required 
                                 autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !groupData.name })} 
+                                className={classNames({ 'p-invalid': submitted && !customerData.name })} 
                                 />
-                            {submitted && !groupData.name && <small className="p-invalid">
+                            {submitted && !customerData.name && <small className="p-invalid">
                                 Data Group is required.
                             </small>}
                         </div>
@@ -305,7 +287,7 @@ const Customer = () => {
                             <label htmlFor="details">Details</label>
                             <InputText 
                                 id="details" 
-                                value={groupData.details} 
+                                value={customerData.details} 
                                 onChange={(e) => onInputChange(e, "details")} 
                             />
                         </div>
@@ -314,9 +296,9 @@ const Customer = () => {
                     <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {groupData && (
+                            {customerData && (
                                 <span>
-                                    Are you sure you want to delete <b>{groupData.name}</b>?
+                                    Are you sure you want to delete <b>{customerData.name}</b>?
                                 </span>
                             )}
                         </div>
