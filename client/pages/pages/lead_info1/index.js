@@ -1,5 +1,7 @@
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
+import { Calendar } from 'primereact/calendar';
+import { InputSwitch } from "primereact/inputswitch";
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
@@ -8,7 +10,6 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { MultiSelect } from 'primereact/multiselect';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
-import { ToggleButton } from 'primereact/togglebutton';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
@@ -31,6 +32,9 @@ const Lead_Info = () => {
         email: '',
         whatsapp: '',
         details: '',
+        followUpDate: '',
+        reFollowUpDate: '',
+        serviceDate: '',
         followCheck: '',
     };
 
@@ -50,7 +54,7 @@ const Lead_Info = () => {
     const [msTank, setMSTank] = useState(null);
     const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [''], price: ''}])
     const [show, setShow] = useState(false);
-
+    const [chFollow, setChFollow] = useState(false);
 
     useEffect(() => {
 
@@ -73,6 +77,7 @@ const Lead_Info = () => {
         setSubmitted(false);
         setDataDialog(false);
         setShow(false);
+        setChFollow(false);
     };
 
     const hideDeleteProductDialog = () => {
@@ -84,7 +89,7 @@ const Lead_Info = () => {
 
         console.log("PPPP1",infoData)
 
-        if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.details, infoData._id ) {
+        if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.reFollowUpDate || infoData.serviceDate || infoData.details, infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
                 infoData.dataSource,
@@ -93,12 +98,15 @@ const Lead_Info = () => {
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
+                infoData.reFollowUpDate,
+                infoData.serviceDate,
                 infoData.details,
                 infoData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
                 setShow(false);
+                setChFollow(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
             })
         } else if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
@@ -110,10 +118,13 @@ const Lead_Info = () => {
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
+                infoData.reFollowUpDate,
+                infoData.serviceDate,
                 infoData.details
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
+                setShow(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Information is Created', life: 3000 });
             })
         }
@@ -195,6 +206,12 @@ const Lead_Info = () => {
     };
 
     const onSelectionChange = (e, name) => {
+        let _infoData = {...infoData };
+        _infoData[`${name}`] = e.value;
+        setInfoData(_infoData);
+    }
+
+    const onDateChange = (e, name) => {
         let _infoData = {...infoData };
         _infoData[`${name}`] = e.value;
         setInfoData(_infoData);
@@ -302,8 +319,8 @@ const Lead_Info = () => {
     const dataDialogFooter = (
         <>
             <Button label="Cancel" icon="pi pi-times" text onClick={hideDialog} />
-            <Button label="Follow" icon="pi pi-megaphone" text onClick={followCreate} />
-            <Button label="Save" icon="pi pi-check" text onClick={saveData} />
+            <Button hidden={show} label="Follow" icon="pi pi-megaphone" text onClick={followCreate} />
+            <Button hidden={chFollow} label="Save" icon="pi pi-check" text onClick={saveData} />
         </>
     );
     const deleteDataDialogFooter = (
@@ -335,19 +352,7 @@ const Lead_Info = () => {
         )
     }
 
-    function onAdd(){
-        const newInfoData = {...infoData}
-        const num = Date.now().toString();
-        const newAddr = {val: '', id: num, tank_con: '', house_con: ''}
-        newInfoData.address = [...infoData.address, newAddr]
-        setInfoData(newInfoData)
-    }
-
-    function onAsset() {
-        const newInfoData = {...infoData}
-        newInfoData.asset = [...infoData.asset, '']
-        setInfoData(newInfoData);
-    }
+    console.log(infoData)
 
     return (
         <div className="grid crud-demo">
@@ -534,6 +539,14 @@ const Lead_Info = () => {
                                                                 </div>
                                                             </div>
 
+                                                            <div className="formgrid grid">
+                                                                <label htmlFor="infoData">Convert To Customer</label>
+                                                                <InputSwitch className='ml-5' checked={show} onChange={(e) => setShow(!show)} />
+
+                                                                <label className='ml-5' htmlFor="infoData">Convert To Follow Up</label>
+                                                                <InputSwitch className='ml-5' checked={chFollow} onChange={() => setChFollow(!chFollow)} />
+                                                            </div>
+
                                                             {setMAddress(formik.values.address)}
                                                             {formik.values.address.map((address, i) => (
                                                                 <div key={i}>
@@ -655,6 +668,44 @@ const Lead_Info = () => {
                                                                 <div className='field col'></div>
                                                                 <div className='field col'></div>
                                                                 <div className='field col'></div>
+                                                            </div>
+                                                            <div className="formgrid grid" hidden={!show}>
+                                                                <div className="field col">
+                                                                    <label htmlFor="infoData">Re Follow Up Date</label>
+                                                                    <InputText
+                                                                        id="reFollowUpDate"
+                                                                        value={infoData.reFollowUpDate}
+                                                                        placeholder='Enter Month'
+                                                                        onChange={(e) => onInputChange(e, "reFollowUpDate")}
+                                                                    />
+                                                                    {/* <Calendar 
+                                                                        value={infoData.reFollowUpDate} 
+                                                                        onChange={(e) => onDateChange(e, 'reFollowUpDate')} 
+                                                                        dateFormat="dd/mm/yy" 
+                                                                        numberOfMonths={2}
+                                                                    /> */}
+                                                                </div>
+                                                            </div>
+                                                            <div className="formgrid grid" hidden={!chFollow}>
+                                                                <div className="field col">
+                                                                    <label htmlFor="infoData">Follow Up Date</label>
+                                                                    <Calendar 
+                                                                        value={new Date(infoData.followUpDate)} 
+                                                                        onChange={(e) => onDateChange(e, 'followUpDate')} 
+                                                                        dateFormat="dd/mm/yy" 
+                                                                        numberOfMonths={2}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="formgrid grid" hidden={!show}>
+                                                                <div className="field col">
+                                                                    <label htmlFor="infoData">Service Date</label>
+                                                                    <Calendar 
+                                                                        value={new Date(infoData.serviceDate)} 
+                                                                        onChange={(e) => onDateChange(e, 'serviceDate')} 
+                                                                        dateFormat="dd/mm/yy"
+                                                                    />
+                                                                </div>
                                                             </div>
                                                             <div className="formgrid grid">
                                                                 <div className="field col">
