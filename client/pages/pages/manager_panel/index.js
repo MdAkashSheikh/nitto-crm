@@ -845,7 +845,6 @@ const Manager_Panel = () => {
                                 cols={20}
                             />
                         </div>
-
                     </Dialog>
                 </div>
             </div>
