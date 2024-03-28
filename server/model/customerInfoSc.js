@@ -39,6 +39,9 @@ const customerInfoSc = new mongoose.Schema({
     cancel_cause: {
         type: String,
     },
+    confirm_status: {
+        type: String
+    },
     followUpDate: {
         type: Date,
     },

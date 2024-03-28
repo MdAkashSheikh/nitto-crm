@@ -16,9 +16,12 @@ const postCustomerInfo = async(req, res) => {
 
     const price = req.body.address[0].price
     let is_customer;
+    let confirm_status;
 
     if(price) {
         is_customer = '1'
+        confirm_status = 'confirm'
+
     } else {
         is_customer = '0'
     }
@@ -36,7 +39,8 @@ const postCustomerInfo = async(req, res) => {
             "reFollowUpDate": reFollowUpDate,
             "serviceDate": serviceDate,
             "details": details,
-            'is_customer': is_customer
+            'is_customer': is_customer,
+            "confirm_status": confirm_status,
         })
         res.send(req.body);
 
@@ -61,9 +65,11 @@ const editCustomerInfo = async(req, res) => {
 
     const price = req.body.address[0].price
     let is_customer;
+    let confirm_status;
 
     if(price) {
         is_customer = '1'
+        confirm_status = 'confirm'
     } else {
         is_customer = '0'
     }
@@ -82,6 +88,7 @@ const editCustomerInfo = async(req, res) => {
             "serviceDate": serviceDate,
             "details": details,
             "is_customer": is_customer,
+            "confirm_status": confirm_status,
         })
         res.send(oneData);
 
@@ -202,13 +209,13 @@ const cancellDeal = async(req, res) => {
     const id = req.params.id;
     const cancel_cause = req.body.cancel_cause;
     const confirm_status = 'cancelled';
-    const is_active = '0';
+    const is_customer = '0';
 
     try {
         // const customer = await convertCustomerSc.findById(id);
 
-        const oneData = await convertCustomerSc.findByIdAndUpdate(id, {
-            cancel_cause, confirm_status, is_active
+        const oneData = await customerInfoSc.findByIdAndUpdate(id, {
+            cancel_cause, confirm_status, 'is_customer': is_customer
         })
 
         // const edit = await customerInfoSc.findByIdAndUpdate(customer.customerId, {
