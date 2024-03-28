@@ -10,6 +10,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { DataGroupService } from '../../../demo/service/DataGroupService';
+import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
 
 const Cancel_Info = () => {
     let emptyGroup = {
@@ -19,10 +20,10 @@ const Cancel_Info = () => {
         details: '',
     };
 
-    const [groupDatas, setGroupDatas] = useState(null);
+    const [cancelDatas, setCancelDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
-    const [groupData, setGroupData] = useState(emptyGroup);
+    const [cancelData, setCancelData] = useState(emptyGroup);
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -33,7 +34,7 @@ const Cancel_Info = () => {
 
     useEffect(() => {
 
-        DataGroupService.getDataGroup().then((res) => setGroupDatas(res.data.AllData));
+        CustomerInformationService.getCustomerInfo().then((res) => setCancelDatas(res.data.AllData))
 
     }, [toggleRefresh]);
 
@@ -43,8 +44,10 @@ const Cancel_Info = () => {
         )
     }
 
+    const filterCancelDatas = cancelDatas?.filter((item) => item.confirm_status === 'cancelled');
+
     const openNew = () => {
-        setGroupData(emptyGroup);
+        setCancelData(emptyGroup);
         setSubmitted(false);
         setDataDialog(true);
         setSelectEdit(true)
@@ -63,22 +66,22 @@ const Cancel_Info = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",groupData)
+        console.log("PPPP1",cancelData)
 
-        if( groupData.name && groupData.details, groupData._id) {
+        if( cancelData.name && cancelData.details, cancelData._id) {
             DataGroupService.editDataGroup(
-                groupData.name,
-                groupData.details,
-                groupData._id,
+                cancelData.name,
+                cancelData.details,
+                cancelData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Updated', life: 3000 });
             })
-        } else if( groupData.name && groupData.details) {
+        } else if( cancelData.name && cancelData.details) {
             DataGroupService.postDataGroup(
-                groupData.name,
-                groupData.details,
+                cancelData.name,
+                cancelData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
@@ -87,23 +90,23 @@ const Cancel_Info = () => {
         }
     };
 
-    const editData = (groupData) => {
-        setGroupData({ ...groupData });
+    const editData = (cancelData) => {
+        setCancelData({ ...cancelData });
         setDataDialog(true);
         setSelectEdit(false);
     };
 
 
-    const confirmDeleteData = (groupData) => {
-        setGroupData(groupData);
+    const confirmDeleteData = (cancelData) => {
+        setCancelData(cancelData);
         setDeleteDataDialog(true);
     };
 
     const deleteData = () => {
-        DataGroupService.deleteDataGroup(groupData._id).then(() => {
+        DataGroupService.deleteDataGroup(cancelData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
-            setGroupData(emptyGroup);
+            setCancelData(emptyGroup);
             toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Deleted', life: 3000 });
         })
     };
@@ -112,17 +115,81 @@ const Cancel_Info = () => {
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let data = { ...groupData };
+        let data = { ...cancelData };
         data[`${name}`] = val;
 
-        setGroupData(data);
+        setCancelData(data);
     };
 
-    const dataGroupBodyTemplate = (rowData) => {
+    const serviceDateBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.serviceDate?.slice(0, 10)}
+            </>
+        )
+    }
+
+    const nameBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
                 {rowData.name}
+            </>
+        );
+    }
+
+    const phoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Phone</span>
+                {rowData.phone}
+            </>
+        );
+    }
+
+    const emailBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Email</span>
+                {rowData.email}
+            </>
+        );
+    }
+    
+    const addressBodyTemplate = (rowData) => {
+
+        return (
+            <>
+                <span className="p-column-title">Address</span>
+                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
+            </>
+        );
+    }
+
+    const zoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Zone</span>
+                {rowData.zone}
+            </>
+        );
+    }
+
+    const categoryBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Category</span>
+                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
+            </>
+        );
+    }
+
+    const cancelCauseBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Cancel Cause</span>
+                {rowData.cancel_cause}
             </>
         );
     }
@@ -136,20 +203,6 @@ const Cancel_Info = () => {
         );
     }
 
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
-            checked={rowData.is_active != '0'} onChange={(e) => {
-                let is_active = '0';
-                if (rowData.is_active == '0') {
-                    is_active = '1'
-                }
-                DataGroupService.toggleDataGroup(is_active, rowData._id).then(() => {
-                setTogleRefresh(!toggleRefresh)
-                })
-             }} />
-        );
-    }
 
     const actionBodyTemplate = (rowData) => {
         return (
@@ -173,13 +226,6 @@ const Cancel_Info = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <Button
-                    label="Add Data Group"
-                    icon="pi pi-plus"
-                    severity="sucess"
-                    className="mr-2"
-                    onClick={openNew}
-                />
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -200,7 +246,7 @@ const Cancel_Info = () => {
         </>
     );
 
-    if(groupDatas == null) {
+    if(cancelDatas == null) {
         return (
             <div className="card">
                 <div className="border-round border-1 surface-border p-4 surface-card">
@@ -234,7 +280,7 @@ const Cancel_Info = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={groupDatas}
+                        value={filterCancelDatas}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
@@ -251,28 +297,66 @@ const Cancel_Info = () => {
                     >
 
                         <Column
-                            field="name"
-                            header="Data Group"
+                            field="servceDate"
+                            header="Service Date"
                             sortable
-                            body={dataGroupBodyTemplate}
-                            headerStyle={{ minWidth: "10rem" }}
+                            body={serviceDateBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
-                         <Column
+                        <Column
+                            field="name"
+                            header="Name"
+                            sortable
+                            body={nameBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="phone"
+                            header="Phone"
+                            body={phoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="email"
+                            header="Email"
+                            body={emailBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="address"
+                            header="Address"
+                            body={addressBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="zone"
+                            header="Zone"
+                            body={zoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="category"
+                            header="Category"
+                            body={categoryBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="cancel_cause"
+                            header="Cancel Cause"
+                            body={cancelCauseBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
                             field="details"
                             header="Details"
                             body={detailsBodyTemplate}
-                            headerStyle={{ minWidth: "15rem" }}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
-                        <Column
-                            header="Status"
-                            body={statusBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
-                        ></Column>
-                        <Column
+                        {/* <Column
                             header="Action"
                             body={actionBodyTemplate}
                             headerStyle={{ minWidth: "2rem" }}
-                        ></Column>
+                        ></Column> */}
                     </DataTable>
 
                     <Dialog
@@ -286,16 +370,16 @@ const Cancel_Info = () => {
                     >
                 
                         <div className="field">
-                            <label htmlFor="groupData">Data Group</label>
+                            <label htmlFor="cancelData">Data Group</label>
                             <InputText 
                                 id="name" 
-                                value={groupData.name} 
+                                value={cancelData.name} 
                                 onChange={(e) => onInputChange(e, "name")} 
                                 required 
                                 autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !groupData.name })} 
+                                className={classNames({ 'p-invalid': submitted && !cancelData.name })} 
                                 />
-                            {submitted && !groupData.name && <small className="p-invalid">
+                            {submitted && !cancelData.name && <small className="p-invalid">
                                 Data Group is required.
                             </small>}
                         </div>
@@ -303,7 +387,7 @@ const Cancel_Info = () => {
                             <label htmlFor="details">Details</label>
                             <InputText 
                                 id="details" 
-                                value={groupData.details} 
+                                value={cancelData.details} 
                                 onChange={(e) => onInputChange(e, "details")} 
                             />
                         </div>
@@ -312,9 +396,9 @@ const Cancel_Info = () => {
                     <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {groupData && (
+                            {cancelData && (
                                 <span>
-                                    Are you sure you want to delete <b>{groupData.name}</b>?
+                                    Are you sure you want to delete <b>{cancelData.name}</b>?
                                 </span>
                             )}
                         </div>
