@@ -87,8 +87,6 @@ const Lead_Info = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",infoData)
-
         if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.reFollowUpDate || infoData.serviceDate || infoData.details, infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
@@ -108,6 +106,9 @@ const Lead_Info = () => {
                 setShow(false);
                 setChFollow(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Information is Updated', life: 3000 });
+                if(mAddress[0].price) {
+                    onNewPage(infoData._id)
+                }
             })
         } else if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
             CustomerInformationService.postCustomerInfo(
@@ -126,6 +127,9 @@ const Lead_Info = () => {
                 setDataDialog(false);
                 setShow(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Information is Created', life: 3000 });
+                if(mAddress[0].price) {
+                    onNewPage(infoData._id)
+                }
             })
         }
     };
@@ -162,6 +166,11 @@ const Lead_Info = () => {
         setInfoData(infoData);
         setDeleteDataDialog(true);
     };
+
+    const onNewPage = (id) => {
+       
+        window.open(`/pages/invoice?id=${id}`, '_blank', 'noreferrer')
+    }
 
     const deleteData = () => {
         CustomerInformationService.deleteCustomerInfo(infoData._id).then(() => {
@@ -249,7 +258,7 @@ const Lead_Info = () => {
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
+                {rowData.address?.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
             </>
         );
     }
@@ -267,7 +276,7 @@ const Lead_Info = () => {
         return (
             <>
                 <span className="p-column-title">Category</span>
-                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
+                {rowData.address?.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
             </>
         );
     }
@@ -746,4 +755,3 @@ const Lead_Info = () => {
 };
 
 export default  Lead_Info;
-

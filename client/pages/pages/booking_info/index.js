@@ -10,6 +10,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { DataGroupService } from '../../../demo/service/DataGroupService';
+import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
 
 const Booking_Info = () => {
     let emptyGroup = {
@@ -19,10 +20,10 @@ const Booking_Info = () => {
         details: '',
     };
 
-    const [groupDatas, setGroupDatas] = useState(null);
+    const [bookingDatas, setBookingDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
-    const [groupData, setGroupData] = useState(emptyGroup);
+    const [bookingData, setBookingData] = useState(emptyGroup);
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -33,7 +34,8 @@ const Booking_Info = () => {
 
     useEffect(() => {
 
-        DataGroupService.getDataGroup().then((res) => setGroupDatas(res.data.AllData));
+        // DataGroupService.getDataGroup().then((res) => setBookingDatas(res.data.AllData));
+        CustomerInformationService.getCustomerInfo().then((res) => setBookingDatas(res.data.AllData))
 
     }, [toggleRefresh]);
 
@@ -43,8 +45,10 @@ const Booking_Info = () => {
         )
     }
 
+    const filterBookingDatas = bookingDatas?.filter((item) => item.confirm_status === 'confirm')
+
     const openNew = () => {
-        setGroupData(emptyGroup);
+        setBookingData(emptyGroup);
         setSubmitted(false);
         setDataDialog(true);
         setSelectEdit(true)
@@ -63,22 +67,22 @@ const Booking_Info = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",groupData)
+        console.log("PPPP1",bookingData)
 
-        if( groupData.name && groupData.details, groupData._id) {
+        if( bookingData.name && bookingData.details, bookingData._id) {
             DataGroupService.editDataGroup(
-                groupData.name,
-                groupData.details,
-                groupData._id,
+                bookingData.name,
+                bookingData.details,
+                bookingData._id,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Updated', life: 3000 });
             })
-        } else if( groupData.name && groupData.details) {
+        } else if( bookingData.name && bookingData.details) {
             DataGroupService.postDataGroup(
-                groupData.name,
-                groupData.details,
+                bookingData.name,
+                bookingData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
@@ -87,23 +91,23 @@ const Booking_Info = () => {
         }
     };
 
-    const editData = (groupData) => {
-        setGroupData({ ...groupData });
+    const editData = (bookingData) => {
+        setBookingData({ ...bookingData });
         setDataDialog(true);
         setSelectEdit(false);
     };
 
 
-    const confirmDeleteData = (groupData) => {
-        setGroupData(groupData);
+    const confirmDeleteData = (bookingData) => {
+        setBookingData(bookingData);
         setDeleteDataDialog(true);
     };
 
     const deleteData = () => {
-        DataGroupService.deleteDataGroup(groupData._id).then(() => {
+        DataGroupService.deleteDataGroup(bookingData._id).then(() => {
             setTogleRefresh(!toggleRefresh);
             setDeleteDataDialog(false);
-            setGroupData(emptyGroup);
+            setBookingData(emptyGroup);
             toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Data Group is Deleted', life: 3000 });
         })
     };
@@ -112,17 +116,72 @@ const Booking_Info = () => {
 
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
-        let data = { ...groupData };
+        let data = { ...bookingData };
         data[`${name}`] = val;
 
-        setGroupData(data);
+        setBookingData(data);
     };
 
-    const dataGroupBodyTemplate = (rowData) => {
+    const serviceDateBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.serviceDate?.slice(0, 10)}
+            </>
+        )
+    }
+
+    const nameBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
                 {rowData.name}
+            </>
+        );
+    }
+
+    const phoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Phone</span>
+                {rowData.phone}
+            </>
+        );
+    }
+
+    const emailBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Email</span>
+                {rowData.email}
+            </>
+        );
+    }
+    
+    const addressBodyTemplate = (rowData) => {
+
+        return (
+            <>
+                <span className="p-column-title">Address</span>
+                {rowData.address?.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
+            </>
+        );
+    }
+
+    const zoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Zone</span>
+                {rowData.zone}
+            </>
+        );
+    }
+
+    const categoryBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Category</span>
+                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
             </>
         );
     }
@@ -136,26 +195,11 @@ const Booking_Info = () => {
         );
     }
 
-    const statusBodyTemplate = (rowData) => {
-        return (
-            <ToggleButton onLabel="Active" offLabel="Inactive" onIcon="pi pi-check" offIcon="pi pi-times" 
-            checked={rowData.is_active != '0'} onChange={(e) => {
-                let is_active = '0';
-                if (rowData.is_active == '0') {
-                    is_active = '1'
-                }
-                DataGroupService.toggleDataGroup(is_active, rowData._id).then(() => {
-                setTogleRefresh(!toggleRefresh)
-                })
-             }} />
-        );
-    }
-
     const actionBodyTemplate = (rowData) => {
         return (
             <>
-                <Button icon="pi pi-pencil" severity="success" rounded className="mr-2" onClick={() => editData(rowData)} />
-                <Button icon="pi pi-trash" severity="warning" rounded onClick={() => confirmDeleteData(rowData)} />
+                <Button label='Show' severity="secondary"  className="mr-2" onClick={() => editData(rowData)} />
+                <Button label='Cancel' severity="danger"  onClick={() => cancelEdit(rowData)} />
             </>
         );
     };
@@ -173,13 +217,6 @@ const Booking_Info = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <Button
-                    label="Add Data Group"
-                    icon="pi pi-plus"
-                    severity="sucess"
-                    className="mr-2"
-                    onClick={openNew}
-                />
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
@@ -200,7 +237,7 @@ const Booking_Info = () => {
         </>
     );
 
-    if(groupDatas == null) {
+    if(bookingDatas == null) {
         return (
             <div className="card">
                 <div className="border-round border-1 surface-border p-4 surface-card">
@@ -236,7 +273,7 @@ const Booking_Info = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={groupDatas}
+                        value={filterBookingDatas}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
@@ -253,22 +290,48 @@ const Booking_Info = () => {
                     >
 
                         <Column
-                            field="name"
-                            header="Data Group"
+                            field="servceDate"
+                            header="Service Date"
                             sortable
-                            body={dataGroupBodyTemplate}
-                            headerStyle={{ minWidth: "10rem" }}
-                        ></Column>
-                         <Column
-                            field="details"
-                            header="Details"
-                            body={detailsBodyTemplate}
-                            headerStyle={{ minWidth: "15rem" }}
+                            body={serviceDateBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
-                            header="Status"
-                            body={statusBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
+                            field="name"
+                            header="Name"
+                            sortable
+                            body={nameBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="phone"
+                            header="Phone"
+                            body={phoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="email"
+                            header="Email"
+                            body={emailBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="address"
+                            header="Address"
+                            body={addressBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="zone"
+                            header="Zone"
+                            body={zoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="category"
+                            header="Category"
+                            body={categoryBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
                             header="Action"
@@ -288,16 +351,16 @@ const Booking_Info = () => {
                     >
                 
                         <div className="field">
-                            <label htmlFor="groupData">Data Group</label>
+                            <label htmlFor="bookingData">Data Group</label>
                             <InputText 
                                 id="name" 
-                                value={groupData.name} 
+                                value={bookingData.name} 
                                 onChange={(e) => onInputChange(e, "name")} 
                                 required 
                                 autoFocus 
-                                className={classNames({ 'p-invalid': submitted && !groupData.name })} 
+                                className={classNames({ 'p-invalid': submitted && !bookingData.name })} 
                                 />
-                            {submitted && !groupData.name && <small className="p-invalid">
+                            {submitted && !bookingData.name && <small className="p-invalid">
                                 Data Group is required.
                             </small>}
                         </div>
@@ -305,7 +368,7 @@ const Booking_Info = () => {
                             <label htmlFor="details">Details</label>
                             <InputText 
                                 id="details" 
-                                value={groupData.details} 
+                                value={bookingData.details} 
                                 onChange={(e) => onInputChange(e, "details")} 
                             />
                         </div>
@@ -314,9 +377,9 @@ const Booking_Info = () => {
                     <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {groupData && (
+                            {bookingData && (
                                 <span>
-                                    Are you sure you want to delete <b>{groupData.name}</b>?
+                                    Are you sure you want to delete <b>{bookingData.name}</b>?
                                 </span>
                             )}
                         </div>

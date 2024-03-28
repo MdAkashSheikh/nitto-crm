@@ -228,7 +228,7 @@ const Lead_Info = () => {
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
+                {rowData.address?.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
             </>
         );
     }
@@ -246,7 +246,7 @@ const Lead_Info = () => {
         return (
             <>
                 <span className="p-column-title">Category</span>
-                {rowData.address.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
+                {rowData.address?.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
             </>
         );
     }
