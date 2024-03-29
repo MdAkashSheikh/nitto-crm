@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CustomerInformationService } from '../../../demo/service/CustomerInformationService';
 
 
-const Report_Info = () => {
+const Invoice_Info = () => {
 
     const [invoiceDatas, setInvoiceDatas] = useState(null);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -19,11 +19,13 @@ const Report_Info = () => {
 
 
     useEffect(() => {
-        CustomerInformationService.getfCustomer().then((res) => setInvoiceDatas(res.data.AllData))
+        CustomerInformationService.getCustomerInfo().then((res) => setInvoiceDatas(res.data.AllData))
 
     }, [toggleRefresh]);
 
     console.log(invoiceDatas, "SOURCE DATAS")
+
+    const filterData = invoiceDatas?.filter((item) => item.confirm_status === 'confirm')
 
 
     const showInvoice = (reportData) => {
@@ -130,7 +132,7 @@ const Report_Info = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={invoiceDatas}
+                        value={filterData}
                         dataKey="id"
                         paginator
                         rows={10}
@@ -176,4 +178,4 @@ const Report_Info = () => {
     );
 };
 
-export default  Report_Info;
+export default  Invoice_Info;
