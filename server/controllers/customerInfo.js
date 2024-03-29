@@ -11,8 +11,8 @@ const postCustomerInfo = async(req, res) => {
     const email = req.body.email;
     const whatsapp = req.body.whatsapp;
     const reFollowUpDate = req.body.reFollowUpDate;
-    const serviceDate = req.body.serviceDate;
     const details = req.body.details;
+    const serviceDate = req.body.serviceDate;
 
     const price = req.body.address[0].price
     let is_customer;
@@ -27,21 +27,38 @@ const postCustomerInfo = async(req, res) => {
     }
 
     try {
-        await customerInfoSc.create({
-            "zone": zone,
-            "dataSource": dataSource,
-            "category": category,
-            "name": name,
-            "address": address,
-            "phone": phone,
-            "email": email,
-            "whatsapp": whatsapp,
-            "reFollowUpDate": reFollowUpDate,
-            "serviceDate": serviceDate,
-            "details": details,
-            'is_customer': is_customer,
-            "confirm_status": confirm_status,
-        })
+        if(serviceDate) {
+            await customerInfoSc.create({
+                "zone": zone,
+                "dataSource": dataSource,
+                "category": category,
+                "name": name,
+                "address": address,
+                "phone": phone,
+                "email": email,
+                "whatsapp": whatsapp,
+                "reFollowUpDate": reFollowUpDate,
+                "serviceDate": serviceDate,
+                "details": details,
+                'is_customer': is_customer,
+                "confirm_status": confirm_status,
+            })
+        } else {
+            await customerInfoSc.create({
+                "zone": zone,
+                "dataSource": dataSource,
+                "category": category,
+                "name": name,
+                "address": address,
+                "phone": phone,
+                "email": email,
+                "whatsapp": whatsapp,
+                "reFollowUpDate": reFollowUpDate,
+                "details": details,
+                'is_customer': is_customer,
+                "confirm_status": confirm_status,
+            })
+        }
         res.send(req.body);
 
     } catch (err) {
