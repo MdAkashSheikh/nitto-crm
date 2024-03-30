@@ -53,16 +53,16 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-book',
                     to: '/pages/report_info'
                 },
-                {
-                    label: 'Team Information',
-                    icon: 'pi pi-fw pi-users',
-                    to: '/pages/team_info'
-                },
-                {
-                    label: 'Manager Panel',
-                    icon: 'pi pi-fw pi-stop-circle',
-                    to: '/pages/manager_panel'
-                },
+                // {
+                //     label: 'Team Information',
+                //     icon: 'pi pi-fw pi-users',
+                //     to: '/pages/team_info'
+                // },
+                // {
+                //     label: 'Manager Panel',
+                //     icon: 'pi pi-fw pi-stop-circle',
+                //     to: '/pages/manager_panel'
+                // },
 
 
                 //invoice_info
@@ -91,6 +91,11 @@ const AppMenu = () => {
             to: '/pages',
             items: [
                 {
+                    label: 'Team Information',
+                    icon: 'pi pi-fw pi-users',
+                    to: '/pages/team_info'
+                },
+                {
                     label: 'Master Data',
                     icon: 'pi pi-fw pi-briefcase',
                     items: [
@@ -104,16 +109,16 @@ const AppMenu = () => {
                             icon: 'pi pi-fw pi-server',
                             to: '/master/data_group'
                         },
-                        {
-                            label: 'Priority Group',
-                            icon: 'pi pi-fw pi-angle-double-up',
-                            to: '/master/priority_group'
-                        },
-                        {
-                            label: 'Potential Customer Group',
-                            icon: 'pi pi-fw pi-users',
-                            to: '/master/potential_customer'
-                        },
+                        // {
+                        //     label: 'Priority Group',
+                        //     icon: 'pi pi-fw pi-angle-double-up',
+                        //     to: '/master/priority_group'
+                        // },
+                        // {
+                        //     label: 'Potential Customer Group',
+                        //     icon: 'pi pi-fw pi-users',
+                        //     to: '/master/potential_customer'
+                        // },
                         {
                             label: 'Zone',
                             icon: 'pi pi-fw pi-globe',

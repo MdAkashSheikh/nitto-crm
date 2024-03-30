@@ -63,6 +63,9 @@ const Lead_Info = () => {
 
     }, [toggleRefresh]);
 
+
+    const sortDatas = infoDatas?.sort((a, b) => a.followUpDate - b.followUpDate)
+
     const openNew = () => {
         setInfoData(emptyInfo);
         setSubmitted(false);
@@ -131,6 +134,7 @@ const Lead_Info = () => {
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
+                infoData.followUpDate,
                 infoData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
@@ -359,7 +363,7 @@ const Lead_Info = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={infoDatas}
+                        value={sortDatas}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"
