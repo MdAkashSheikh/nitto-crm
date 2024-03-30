@@ -3,6 +3,7 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { InputText } from 'primereact/inputtext';
 import { Skeleton } from 'primereact/skeleton';
+import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
@@ -25,7 +26,7 @@ const Invoice_Info = () => {
 
     console.log(invoiceDatas, "SOURCE DATAS")
 
-    const filterData = invoiceDatas?.filter((item) => item.confirm_status === 'confirm')
+    const filterData = invoiceDatas?.filter((item) => item.confirm_status === 'confirm' || item.confirm_status === 'cancelled')
 
 
     const showInvoice = (reportData) => {
@@ -33,6 +34,15 @@ const Invoice_Info = () => {
         window.open(`/pages/invoice?id=${reportData.customerId}`, '_blank', 'noreferrer')
     };
 
+
+    const serviceDateBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.serviceDate?.slice(0, 10)}
+            </>
+        )
+    }
 
     const nameBodyTemplate = (rowData) => {
         return (
@@ -43,24 +53,72 @@ const Invoice_Info = () => {
         );
     }
 
+    const phoneBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Phone</span>
+                {rowData.phone}
+            </>
+        );
+    }
+
+    const emailBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Email</span>
+                {rowData.email}
+            </>
+        );
+    }
+    
     const addressBodyTemplate = (rowData) => {
+
         return (
             <>
                 <span className="p-column-title">Address</span>
-                {rowData.address}
+                {rowData.address?.map((item, i)=><ol start={i+1}><li>{item.address}</li></ol>)}
             </>
         );
     }
 
-    const confirmStatusBodyTemplate = (rowData) => {
-
+    const zoneBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">status</span>
-                {rowData.confirm_status}
+                <span className="p-column-title">Zone</span>
+                {rowData.zone}
             </>
         );
     }
+
+    const categoryBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Category</span>
+                {rowData.address?.map((item, i)=><ol start={i+1}><li>{item.category}</li></ol>)}
+            </>
+        );
+    }
+
+    const detailsBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Details</span>
+                {rowData.details}
+            </>
+        );
+    }
+
+    const statusBodyTemplate = (rowData) => {
+        return <Tag value={rowData.confirm_status} severity={getProductSeverity(rowData)}></Tag>;
+    };
+
+    // const actionBodyTemplate = (rowData) => {
+    //     return (
+    //         <>
+    //             <Button label='Show' severity="success" className="mr-2" onClick={() => showInvoice(rowData)} />
+    //         </>
+    //     );
+    // };
 
     const actionBodyTemplate = (rowData) => {
 
@@ -79,6 +137,21 @@ const Invoice_Info = () => {
         }
     };
 
+    const getProductSeverity = (product) => {
+        switch (product.confirm_status) {
+            case 'confirm':
+                return 'success';
+
+            case 'cancelled':
+                return 'danger';
+
+            case 'OUTOFSTOCK':
+                return 'danger';
+
+            default:
+                return null;
+        }
+    };
         
     const topHeader = () => {
         return (
@@ -147,29 +220,53 @@ const Invoice_Info = () => {
                     >
 
                         <Column
+                            field="servceDate"
+                            header="Service Date"
+                            sortable
+                            body={serviceDateBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
                             field="name"
                             header="Name"
                             sortable
                             body={nameBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="phone"
+                            header="Phone"
+                            body={phoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
+                            field="email"
+                            header="Email"
+                            body={emailBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
                             field="address"
                             header="Address"
                             body={addressBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
-                            field="report_status"
-                            header="Report Status"
-                            body={confirmStatusBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
+                            field="zone"
+                            header="Zone"
+                            body={zoneBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                         <Column
-                            field="action"
+                            field="status"
+                            header="Status"
+                            body={statusBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
+                        <Column
                             header="Action"
                             body={actionBodyTemplate}
-                            headerStyle={{ minWidth: "5rem" }}
+                            headerStyle={{ minWidth: "2rem" }}
                         ></Column>
                     </DataTable>
                 </div>

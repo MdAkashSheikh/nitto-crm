@@ -245,7 +245,7 @@ router.post('/cancel-deal/:id', cancellDeal);
 /*  Follow Up Information Route URL */
 /* -------------------------------- */
 router.post('/post-follow', postFollow);
-router.post('/edit-follow', editFollow)
+router.post('/edit-follow-up/:id', editFollow)
 
 
 module.exports = router;

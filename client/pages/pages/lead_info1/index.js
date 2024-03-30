@@ -137,7 +137,26 @@ const Lead_Info = () => {
     const followCreate = () => {
         setSubmitted(true);
 
-        if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
+        if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.followUpDate || infoData.details, infoData._id) {
+            FolloUpService.editFollow(
+                infoData.zone,
+                infoData.dataSource,
+                infoData.name,
+                mAddress,
+                infoData.phone,
+                infoData.email,
+                infoData.whatsapp,
+                infoData.followUpDate,
+                infoData.details,
+                infoData._id,
+            ).then(() => {
+                setTogleRefresh(!toggleRefresh);
+                setDataDialog(false);
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Follow is Updated', life: 3000 })
+            })
+        }
+
+        else if( infoData.zone && infoData.dataSource && infoData.name && mAddress) {
             FolloUpService.postFollow(
                 infoData.zone,
                 infoData.dataSource,
@@ -146,6 +165,7 @@ const Lead_Info = () => {
                 infoData.phone,
                 infoData.email,
                 infoData.whatsapp,
+                infoData.followUpDate,
                 infoData.details,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
@@ -159,7 +179,6 @@ const Lead_Info = () => {
         setInfoData({ ...infoData });
         setMAddress(infoData.address)
         setDataDialog(true);
-        setShow(true);
     };
 
     const confirmDeleteData = (infoData) => {
@@ -678,23 +697,7 @@ const Lead_Info = () => {
                                                                 <div className='field col'></div>
                                                                 <div className='field col'></div>
                                                             </div>
-                                                            <div className="formgrid grid" hidden={!show}>
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Re Follow Up Date</label>
-                                                                    <InputText
-                                                                        id="reFollowUpDate"
-                                                                        value={infoData.reFollowUpDate}
-                                                                        placeholder='Enter Month'
-                                                                        onChange={(e) => onInputChange(e, "reFollowUpDate")}
-                                                                    />
-                                                                    {/* <Calendar 
-                                                                        value={infoData.reFollowUpDate} 
-                                                                        onChange={(e) => onDateChange(e, 'reFollowUpDate')} 
-                                                                        dateFormat="dd/mm/yy" 
-                                                                        numberOfMonths={2}
-                                                                    /> */}
-                                                                </div>
-                                                            </div>
+                                                           
                                                             <div className="formgrid grid" hidden={!chFollow}>
                                                                 <div className="field col">
                                                                     <label htmlFor="infoData">Follow Up Date</label>
@@ -714,6 +717,23 @@ const Lead_Info = () => {
                                                                         onChange={(e) => onDateChange(e, 'serviceDate')} 
                                                                         dateFormat="dd/mm/yy"
                                                                     />
+                                                                </div>
+                                                            </div>
+                                                            <div className="formgrid grid" hidden={!show}>
+                                                                <div className="field col">
+                                                                    <label htmlFor="infoData">Re Follow Up Date</label>
+                                                                    <InputText
+                                                                        id="reFollowUpDate"
+                                                                        value={infoData.reFollowUpDate}
+                                                                        placeholder='Enter Month'
+                                                                        onChange={(e) => onInputChange(e, "reFollowUpDate")}
+                                                                    />
+                                                                    {/* <Calendar 
+                                                                        value={infoData.reFollowUpDate} 
+                                                                        onChange={(e) => onDateChange(e, 'reFollowUpDate')} 
+                                                                        dateFormat="dd/mm/yy" 
+                                                                        numberOfMonths={2}
+                                                                    /> */}
                                                                 </div>
                                                             </div>
                                                             <div className="formgrid grid">
