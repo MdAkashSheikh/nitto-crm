@@ -187,6 +187,15 @@ const Lead_Info = () => {
         setInfoData(_infoData);
     }
 
+    const customerIdBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">ID</span>
+                {rowData._id}
+            </>
+        )
+    }
+
     const serviceDateBodyTemplate = (rowData) => {
         return (
             <>
@@ -263,8 +272,8 @@ const Lead_Info = () => {
     const actionBodyTemplate = (rowData) => {
         return (
             <>
-                <Button label='Show' severity="secondary"  className="mr-2" onClick={() => editData(rowData)} />
-                <Button label='Cancel' severity="danger"  onClick={() => cancelEdit(rowData)} />
+                <Button label='Show' severity="secondary"  className="m-2" onClick={() => editData(rowData)} />
+                <Button label='Cancel' severity="danger"   className='m-2'onClick={() => cancelEdit(rowData)} />
             </>
         );
     };
@@ -358,7 +367,13 @@ const Lead_Info = () => {
                         header={header}
                         responsiveLayout="scroll"
                     >
-
+                        <Column
+                            field="servceId"
+                            header="Customer ID"
+                            sortable
+                            body={customerIdBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column>
                         <Column
                             field="servceDate"
                             header="Service Date"
@@ -371,7 +386,7 @@ const Lead_Info = () => {
                             header="Name"
                             sortable
                             body={nameBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "10rem" }}
                         ></Column>
                         <Column
                             field="phone"
@@ -389,7 +404,7 @@ const Lead_Info = () => {
                             field="address"
                             header="Address"
                             body={addressBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
+                            headerStyle={{ minWidth: "20rem" }}
                         ></Column>
                         <Column
                             field="zone"
@@ -406,7 +421,7 @@ const Lead_Info = () => {
                         <Column
                             header="Action"
                             body={actionBodyTemplate}
-                            headerStyle={{ minWidth: "2rem" }}
+                            headerStyle={{ minWidth: "20rem" }}
                         ></Column>
                     </DataTable>
 
