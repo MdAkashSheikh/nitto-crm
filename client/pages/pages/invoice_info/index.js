@@ -31,7 +31,7 @@ const Invoice_Info = () => {
 
     const showInvoice = (reportData) => {
         console.log(reportData)
-        window.open(`/pages/invoice?id=${reportData.customerId}`, '_blank', 'noreferrer')
+        window.open(`/pages/invoice?id=${reportData._id}`, '_blank', 'noreferrer')
     };
 
 
@@ -131,7 +131,7 @@ const Invoice_Info = () => {
         } else {
             return (
                 <>
-                    <Button label='Show' severity="success" className="mr-2" onClick={() => showInvoice(rowData)} />
+                    <Button label='Show' severity="secondary" className="mr-2" onClick={() => showInvoice(rowData)} />
                 </>
             );
         }
@@ -218,7 +218,6 @@ const Invoice_Info = () => {
                         header={header}
                         responsiveLayout="scroll"
                     >
-
                         <Column
                             field="servceDate"
                             header="Service Date"

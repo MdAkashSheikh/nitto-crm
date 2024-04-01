@@ -30,12 +30,10 @@ export default function Invoice() {
 
 
     useEffect(() => {
-        CustomerInformationService.getfCustomer().then((res) => setInvoiceDatas(res.data.AllData));
+        CustomerInformationService.getCustomerInfo().then((res) => setInvoiceDatas(res.data.AllData));
         ServiceGroupService.getService().then((res) => setServiceDatas(res.data.AllData));
 
     }, [])
-
-    console.log('SERVICE DATA',serviceDatas)
     
     const CustomerData = [
         { name: 'Rahim Ahmed', address: 'Mirpur, Dhaka', service: 'Wasa Tank', slot: 'Morning', team_member: ['Akash', 'Karim'], team_lead: 'Karim', price: '4500'}
@@ -45,21 +43,18 @@ export default function Invoice() {
     
     const vat = CustomerInfo.price * 0.15;
 
-    const oneData = invoceDatas?.filter(item => item.customerId == paramValue)
+    const oneData = invoceDatas?.filter(item => item._id == paramValue)
 
-    console.log('One DATA', oneData)
+    // console.log(oneData)
 
-    const serviceName = oneData?.map(item => item.service).toString();
+    const addressData = oneData?.map(item => item?.address)
+    const priceData = addressData?.map(item => item[0].price).toString()
+    console.log(priceData)
 
-
-    const oneService = serviceDatas?.filter(item => item.service_name == serviceName)
-
-
-    console.log('Service DATA', oneService)
-
-    let bPrice = oneService?.map(item => item.base_price).toString();
-
-    console.log(bPrice)
+    const name = oneData?.map(item => item.name).toString()
+    const createDate = oneData?.map(item => item.date)
+    const servDate = oneData?.map(item => item.date)
+    console.log(servDate)
 
 
     const printFn = () => {
@@ -84,7 +79,7 @@ export default function Invoice() {
                         
                         <MDBCol xl="3" className="float-end">
                             <h1 className='bold'>Money Receipt</h1>
-                            <p style={{ color: "#5d9fc5" }}>ID - 00000456</p>
+                            <p style={{ color: "#5d9fc5" }}>ID - {paramValue}</p>
                         </MDBCol>
                         </MDBRow>
                     </MDBContainer>
@@ -107,14 +102,17 @@ export default function Invoice() {
                                 <span style={{ color: "#5d9fc5" }}>Clean Battle</span>
                             </li>
                             <li className="text-muted">Uttara, Dhaka</li>
-                            <li className="text-muted">State, Country</li>
+                            {/* <li className="text-muted">State, Country</li> */}
                             <li className="text-muted">
                                 <MDBIcon fas icon="phone-alt" /> +8801942000061
                             </li>
                             <li className="text-muted">CRM - {CustomerInfo.team_lead}</li>
+                            <p className="text-muted pt-2">Creation Date</p>
                             <li className="text-muted">
-                                <span className="fw-bold ms-1">Creation Date: </span>Jan 23,2024
+                                <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
+                                <span className="fw-bold ms-1">{new Date(createDate).toLocaleString('en-us',{day: 'numeric', month:'short', year:'numeric'})}</span>
                             </li>
+                           
                         </MDBTypography>
                         </MDBCol>
                         <MDBCol xl="4">
@@ -122,11 +120,16 @@ export default function Invoice() {
                         <MDBTypography listUnStyled>
                             <li className="text-muted">
                                 {/* <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} /> */}
-                                <span className="fw-bold ms-1">{CustomerInfo.name}</span>
+                                <span className="fw-bold ms-1">{name}</span>
                             </li>
                             <li className="text-muted">
                                 {/* <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} /> */}
-                                <span className="fw-bold ms-1">{CustomerInfo.address}</span>
+                                <span className="fw-bold ms-1">{addressData?.map(item=> item[0].address)}</span>
+                            </li>
+                            <p className="text-muted pt-4">Service Date</p>
+                            <li className="text-muted">
+                                <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
+                                <span className="fw-bold ms-1">{new Date(servDate).toLocaleString('en-us',{day: 'numeric', month:'short', year:'numeric'})}</span>
                             </li>
                             {/* <li className="text-muted">
                                 <MDBIcon fas icon="circle" style={{ color: "#84B0CA" }} />
@@ -146,7 +149,9 @@ export default function Invoice() {
                         >
                             <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Description</th>
+                            <th scope="col">Over Head Tank</th>
+                            <th scope="col">Reserve Tank</th>
+                            <th scope="col">Date</th>
                             <th scope="col">Unit Price</th>
                             <th scope="col">Amount</th>
                             </tr>
@@ -154,12 +159,18 @@ export default function Invoice() {
                         <MDBTableBody>
                         {
                             // console.log(CustomerData)
-                            oneData?.map((item, i) => (
+                            addressData?.map((item, i) => (
                                 <tr index={i}>
                                     <th scope="row">{i+1}</th>
-                                    <td>{item.service}</td>
-                                    <td>${bPrice}</td>
-                                     <td>${bPrice}</td>
+                                    <td>
+                                        {item[0].overhead_tank.map(over => (
+                                            <div>{over}</div>
+                                        ))}
+                                    </td>
+                                    <td>{item[0].reserve_tank}</td>
+                                    <td>{new Date(servDate).toLocaleString('en-us',{day: 'numeric', month:'short', year:'numeric'})}</td>
+                                    <td>{item[0].price} TK</td>
+                                     <td>${item[0].price} TK</td>
                                 </tr>
                             )) 
                         }
@@ -190,15 +201,15 @@ export default function Invoice() {
                         <MDBCol xl="3">
                         <MDBTypography listUnStyled>
                             <li className="text-muted ms-5">
-                            <span class="text-black me-4">SubTotal</span>${bPrice}
+                            <span class="text-black me-4">SubTotal</span>{priceData} TK
                             </li>
                             <li className="text-muted ms-5 mt-2">
-                            <span class="text-black me-4">Tax(15%)</span>${bPrice * 0.15}
+                            <span class="text-black me-4">Tax(15%)</span>${priceData * 0.15}
                             </li>
                         </MDBTypography>
                         <p className="text-black float-start">
                             <span className="text-black me-3"> Total Amount</span>
-                            <span style={{ fontSize: "25px" }}>${bPrice - 0 + bPrice * 0.15}</span>
+                            <span style={{ fontSize: "25px" }}>{priceData - 0 + priceData * 0.15} TK</span>
                         </p>
                         </MDBCol>
                     </MDBRow>
