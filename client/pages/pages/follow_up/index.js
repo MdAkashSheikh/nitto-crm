@@ -61,7 +61,6 @@ const Lead_Info = () => {
         TankInfoService.getTank().then((res) => setMSTank(res.data.AllData));
         DataSourceService.getSourceData().then((res) => setMSDataSource(res.data.AllData));
 
-
     }, [toggleRefresh]);
 
 
@@ -253,13 +252,30 @@ const Lead_Info = () => {
         );
     }
 
-    const detailsBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Details</span>
-                {rowData.details}
-            </>
-        );
+    const followUpBodyTemplate = (rowData) => {
+
+        if(rowData.followCheck === 'lead follow up' && rowData.is_customer === '0') {
+            return (
+                <>
+                    <span className="p-column-title">Details</span>
+                    {'Lead Follow Up'}
+                </>
+            );
+        } else if(rowData.is_customer === '1') {
+            return (
+                <>
+                    <span className="p-column-title">Details</span>
+                    {'Customer Follow Up'}
+                </>
+            );
+        } else if(rowData.confirm_status === 'cancelled' ){
+            return (
+                <>
+                    <span className="p-column-title">Details</span>
+                    {'Cancell Follow Up'}
+                </>
+            );
+        }
     }
 
     const actionBodyTemplate = (rowData) => {
@@ -331,6 +347,8 @@ const Lead_Info = () => {
             </div>
         )
     }
+
+    console.log(sortDatas)
 
     function onAdd(){
         const newInfoData = {...infoData}
@@ -410,6 +428,13 @@ const Lead_Info = () => {
                             body={categoryBodyTemplate}
                             headerStyle={{ minWidth: "3rem" }}
                         ></Column>
+                        {/* <Column
+                            field="category"
+                            header="Follow Status"
+                            body={followUpBodyTemplate}
+                            headerStyle={{ minWidth: "3rem" }}
+                        ></Column> */}
+                        
                         <Column
                             header="Action"
                             body={actionBodyTemplate}

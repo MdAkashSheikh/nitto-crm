@@ -23,6 +23,7 @@ const Booking_Info = () => {
     const [bookingDatas, setBookingDatas] = useState(null);
     const [dataDialog, setDataDialog] = useState(false);
     const [deleteDataDialog, setDeleteDataDialog] = useState(false);
+    const [cancelDialog, setCancelDialog] = useState(false);
     const [bookingData, setBookingData] = useState(emptyGroup);
     const [selectedDatas, setSelectedDatas] = useState(null);
     const [submitted, setSubmitted] = useState(false);
@@ -97,6 +98,10 @@ const Booking_Info = () => {
         setSelectEdit(false);
     };
 
+    const cancelEdit= (bookingData) => {
+        setBookingData({ ...bookingData});
+        setCancelDialog(true)
+    }
 
     const confirmDeleteData = (bookingData) => {
         setBookingData(bookingData);
@@ -258,9 +263,6 @@ const Booking_Info = () => {
             </div>
         )
     }
-   
-
-
 
     return (
         <div className="grid crud-demo">
@@ -370,6 +372,31 @@ const Booking_Info = () => {
                                 id="details" 
                                 value={bookingData.details} 
                                 onChange={(e) => onInputChange(e, "details")} 
+                            />
+                        </div>
+                    </Dialog>
+
+                    <Dialog
+                        visible={cancelDialog}
+                        style={{ width: "550px" }}
+                        header="Cancel Customer"
+                        modal
+                        className="p-fluid"
+                        footer={cancelDialogFooter}
+                        onHide={hideCancelDialog}
+                    >
+
+                        <div className="field">
+                            <label htmlFor="customer">Cancelling Cause</label>
+                            <InputTextarea
+                                id="cancel_cause"
+                                value={infoData.cancel_cause}
+                                onChange={(e) =>
+                                    onCancelChange(e, "cancel_cause")
+                                }
+                                required
+                                rows={3}
+                                cols={20}
                             />
                         </div>
                     </Dialog>
