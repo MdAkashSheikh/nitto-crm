@@ -11,7 +11,7 @@ const postFollow = async(req, res) => {
     const whatsapp = req.body.whatsapp;
     const details = req.body.details;
     const followUpDate = req.body.followUpDate;
-    const followCheck = 'lead follow up'
+    const followCheck = 'lead_follow'
 
     try {
         await customerInfoSc.create({

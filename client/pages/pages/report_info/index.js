@@ -33,6 +33,8 @@ const Report_Info = () => {
 
     console.log(reportDatas, "SOURCE DATAS")
 
+    const filterReportDatas = reportDatas?.filter(item => item.confirm_status  == 'confirm' || item.confirm_status == 'cancelled')
+
     const serviceDateBodyTemplate = (rowData) => {
         return (
             <>
@@ -169,7 +171,7 @@ const Report_Info = () => {
                     ></Toolbar>
                     <DataTable
                         ref={dt}
-                        value={reportDatas}
+                        value={filterReportDatas}
                         selection={selectedDatas}
                         onSelectionChange={(e) => setSelectedDatas(e.value)}
                         dataKey="id"

@@ -127,9 +127,9 @@ const Lead_Info = () => {
                 setDataDialog(false);
                 setShow(false);
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'New Information is Created', life: 3000 });
-                if(mAddress[0].price) {
-                    onNewPage(infoData._id)
-                }
+                // if(mAddress[0].price) {
+                //     onNewPage(infoData._id)
+                // }
             })
         }
     };
