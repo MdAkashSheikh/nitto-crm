@@ -17,6 +17,7 @@ const postCustomerInfo = async(req, res) => {
     const price = req.body.address[0].price
     let is_customer;
     let confirm_status;
+    let followCheck;
 
     if(price) {
         is_customer = '1'
@@ -42,6 +43,7 @@ const postCustomerInfo = async(req, res) => {
                 "details": details,
                 'is_customer': is_customer,
                 "confirm_status": confirm_status,
+                'followCheck': 'customer_follow'
             })
         } else {
             await customerInfoSc.create({
@@ -106,6 +108,7 @@ const editCustomerInfo = async(req, res) => {
             "details": details,
             "is_customer": is_customer,
             "confirm_status": confirm_status,
+            'followCheck': 'customer_follow'
         })
         res.send(oneData);
 
@@ -225,6 +228,7 @@ const getfOneCustomer = async(req, res) => {
 const cancellDeal = async(req, res) => {
     const id = req.params.id;
     const cancel_cause = req.body.cancel_cause;
+    const followUpDate = req.body.followUpDate;
     const confirm_status = 'cancelled';
     const is_customer = '0';
 
@@ -232,7 +236,11 @@ const cancellDeal = async(req, res) => {
         // const customer = await convertCustomerSc.findById(id);
 
         const oneData = await customerInfoSc.findByIdAndUpdate(id, {
-            cancel_cause, confirm_status, 'is_customer': is_customer
+            cancel_cause, 
+            followUpDate,
+            confirm_status,
+            'is_customer': is_customer,
+            'followCheck': 'cancell_follow'
         })
 
         // const edit = await customerInfoSc.findByIdAndUpdate(customer.customerId, {

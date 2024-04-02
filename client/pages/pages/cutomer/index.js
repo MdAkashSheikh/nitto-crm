@@ -21,7 +21,7 @@ import { TankInfoService } from '../../../demo/service/TankInfoService';
 import { DataSourceService } from '../../../demo/service/SourceDataService';
 import { FolloUpService } from '../../../demo/service/FollowUpService';
 
-const Lead_Info = () => {
+const Customer = () => {
     let emptyInfo = {
         id: 0,
         zone: '',
@@ -273,7 +273,7 @@ const Lead_Info = () => {
         return (
             <>
                 <Button label='Show' severity="secondary"  className="m-2" onClick={() => editData(rowData)} />
-                <Button label='Cancel' severity="danger"   className='m-2'onClick={() => cancelEdit(rowData)} />
+                {/* <Button label='Cancel' severity="danger"   className='m-2'onClick={() => cancelEdit(rowData)} /> */}
             </>
         );
     };
@@ -421,7 +421,7 @@ const Lead_Info = () => {
                         <Column
                             header="Action"
                             body={actionBodyTemplate}
-                            headerStyle={{ minWidth: "20rem" }}
+                            headerStyle={{ minWidth: "3rem" }}
                         ></Column>
                     </DataTable>
 
@@ -785,5 +785,5 @@ const Lead_Info = () => {
     );
 };
 
-export default  Lead_Info;
+export default  Customer;
 

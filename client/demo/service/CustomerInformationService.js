@@ -77,7 +77,7 @@ export const CustomerInformationService = {
         return response;
     },
 
-    async cancelDeal(cancel_cause, id) {
-        axios.post(`${URL}/cancel-deal/` + id, { cancel_cause });
+    async cancelDeal(cancel_cause, followUpDate, id) {
+        axios.post(`${URL}/cancel-deal/` + id, { cancel_cause, followUpDate });
     }
 }
