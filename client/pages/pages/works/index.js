@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
@@ -21,7 +22,7 @@ import { TankInfoService } from '../../../demo/service/TankInfoService';
 import { DataSourceService } from '../../../demo/service/SourceDataService';
 import { FolloUpService } from '../../../demo/service/FollowUpService';
 
-const Lead_Info = () => {
+const Works = () => {
     let emptyInfo = {
         id: 0,
         zone: '',
@@ -201,6 +202,7 @@ const Lead_Info = () => {
             <>
                 <span className="p-column-title">Name</span>
                 {rowData.serviceDate?.slice(0, 10)}
+                {/* {format(new Date(rowData.serviceDate), 'yyyy-MM-dd, h:mm:ss a')?.slice(0, 10)} */}
             </>
         )
     }
@@ -289,10 +291,18 @@ const Lead_Info = () => {
     };
 
     const header = (
-        <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+        <div className="flex flex-column md:flex-row gap-5 md:align-items-center">
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+            </span>
+            <span className="block mt-2 md:mt-0 p-input-icon-left">
+                <i className="pi pi-search" />
+                <Calendar 
+                    className='ml-2' 
+                    placeholder='Searching by Date...' 
+                    showClear 
+                    onChange={(e) => setGlobalFilter(format(new Date(e.target.value), 'yyyy-MM-dd, h:mm:ss a').slice(0, 10))}/>
             </span>
         </div>
     );
@@ -339,7 +349,7 @@ const Lead_Info = () => {
         )
     }
 
-    console.log(infoData)
+    console.log(globalFilter)
 
     return (
         <div className="grid crud-demo">
@@ -367,13 +377,6 @@ const Lead_Info = () => {
                         header={header}
                         responsiveLayout="scroll"
                     >
-                        <Column
-                            field="servceId"
-                            header="Customer ID"
-                            sortable
-                            body={customerIdBodyTemplate}
-                            headerStyle={{ minWidth: "3rem" }}
-                        ></Column>
                         <Column
                             field="servceDate"
                             header="Service Date"
@@ -421,7 +424,7 @@ const Lead_Info = () => {
                         <Column
                             header="Action"
                             body={actionBodyTemplate}
-                            headerStyle={{ minWidth: "20rem" }}
+                            headerStyle={{ minWidth: "15rem" }}
                         ></Column>
                     </DataTable>
 
@@ -785,5 +788,5 @@ const Lead_Info = () => {
     );
 };
 
-export default  Lead_Info;
+export default  Works;
 
