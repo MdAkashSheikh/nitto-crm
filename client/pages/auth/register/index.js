@@ -8,7 +8,7 @@ import { LayoutContext } from '../../../layout/context/layoutcontext';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 
-const LoginPage = () => {
+const RegisterPage = () => {
     const [password, setPassword] = useState('');
     const [checked, setChecked] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
@@ -25,10 +25,15 @@ const LoginPage = () => {
                         <div className="text-center mb-5">
                             <img src="/demo/images/login/logo1.jpg" alt="Image" width={"120px"} height="70"/>
                             <div className="text-900 text-3xl font-medium mb-3">Welcome, CleanBattle!</div>
-                            <span className="text-600 font-medium">Sign in to continue</span>
+                            <span className="text-600 font-medium">Sign up to continue</span>
                         </div>
 
                         <div>
+                        <label htmlFor="username" className="block text-900 text-xl font-medium mb-2">
+                                Username
+                            </label>
+                            <InputText inputid="username" type="text" placeholder="Username" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
+
                             <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
                                 Email
                             </label>
@@ -49,7 +54,7 @@ const LoginPage = () => {
                                 </a>
                             </div>
                             <Button label="Sign In" className="w-full p-3 text-xl" onClick={() => router.push('/')}></Button>
-                            <Button label="Go to Sign Up Page" text onClick={() => router.push('/auth/register')} />
+                            <Button label="Go to Sign In Page" text onClick={() => router.push('/auth/login')} />
                         </div>
                     </div>
                 </div>
@@ -59,7 +64,7 @@ const LoginPage = () => {
 };
 
 
-LoginPage.getLayout = function getLayout(page) {
+RegisterPage.getLayout = function getLayout(page) {
     return (
         <React.Fragment>
             {page}
@@ -67,4 +72,4 @@ LoginPage.getLayout = function getLayout(page) {
         </React.Fragment>
     );
 };
-export default LoginPage;
+export default RegisterPage;
