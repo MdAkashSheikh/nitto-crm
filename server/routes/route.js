@@ -247,5 +247,9 @@ router.post('/cancel-deal/:id', cancellDeal);
 router.post('/post-follow', postFollow);
 router.post('/edit-follow-up/:id', editFollow)
 
+/* -------------------------------- */
+/*   Sign Up and Sign In Route URL  */
+/* -------------------------------- */
+
 
 module.exports = router;
