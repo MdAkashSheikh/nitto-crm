@@ -22,7 +22,9 @@ const registerUser = async(req, res) => {
 
         const userExists = await User.findOne({ email })
         if(userExists) {
-            res.status(400).json('email has already been registered')
+            res.status(400).json({
+                message: 'Email already exists'
+            })
         }
 
         //Create User
@@ -44,6 +46,7 @@ const registerUser = async(req, res) => {
         if(user) {
             const { _id, name, email } = user;
             res.status(201).json({
+                message: 'Succesfully Registard!',
                 _id, name, email
             })
         } else {
@@ -58,8 +61,74 @@ const registerUser = async(req, res) => {
     }
 }
 
+//Login User
+const loginUser = async(req, res) => {
+    try {
+        const { email, password } = req.body;
+        if(!email || !password) {
+            res.status(400).json('Please add email and password')
+        }
+
+        //User Exists
+        const user = await User.findOne({ email })
+
+        //Generate Token
+        const token = generateToken(user._id)
+
+        res.cookie('token', token, {
+            path: '/',
+            httpOnly: true,
+            expires: new Date(Date.now() + 86400), // 1 Day
+            sameSite: 'none',
+            secure: true
+        })
+
+        if(!user) {
+            res.status(400).json('User not found please Sign Up!')
+        }
+
+        const passwordCorrect = await bcrypt.compare(password, user.password)
+
+        if(user && passwordCorrect) {
+            const { _id, name, email } = user;
+            res.status(200).json({
+                _id, name, email, token
+            })
+        } else {
+            res.status(400).json('Invalid email and password');
+        }
+
+    } catch (error) {
+        res.status(400).json('Error from login!')
+    }
+}
+
+//Logout User
+const logoutUser = async(req, res) => {
+
+    try {
+        res.cookie('token', '', {
+            path: '/',
+            httpOnly: true,
+            expires: new Date(0),
+            sameSite: 'none',
+            secure: true
+        })
+    
+        return res.status(200).json({ 
+                message: 'Successfully Logged Out'
+            })
+        
+    } catch (error) {
+        res.status(400).json({
+            message: 'You are not logged in, Please login',
+            error
+        })
+    }
+}
 
 module.exports = {
     registerUser,
-
+    loginUser,
+    logoutUser
 }
