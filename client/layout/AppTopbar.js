@@ -1,12 +1,49 @@
+import axios from 'axios';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import { Calendar } from 'primereact/calendar';
 import { classNames } from 'primereact/utils';
 import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { LayoutContext } from './context/layoutcontext';
+import { getJWTToken, getUserName } from '../utils/utils';
+import { URL} from '../demo/service/SourceDataService'
 
 const AppTopbar = forwardRef((props, ref) => {
+    const [tokenState, setTokenState] = useState();
+    const [emailState, setEmailState] = useState();
+
+    useEffect(() => {
+        const token = getJWTToken();
+        const email = getUserName()
+        if(!token) {
+            window.location = '/auth/login'
+        }
+
+        (async() => {
+            try {
+                const mailData = await axios.get(`${URL}/get-user/${email}`)
+                console.log(mailData)
+            } catch (error) {
+                console.log(error);
+            }
+        }) ()
+
+        setTokenState(token)
+        setEmailState(email)
+        
+    }, [])
+
+   
+
+
+
+    // if(!tokenState) {
+    //     window.location = '/auth/login'
+    // }
+
+
+
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
     const topbarmenuRef = useRef(null);
@@ -30,7 +67,6 @@ const AppTopbar = forwardRef((props, ref) => {
         console.log(e);
     };
     
-
     return (
         <div className="layout-topbar">
             <Link href="/" className="layout-topbar-logo">

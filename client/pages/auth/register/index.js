@@ -8,6 +8,7 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { URL } from '../../../demo/service/SourceDataService';
+import { saveJWTToken } from '../../../utils/utils';
 
 const RegisterPage = () => {
     const toast = useRef();
@@ -31,11 +32,12 @@ const RegisterPage = () => {
         try {
             const res = await axios.post(`${URL}/signup`, formData);
             console.log(res)
+            // saveJWTToken()
             window.location = '/auth/login'
            
         } catch (error) {
             console.log(error);
-            toast.current.show({ severity: 'error',  summary: 'ERROR', detail: 'Registration error!', life: 3000 })
+            toast.current.show({ severity: 'error',  summary: 'ERROR', detail: 'Make sure you have fill up all fild is correct!', life: 3000 })
         }
 
         
@@ -59,8 +61,8 @@ const RegisterPage = () => {
                             <span className="text-600 font-medium">Sign up to continue</span>
                         </div>
 
-                    <form onSubmit={handleSubmit}>
-                        <label htmlFor="username" className="block text-900 text-xl font-medium mb-2">
+                        <form onSubmit={handleSubmit}>
+                            <label htmlFor="username" className="block text-900 text-xl font-medium mb-2">
                                 Name
                             </label>
                             <InputText 
@@ -107,8 +109,8 @@ const RegisterPage = () => {
                                 </a> */}
                             </div>
                             <Button label="Sign In" className="w-full p-3 text-xl"></Button>
-                            <Button label="Go to Sign In Page" text onClick={() => router.push('/auth/login')} />
                         </form>
+                        <Button label="Go to Sign In Page" className='p-3' text onClick={() => router.push('/auth/login')} />
                     </div>
                 </div>
             </div>

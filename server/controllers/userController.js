@@ -141,8 +141,31 @@ const logoutUser = async(req, res) => {
     }
 }
 
+//Get Single User
+const getUser = async(req, res) => {
+    try {
+        const email = req.params.email;
+
+        const oneData = await User.findOne({ email })
+
+        if(!oneData) {
+            return res.status(404).json({
+                message: 'No not found',
+            })
+        }
+
+        res.status(200).json(oneData)
+    } catch (error) {
+        res.status(400).json({
+            message: 'Error from get user',
+            error
+        })
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    getUser,
 }

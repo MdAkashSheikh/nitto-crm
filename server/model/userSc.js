@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a password'],
         minLength: [6, 'Password must be up to 6 characters'],
+    },
+    isPermission: {
+        type: String,
+        default: '0'
     }
 },
 {
