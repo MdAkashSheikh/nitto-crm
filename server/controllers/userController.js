@@ -13,18 +13,23 @@ const registerUser = async(req, res) => {
 
     try {
         if(!name || !email || !password) {
-            res.status(400).json('please fill in all required fields')
+            return res.status(400).json({
+                message: 'please fill in all required fields'
+            })
         }
 
         if(password.length < 6) {
-            res.status(400).json('Password must be up to 6 characters')
+            return res.status(400).json({
+                message: 'Password must be up to 6 characters'
+            })
         }
 
         const userExists = await User.findOne({ email })
         if(userExists) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'Email already exists'
             })
+            // throw new Error('Email aleady exists')
         }
 
         //Create User
@@ -66,7 +71,9 @@ const loginUser = async(req, res) => {
     try {
         const { email, password } = req.body;
         if(!email || !password) {
-            res.status(400).json('Please add email and password')
+            return res.status(400).json({
+                message: 'Please add email and password'
+            })
         }
 
         //User Exists
@@ -84,7 +91,9 @@ const loginUser = async(req, res) => {
         })
 
         if(!user) {
-            res.status(400).json('User not found please Sign Up!')
+            return res.status(400).json({
+                message: 'User not found please Sign Up!'
+            })
         }
 
         const passwordCorrect = await bcrypt.compare(password, user.password)
@@ -95,11 +104,16 @@ const loginUser = async(req, res) => {
                 _id, name, email, token
             })
         } else {
-            res.status(400).json('Invalid email and password');
+            return res.status(400).json({
+                message: 'Invalid email and password'
+            });
         }
 
     } catch (error) {
-        res.status(400).json('Error from login!')
+        res.status(400).json({
+            message: 'error from login',
+            error
+        })
     }
 }
 
@@ -116,8 +130,8 @@ const logoutUser = async(req, res) => {
         })
     
         return res.status(200).json({ 
-                message: 'Successfully Logged Out'
-            })
+            message: 'Successfully Logged Out'
+        })
         
     } catch (error) {
         res.status(400).json({

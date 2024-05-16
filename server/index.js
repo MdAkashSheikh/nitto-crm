@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const routeAll = require('./routes/route')
+const errorHandler = require('./middleware/errorMiddleware')
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 })
 
 app.use(routeAll);
+app.use(errorHandler)
 
 app.listen(PORT, () => {
     console.log(`listening on PORT ${PORT}`);

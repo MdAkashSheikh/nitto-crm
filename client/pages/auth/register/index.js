@@ -30,12 +30,12 @@ const RegisterPage = () => {
 
         try {
             const res = await axios.post(`${URL}/signup`, formData);
-
+            console.log(res)
             window.location = '/auth/login'
            
         } catch (error) {
             console.log(error);
-            toast.current.show({ severity: 'error',  summary: 'ERROR', detail: 'Error Ocurd!', life: 3000 })
+            toast.current.show({ severity: 'error',  summary: 'ERROR', detail: 'Registration error!', life: 3000 })
         }
 
         
