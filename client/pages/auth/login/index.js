@@ -33,11 +33,8 @@ const LoginPage = () => {
 
         try {
             const res = await axios.post(`${URL}/signin`, formData);
-            console.log(res);
             const token = res?.data.token;
             const jwtEmail = res?.data.email;
-
-            console.log(jwtEmail, token)
 
             saveJWTToken(token)
             saveUserName(jwtEmail);
@@ -49,7 +46,6 @@ const LoginPage = () => {
         }
     }
 
-    console.log(getJWTToken())
 
     const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });

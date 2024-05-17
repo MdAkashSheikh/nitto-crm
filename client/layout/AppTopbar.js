@@ -4,26 +4,35 @@ import { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import { Calendar } from 'primereact/calendar';
 import { classNames } from 'primereact/utils';
+import { Toast } from 'primereact/toast';
 import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { LayoutContext } from './context/layoutcontext';
 import { getJWTToken, getUserName } from '../utils/utils';
 import { URL} from '../demo/service/SourceDataService'
 
 const AppTopbar = forwardRef((props, ref) => {
+    const toast = useRef();
+    const router = useRouter();
     const [tokenState, setTokenState] = useState();
     const [emailState, setEmailState] = useState();
+    const [checkData, setCheckData] = useState();
 
     useEffect(() => {
         const token = getJWTToken();
         const email = getUserName()
         if(!token) {
-            window.location = '/auth/login'
+            router.push('/auth/login')
         }
 
         (async() => {
             try {
                 const mailData = await axios.get(`${URL}/get-user/${email}`)
-                console.log(mailData)
+                setCheckData(mailData?.data.isPermission)
+
+                if(mailData?.data.isPermission !== '1') {
+                    toast.current.show({ severity: 'error',  summary: 'ERROR', detail: 'Admin is not approved yet!', life: 5000 })
+                    router.push('/auth/login')
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -33,16 +42,6 @@ const AppTopbar = forwardRef((props, ref) => {
         setEmailState(email)
         
     }, [])
-
-   
-
-
-
-    // if(!tokenState) {
-    //     window.location = '/auth/login'
-    // }
-
-
 
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
@@ -69,6 +68,7 @@ const AppTopbar = forwardRef((props, ref) => {
     
     return (
         <div className="layout-topbar">
+            <Toast ref={toast} position="top-center"/>
             <Link href="/" className="layout-topbar-logo">
                 <img src={`/layout/images/logo.png`} width="150px" height={'70px'} widt={'true'} alt="logo" />
                 {/* <span>SAKAI</span> */}
