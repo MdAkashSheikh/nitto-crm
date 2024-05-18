@@ -163,9 +163,57 @@ const getUser = async(req, res) => {
     }
 }
 
+//Get All User
+const getAllUser = async(req, res) => {
+    try {
+        const AllData = await User.find({}).sort('-date')
+        res.status(200).json({AllData});
+    } catch (error) {
+        res.status(400).json({
+            message: 'Error from all user',
+            error
+        })
+    }
+}
+
+const toggleUser = async(req, res) => {
+    const id = req.params.id;
+    const isPermission = req.body.isPermission;
+
+    try {
+        const oneData = await User.findByIdAndUpdate(id, {
+            isPermission
+        })
+
+        res.status(200).json(oneData);
+    } catch (error) {
+        res.status(400).json({
+            message: 'Error from toggle user',
+            error
+        })
+    }
+}
+
+const deleteUser = async(req, res) => {
+    const id = req.params.id;
+
+    try {
+        await User.findByIdAndRemove(id);
+        res.status(200).json('Successfully deleted')
+    } catch (error) {
+        res.status(400).json({
+            message: 'error form delete user',
+            error
+        })
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
     logoutUser,
     getUser,
+    getAllUser,
+    toggleUser,
+    deleteUser,
 }
