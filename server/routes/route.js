@@ -103,7 +103,15 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { registerUser, loginUser, logoutUser, getUser } = require('../controllers/userController');
+const { 
+    registerUser, 
+    loginUser, 
+    logoutUser, 
+    getUser, 
+    getAllUser, 
+    toggleUser,
+    deleteUser
+} = require('../controllers/userController');
 
 /* -------------------------------- */
 /*     Image Upload For Multer      */
@@ -255,6 +263,9 @@ router.post('/signup', registerUser);
 router.post('/signin', loginUser);
 router.get('/logout', logoutUser);
 router.get('/get-user/:email', getUser);
+router.get('/all-user', getAllUser)
+router.post('/toggle-user/:id', toggleUser)
+router.delete('/delete-user/:id', deleteUser)
 
 
 module.exports = router;
