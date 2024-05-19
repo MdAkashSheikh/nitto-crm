@@ -3,10 +3,11 @@ import { URL } from "./SourceDataService";
 
 export const FolloUpService = {
    
-    async postFollow(zone, dataSource, name, address, phone, email, whatsapp, followUpDate, details ) {
+    async postFollow(zone, dataSource, employee, name, address, phone, email, whatsapp, followUpDate, details ) {
         const data = {
             zone,
             dataSource,
+            employee,
             name,
             address,
             phone, 
@@ -18,9 +19,9 @@ export const FolloUpService = {
         await axios.post(`${URL}/post-follow`, data);
     },
 
-    async editFollow(zone, dataSource, name, address, phone, email, whatsapp, followUpDate, details, _id ) {
+    async editFollow(zone, dataSource, employee, name, address, phone, email, whatsapp, followUpDate, details, _id ) {
         const data = {
-            zone, dataSource, name, address, phone, email, whatsapp, followUpDate, details
+            zone, dataSource, employee, name, address, phone, email, whatsapp, followUpDate, details
         }
         await axios.post(`${URL}/edit-follow-up/` + _id, data);
     },

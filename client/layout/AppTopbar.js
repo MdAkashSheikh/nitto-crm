@@ -1,13 +1,14 @@
 import axios from 'axios';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Menubar } from 'primereact/menubar';
 import Router, { useRouter } from 'next/router';
 import { Calendar } from 'primereact/calendar';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { LayoutContext } from './context/layoutcontext';
-import { getJWTToken, getUserName } from '../utils/utils';
+import { deleteJWTToken, getJWTToken, getUserName } from '../utils/utils';
 import { URL} from '../demo/service/SourceDataService'
 
 const AppTopbar = forwardRef((props, ref) => {
@@ -62,6 +63,12 @@ const AppTopbar = forwardRef((props, ref) => {
       setIsVisible(!isVisible);
     };
 
+    const handleLogout = (e) => {
+        deleteJWTToken();
+        router.push('/auth/login')
+        
+    }
+
     const handleVisibleChange = (e) => {
         console.log(e);
     };
@@ -97,10 +104,11 @@ const AppTopbar = forwardRef((props, ref) => {
                     numberOfMonths={3}
                     hidden
                 />
-                <button type="button" className="p-link layout-topbar-button">
+                <button onClick={handleLogout} type="button" className="p-link layout-topbar-button">
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
                 </button>
+                   
             </div>
         </div>
     );

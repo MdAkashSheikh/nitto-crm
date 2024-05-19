@@ -4,6 +4,7 @@ const customerInfoSc = require("../model/customerInfoSc");
 const postCustomerInfo = async(req, res) => {
     const zone = req.body.zone;
     const dataSource = req.body.dataSource;
+    const employee = req.body.employee;
     const category = req.body.category;
     const name = req.body.name;
     const address = req.body.address;
@@ -32,6 +33,7 @@ const postCustomerInfo = async(req, res) => {
             await customerInfoSc.create({
                 "zone": zone,
                 "dataSource": dataSource,
+                "employee": employee,
                 "category": category,
                 "name": name,
                 "address": address,
@@ -49,6 +51,7 @@ const postCustomerInfo = async(req, res) => {
             await customerInfoSc.create({
                 "zone": zone,
                 "dataSource": dataSource,
+                "employee": employee,
                 "category": category,
                 "name": name,
                 "address": address,
@@ -72,6 +75,7 @@ const editCustomerInfo = async(req, res) => {
     const id = req.params.id;
     const zone = req.body.zone;
     const dataSource = req.body.dataSource;
+    const employee = req.body.employee;
     const category = req.body.category;
     const name = req.body.name;
     const address = req.body.address;
@@ -97,6 +101,7 @@ const editCustomerInfo = async(req, res) => {
         const oneData = await customerInfoSc.findByIdAndUpdate(id, {
             "zone": zone,
             "dataSource": dataSource,
+            "employee": employee,
             "category": category,
             "name": name,
             "address": address,

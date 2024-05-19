@@ -4,6 +4,7 @@ const postFollow = async(req, res) => {
 
     const zone = req.body.zone;
     const dataSource = req.body.dataSource;
+    const employee = req.body.employee;
     const name = req.body.name;
     const address = req.body.address;
     const phone = req.body.phone;
@@ -17,6 +18,7 @@ const postFollow = async(req, res) => {
         await customerInfoSc.create({
             "zone": zone,
             "dataSource": dataSource,
+            "employee": employee,
             "name": name,
             "address": address,
             "phone": phone,
@@ -38,6 +40,7 @@ const editFollow = async(req, res) => {
     const id = req.params.id;
     const zone = req.body.zone;
     const dataSource = req.body.dataSource;
+    const employee = req.body.employee;
     const name = req.body.name;
     const address = req.body.address;
     const phone = req.body.phone;
@@ -50,6 +53,7 @@ const editFollow = async(req, res) => {
         const oneData = await customerInfoSc.findByIdAndUpdate(id,  {
             "zone": zone,
             "dataSource": dataSource,
+            "employee": employee,
             "name": name,
             "address": address,
             "phone": phone,
