@@ -2,17 +2,17 @@ import axios from "axios";
 import { URL } from "./SourceDataService";
 
 export const TeamInfoService = {
-    async postTeamInfo(name, father_name, mother_name, phone, emp_pic, emp_nid ) {
+    async postTeamInfo(name, father_name, mother_name, phone ) {
         const data = {
-            name, father_name, mother_name, phone, emp_pic, emp_nid
+            name, father_name, mother_name, phone
         }
 
         await axios.post(`${URL}/post-team-info`, data);
     },
 
-    async editTeamInfo(name, father_name, mother_name, phone, emp_pic, emp_nid, id) {
+    async editTeamInfo(name, father_name, mother_name, phone, id) {
         const data = {
-            name, father_name, mother_name, phone, emp_pic, emp_nid
+            name, father_name, mother_name, phone
         }
 
         await axios.post(`${URL}/edit-team-info/` + id, data);

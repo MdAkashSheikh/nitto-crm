@@ -20,12 +20,14 @@ import { ZoneService } from '../../../demo/service/ZoneService';
 import { TankInfoService } from '../../../demo/service/TankInfoService';
 import { DataSourceService } from '../../../demo/service/SourceDataService';
 import { FolloUpService } from '../../../demo/service/FollowUpService';
+import { TeamInfoService } from '../../../demo/service/TeamInfoService';
 
 const Lead_Info = () => {
     let emptyInfo = {
         id: 0,
         zone: '',
         dataSource: '',
+        employee: '',
         name: '',
         address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}],
         phone: '',
@@ -46,6 +48,7 @@ const Lead_Info = () => {
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const [msZone, setMsZone] = useState(null);
+    const [msEmployee, setMsEmployee] = useState(null);
     const [msCategory, setMsCategory] = useState(null);
     const [msDataSource, setMSDataSource] = useState(null);
     const toast = useRef(null);
@@ -63,6 +66,7 @@ const Lead_Info = () => {
         CategoryService.getCategory().then((res) => setMsCategory(res.data.AllData));
         TankInfoService.getTank().then((res) => setMSTank(res.data.AllData));
         DataSourceService.getSourceData().then((res) => setMSDataSource(res.data.AllData));
+        TeamInfoService.getTeamInfo().then((res) => setMsEmployee(res.data.AllData));
 
 
     }, [toggleRefresh]);
@@ -141,6 +145,7 @@ const Lead_Info = () => {
             FolloUpService.editFollow(
                 infoData.zone,
                 infoData.dataSource,
+                infoData.employee,
                 infoData.name,
                 mAddress,
                 infoData.phone,
@@ -160,6 +165,7 @@ const Lead_Info = () => {
             FolloUpService.postFollow(
                 infoData.zone,
                 infoData.dataSource,
+                infoData.employee,
                 infoData.name,
                 mAddress,
                 infoData.phone,
@@ -202,6 +208,11 @@ const Lead_Info = () => {
  
     const filteredZone = msZone?.filter((item) => item.is_active == '1');
     const zoneList = filteredZone?.map(item => {
+        return { label: item.name, value: item.name }
+    })
+
+    const filterEmployee = msEmployee?.filter((item) => item.is_active == '1');
+    const employeeList = filterEmployee?.map(item => {
         return { label: item.name, value: item.name }
     })
 
@@ -497,6 +508,10 @@ const Lead_Info = () => {
                                                                         </small>
                                                                     )}
                                                                 </div>
+                                                                
+                                                            </div>
+
+                                                            <div className="formgrid grid">
                                                                 <div className="field col">
                                                                     <label htmlFor="infoData">Data Source</label>
                                                                     <Dropdown
@@ -515,6 +530,27 @@ const Lead_Info = () => {
                                                                     {submitted && !infoData.dataSource && (
                                                                         <small className="p-invalid">
                                                                             Data Source is required.
+                                                                        </small>
+                                                                    )}
+                                                                </div>
+                                                                <div className="field col">
+                                                                    <label htmlFor="infoData">Employee</label>
+                                                                    <Dropdown
+                                                                        value={infoData.employee}
+                                                                        name='employee'
+                                                                        onChange={(e) => onSelectionChange(e, "employee")}
+                                                                        options={employeeList}
+                                                                        optionLabel="value"
+                                                                        showClear
+                                                                        placeholder="Select a Employee"
+                                                                        required
+                                                                        className={classNames({
+                                                                            "p-invalid": submitted && !infoData.employee,
+                                                                        })}
+                                                                    />
+                                                                    {submitted && !infoData.zone && (
+                                                                        <small className="p-invalid">
+                                                                            Employee is required.
                                                                         </small>
                                                                     )}
                                                                 </div>

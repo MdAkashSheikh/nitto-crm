@@ -36,10 +36,7 @@ const Team_Info = () => {
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
-    const [selectEdit, setSelectEdit] = useState(false);
-    const [emp_pic, setEmpPic] = useState('');
-    const [emp_nid, setEmpNid] = useState('');
-
+    const [selectEdit, setSelectEdit] = useState(false)
 
     useEffect(() => {
 
@@ -95,8 +92,6 @@ const Team_Info = () => {
                 teamData.father_name,
                 teamData.mother_name,
                 teamData.phone,
-                emp_pic,
-                emp_nid,
             ).then(() => {
                 setTogleRefresh(!toggleRefresh);
                 setDataDialog(false);
@@ -431,50 +426,6 @@ const Team_Info = () => {
                             {submitted && !teamData.phone && <small className="p-invalid">
                                 Phone is required.
                             </small>}
-                        </div>
-
-                        <div className="field">
-                            <label htmlFor="teamData">Upload Your Photo</label>
-                            <FileUpload 
-                                multiple
-                                accept="image/*" 
-                                name='photo'
-                                url={`${URL}/upload-emp-pic`}
-                                maxFileSize={1000000} 
-                                emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} 
-                                className='mt-1'
-                                onUpload={(e)=> { 
-                                    console.log( "slidufgoidh", e)
-                                    const data = JSON.parse(e.xhr.responseText)
-                                    console.log('Data---->',data)
-                                    setEmpPic(data.file1);
-                                }}
-                                onRemove={(e)=> { 
-                                    console.log("remove", e)
-                                }}
-                            />
-                        </div>
-
-                        <div className="field">
-                            <label htmlFor="teamData">Upload Your NID or Birth-Certificate</label>
-                            <FileUpload 
-                                multiple
-                                accept="image/*" 
-                                name='photo'
-                                url={`${URL}/upload-emp-nid`}
-                                maxFileSize={1000000} 
-                                emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} 
-                                className='mt-1'
-                                onUpload={(e)=> { 
-                                    console.log( "slidufgoidh", e)
-                                    const data = JSON.parse(e.xhr.responseText)
-                                    console.log(data)
-                                    setEmpNid(data.file1);
-                                }}
-                                onRemove={(e)=> { 
-                                    console.log("remove", e)
-                                }}
-                            />
                         </div>
 
                     </Dialog>

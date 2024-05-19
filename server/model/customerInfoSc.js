@@ -7,6 +7,9 @@ const customerInfoSc = new mongoose.Schema({
     dataSource: {
         type: String,
     },
+    employee: {
+        type: String,
+    },
     category: {
         type: String,
     },
