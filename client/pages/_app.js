@@ -7,7 +7,6 @@ import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../styles/layout/layout.scss';
 import '../styles/demo/Demos.scss';
-import '../styles/invoice/invoice.scss'
 
 export default function MyApp({ Component, pageProps }) {
     const [loading, setLoading] = useState(false);
