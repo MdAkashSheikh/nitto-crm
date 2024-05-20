@@ -2,9 +2,10 @@ import axios from 'axios';
 
 // My VM IP - 103.151.61.45
 // Office Computer - 192.168.0.104
-// localhost
+// //localhost:6300
+// http://cleanbattle.nittodigital.xyz
 
-export const URL = '//localhost:6300';
+export const URL = 'http://cleanbattle.nittodigital.xyz';
 
 export const DataSourceService = {
     async postDataSource(name, details) {

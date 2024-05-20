@@ -11,6 +11,7 @@ import { URL } from '../../../demo/service/SourceDataService';
 import { getJWTToken, saveJWTToken, saveUserName } from '../../../utils/utils';
 
 const LoginPage = () => {
+    const router = useRouter();
     const toast = useRef()
 
     const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ const LoginPage = () => {
             saveJWTToken(token)
             saveUserName(jwtEmail);
 
-            window.location = '/'
+            router.push('/')
         } catch (error) {
             console.log(error);
             toast.current.show({ severity: 'warn',  summary: 'ERROR', detail: 'Please add valid email and password!', life: 3000 })
@@ -47,7 +48,7 @@ const LoginPage = () => {
     }
 
 
-    const router = useRouter();
+    
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
 
     return (

@@ -95,6 +95,7 @@ const Lead_Info = () => {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
                 infoData.dataSource,
+                infoData.employee,
                 infoData.name,
                 mAddress,
                 infoData.phone,
@@ -118,6 +119,7 @@ const Lead_Info = () => {
             CustomerInformationService.postCustomerInfo(
                 infoData.zone,
                 infoData.dataSource,
+                infoData.employee,
                 infoData.name,
                 mAddress,
                 infoData.phone,
@@ -185,11 +187,6 @@ const Lead_Info = () => {
         setInfoData({ ...infoData });
         setMAddress(infoData.address)
         setDataDialog(true);
-    };
-
-    const confirmDeleteData = (infoData) => {
-        setInfoData(infoData);
-        setDeleteDataDialog(true);
     };
 
     const onNewPage = (id) => {
@@ -391,7 +388,6 @@ const Lead_Info = () => {
         )
     }
 
-    console.log(infoData)
 
     return (
         <div className="grid crud-demo">
