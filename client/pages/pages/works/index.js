@@ -349,7 +349,6 @@ const Works = () => {
         )
     }
 
-    console.log(globalFilter)
 
     return (
         <div className="grid crud-demo">

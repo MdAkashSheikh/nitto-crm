@@ -340,7 +340,6 @@ const Booking_Info = () => {
         )
     }
 
-    console.log(infoData)
 
     return (
         <div className="grid crud-demo">

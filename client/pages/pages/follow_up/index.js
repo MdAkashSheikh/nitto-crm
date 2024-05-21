@@ -85,8 +85,6 @@ const Lead_Info = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",infoData)
-
         if( infoData.zone && infoData.dataSource && infoData.name && mAddress || infoData.phone || infoData.email || infoData.whatsapp || infoData.reFollowUpDate || infoData.serviceDate || infoData.details, infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
@@ -347,8 +345,6 @@ const Lead_Info = () => {
             </div>
         )
     }
-
-    console.log(sortDatas)
 
     function onAdd(){
         const newInfoData = {...infoData}

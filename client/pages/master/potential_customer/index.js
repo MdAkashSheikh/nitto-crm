@@ -64,8 +64,6 @@ const Potential_Customer = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",potentialData)
-
         if( potentialData.name && potentialData.details, potentialData._id) {
             PotentialCustomerService.editPotential(
                 potentialData.name,

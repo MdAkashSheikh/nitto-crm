@@ -31,12 +31,12 @@ const RegisterPage = () => {
 
         try {
             const res = await axios.post(`${URL}/signup`, formData);
-            console.log(res)
+            
             // saveJWTToken()
             window.location = '/auth/login'
            
         } catch (error) {
-            console.log(error);
+            
             toast.current.show({ severity: 'error',  summary: 'ERROR', detail: 'Make sure you have fill up all fild is correct!', life: 3000 })
         }
 

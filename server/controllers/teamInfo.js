@@ -79,7 +79,6 @@ const toggleTeamInfo = async(req, res) => {
 
 const uploadEmpPic = async(req, res) => {
 
-    // console.log(req.file)
     if(req.file == undefined) {
         return;
     }

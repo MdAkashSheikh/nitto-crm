@@ -23,7 +23,6 @@ export default function Invoice() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const paramValue = urlParams.get('id');
-    console.log('ache',paramValue);
 
     const [invoceDatas, setInvoiceDatas] = useState(null);
     const [serviceDatas, setServiceDatas] = useState(null);
@@ -45,17 +44,13 @@ export default function Invoice() {
 
     const oneData = invoceDatas?.filter(item => item._id == paramValue)
 
-    // console.log(oneData)
 
     const addressData = oneData?.map(item => item?.address)
     const priceData = addressData?.map(item => item[0].price).toString()
-    console.log(priceData)
 
     const name = oneData?.map(item => item.name).toString()
     const createDate = oneData?.map(item => item.date)
     const servDate = oneData?.map(item => item.date)
-    console.log(servDate)
-
 
     const printFn = () => {
         window.print();
@@ -158,7 +153,6 @@ export default function Invoice() {
                         </MDBTableHead>
                         <MDBTableBody>
                         {
-                            // console.log(CustomerData)
                             addressData?.map((item, i) => (
                                 <tr index={i}>
                                     <th scope="row">{i+1}</th>

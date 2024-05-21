@@ -66,8 +66,6 @@ const Service = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",serviceData)
-
         if( serviceData.service_id && serviceData.service_name && serviceData.base_price , serviceData.completion_time, serviceData._id) {
             ServiceGroupService.editService(
                 serviceData.service_id,
@@ -133,8 +131,6 @@ const Service = () => {
             </>
         );
     }
-
-    console.log('Data',serviceData)
 
     const service_NameBodyTemplete = (rowData) => {
         return (

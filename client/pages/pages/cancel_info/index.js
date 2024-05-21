@@ -66,7 +66,6 @@ const Cancel_Info = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",cancelData)
 
         if( cancelData.name && cancelData.details, cancelData._id) {
             DataGroupService.editDataGroup(

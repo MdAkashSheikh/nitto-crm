@@ -68,8 +68,6 @@ const Package_Service = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",packageData)
-
         if( packageData.name && packageData.pkg_details, packageData._id) {
             PackageService.editPackage(
                 packageData.name,
@@ -127,10 +125,8 @@ const Package_Service = () => {
 
     const onSelectionChange = (e, name) => {
         let data = {...packageData };
-        console.log( name, e.value)
         const newVal = msPackage?.filter(item => item.name == e.value);
         data[`${name}`] = [...newVal, {}];
-        console.log(data)
         setPackageData(data);
     }
 
@@ -338,7 +334,6 @@ const Package_Service = () => {
                         </div> 
                         <div className="field"> 
                             <label htmlFor="details">Details</label> 
-                            {console.log('oooo',packageData.pkg_details)}
                             <MultiSelect 
                                 value={packageData.pkg_details.name} 
                                 onChange={(e) => onSelectionChange(e, 'pkg_details')} 

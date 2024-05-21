@@ -339,7 +339,6 @@ const Customer = () => {
         )
     }
 
-    console.log(infoData)
 
     return (
         <div className="grid crud-demo">

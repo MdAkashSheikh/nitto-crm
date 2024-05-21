@@ -64,8 +64,6 @@ const Category = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",categoryData)
-
         if( categoryData.name && categoryData.details, categoryData._id) {
             CategoryService.editCategory(
                 categoryData.name,

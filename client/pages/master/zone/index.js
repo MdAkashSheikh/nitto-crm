@@ -37,7 +37,6 @@ const Zone = () => {
 
     }, [toggleRefresh]);
 
-    console.log(zoneDatas, "SOURCE DATAS")
 
     const diaHeader = () => {
         return (
@@ -65,7 +64,6 @@ const Zone = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",zoneData)
 
         if( zoneData.name && zoneData.details, zoneData._id) {
             ZoneService.editZone(
