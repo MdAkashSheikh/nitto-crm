@@ -38,8 +38,6 @@ const Tank_Info = () => {
 
     }, [toggleRefresh]);
 
-    console.log(tankDatas, "SOURCE DATAS")
-
     const diaHeader = () => {
         return (
             selectEdit ? 'Add Tank' : 'Edit Tank'
@@ -65,8 +63,6 @@ const Tank_Info = () => {
 
     const saveData = () => {
         setSubmitted(true);
-
-        console.log("PPPP1",tankData)
 
         if( tankData.name && tankData.details, tankData._id) {
             TankInfoService.editTank(

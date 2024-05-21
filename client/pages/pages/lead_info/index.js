@@ -69,8 +69,6 @@ const Customer_Info = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",infoData)
-
         if( infoData.zone && infoData.category && infoData.name && infoData.address && infoData.asset || infoData.phone || infoData.email || infoData.whatsapp || infoData.details , infoData._id ) {
             CustomerInformationService.editCustomerInfo(
                 infoData.zone,
@@ -141,7 +139,6 @@ const Customer_Info = () => {
     }
 
     const onAdrressChange = (e, name, i, previous_address) => {
-        console.log('onAdrressChange-----------------',e.target?.value, name, i, previous_address)
         let val = (e.target && e.target.value) || ''; 
         let _data = {...infoData};
         const num = Math.random().toString().slice(2);
@@ -517,7 +514,6 @@ const Customer_Info = () => {
                         </div>
 
                         {infoData.address.map((address, i) => {
-                            console.log('val---------------------------------', address)
                             return (
                                 <div className="field" key={i}>
                                     <label htmlFor="infoData">Address</label>

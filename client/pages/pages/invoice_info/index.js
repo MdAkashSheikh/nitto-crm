@@ -24,13 +24,10 @@ const Invoice_Info = () => {
 
     }, [toggleRefresh]);
 
-    console.log(invoiceDatas, "SOURCE DATAS")
-
     const filterData = invoiceDatas?.filter((item) => item.confirm_status === 'confirm' || item.confirm_status === 'cancelled')
 
 
     const showInvoice = (reportData) => {
-        console.log(reportData)
         window.open(`/pages/invoice?id=${reportData._id}`, '_blank', 'noreferrer')
     };
 

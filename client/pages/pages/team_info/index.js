@@ -45,8 +45,6 @@ const Team_Info = () => {
 
     }, [toggleRefresh]);
 
-    console.log(teamDatas, "SOURCE DATAS")
-
     const openNew = () => {
         setTeamData(empInfo);
         setSubmitted(false);
@@ -71,8 +69,6 @@ const Team_Info = () => {
 
     const saveData = () => {
         setSubmitted(true);
-
-        console.log("PPPP1",teamData)
 
         if( teamData.name && teamData.father_name && teamData.mother_name && teamData.phone, teamData._id) {
             TeamInfoService.editTeamInfo(

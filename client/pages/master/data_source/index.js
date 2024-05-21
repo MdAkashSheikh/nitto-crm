@@ -64,8 +64,6 @@ const Data_Source = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",sourceData)
-
         if( sourceData.name && sourceData.details, sourceData._id) {
             DataSourceService.editDataSource(
                 sourceData.name,

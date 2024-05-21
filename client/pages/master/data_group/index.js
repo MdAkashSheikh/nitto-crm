@@ -63,7 +63,6 @@ const Data_Group = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",groupData)
 
         if( groupData.name && groupData.details, groupData._id) {
             DataGroupService.editDataGroup(

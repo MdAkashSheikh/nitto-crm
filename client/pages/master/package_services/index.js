@@ -48,7 +48,6 @@ const Package_Service = () => {
             selectEdit ? 'Add Package Service' : 'Edit Package Service'
         )
     }
-    console.log(msPackage)
 
     const openNew = () => {
         setPackageData(emptyPackage);
@@ -69,8 +68,6 @@ const Package_Service = () => {
 
     const saveData = () => {
         setSubmitted(true);
-
-        console.log("PPPP1",packageData)
 
         if( packageData.service_name && packageData.pkg_details, packageData._id) {
             PackageService.editPackage(
@@ -129,10 +126,8 @@ const Package_Service = () => {
 
     const onSelectionChange = (e, name) => {
         let data = {...packageData };
-        console.log( name, e.value)
         const newVal = [msPackage?.filter(item => item.name == e.value), {}];
         data[`${name}`] = newVal;
-        console.log(data)
         setPackageData(data);
     }
 
@@ -328,27 +323,6 @@ const Package_Service = () => {
                             </small>} 
                         </div> 
 
-                        {/* {packageData?.pkg_details?.map((item, i) => {
-                            return (
-                                <div className="field" key={i}> 
-                                    <label htmlFor="details">Details</label> 
-                                    {console.log('oooo', item)}
-                                    <MultiSelect 
-                                        value={item.name} 
-                                        onChange={(e) => onSelectionChange1(e, 'pkg_details', i )} 
-                                        required 
-                                        options={packList} 
-                                        optionLabel="name" 
-                                        placeholder="Select Packages" 
-                                        maxSelectedLabels={3} 
-                                        className={classNames({ 'p-invalid': submitted && item.length === 0 })}
-                                    />
-                                    {submitted && item.length === 0 && <small className="p-invalid">
-                                        Packages is required.
-                                    </small>} 
-                                </div>
-                            )
-                        })} */}
 
                         <div className="field"> 
                             <label htmlFor="details">Details</label> 

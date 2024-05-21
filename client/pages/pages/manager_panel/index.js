@@ -126,7 +126,6 @@ const Manager_Panel = () => {
     const saveCustomerData = () => {
         setSubmitted(true);
         if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead && customer._id) {
-            console.log('EDIT CUSTOMER', customer._id)
             CustomerInformationService.editfCustomer(
                 customer.address,
                 customer.service,
@@ -142,7 +141,6 @@ const Manager_Panel = () => {
             })
         }
         else if(customer.address && customer.service && customer.slot && customer.team_member && customer.team_lead) {
-            console.log('OK1')
             CustomerInformationService.postfCustomer(
                 managerData.name,
                 customer.address,
@@ -167,7 +165,6 @@ const Manager_Panel = () => {
     };
 
     const editFollowDat = (managerData) => {
-        console.log('MANAGER DATA------->',managerData)
         setManagerData({...managerData});
         setDataDialog(true);
         setOne(1);
@@ -231,7 +228,6 @@ const Manager_Panel = () => {
     const onAddressChange = (e, prev_address) => {
         let id1 = prev_address?.filter(item => item.add == e.value)?.map(item=> item.id).toString();
         const num = Math.random().toString().slice(2);
-        console.log(managerData, "MANAGE DATA")
         let _infoData = {...managerData };
         _infoData.follows = {}
         _infoData.follows['id'] = num;
@@ -364,7 +360,6 @@ const Manager_Panel = () => {
     };
 
     const editCustomerData = (customer, ch1) => {
-        console.log("Check Customer", customer)
         const filteredData = customerDatas.filter(item => item.customerId == customer._id);
         setCustomer(...filteredData);
         setManagerData({...customer });

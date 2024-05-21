@@ -42,7 +42,7 @@ const LoginPage = () => {
 
             router.push('/')
         } catch (error) {
-            console.log(error);
+            
             toast.current.show({ severity: 'warn',  summary: 'ERROR', detail: 'Please add valid email and password!', life: 3000 })
         }
     }

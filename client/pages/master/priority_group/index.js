@@ -64,8 +64,6 @@ const Priority_Group = () => {
     const saveData = () => {
         setSubmitted(true);
 
-        console.log("PPPP1",priorityData)
-
         if( priorityData.name && priorityData.details, priorityData._id) {
             PriorityGroupService.editPriority(
                 priorityData.name,

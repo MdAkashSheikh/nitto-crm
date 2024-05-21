@@ -31,7 +31,6 @@ const Report_Info = () => {
 
     }, []);
 
-    console.log(reportDatas, "SOURCE DATAS")
 
     const filterReportDatas = reportDatas?.filter(item => item.confirm_status  == 'confirm' || item.confirm_status == 'cancelled')
 
