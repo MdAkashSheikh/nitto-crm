@@ -34,15 +34,16 @@ const LoginPage = () => {
 
         try {
             const res = await axios.post(`${URL}/signin`, formData);
+           
             const token = res?.data.token;
-            const jwtEmail = res?.data.email;
+            const jwtEmail = res?.data.user.email;
 
             saveJWTToken(token)
             saveUserName(jwtEmail);
 
             router.push('/')
         } catch (error) {
-            
+            console.log(error)
             toast.current.show({ severity: 'warn',  summary: 'ERROR', detail: 'Please add valid email and password!', life: 3000 })
         }
     }

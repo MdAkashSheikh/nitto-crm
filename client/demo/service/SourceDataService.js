@@ -5,7 +5,7 @@ import axios from 'axios';
 // //localhost:6300
 // http://cleanbattle.nittodigital.xyz
 
-export const URL = 'http://cleanbattle.nittodigital.xyz';
+export const URL = 'https://cleanbattle.nittodigital.xyz';
 
 export const DataSourceService = {
     async postDataSource(name, details) {
