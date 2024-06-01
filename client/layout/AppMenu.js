@@ -18,7 +18,7 @@ const AppMenu = () => {
             to: '/pages',
             items: [
                 {
-                    label: 'Lead Information',
+                    label: 'Lead Sheet',
                     icon: 'pi pi-fw pi-list',
                     to: '/pages/lead_info1'
                 },

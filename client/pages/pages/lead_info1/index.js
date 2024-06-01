@@ -339,7 +339,7 @@ const Lead_Info = () => {
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <Button
-                    label="Add Information"
+                    label="Add Lead"
                     icon="pi pi-plus"
                     severity="sucess"
                     className="mr-2"
