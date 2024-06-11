@@ -1,6 +1,7 @@
 import React from 'react'
 
 function tiForm() {
+    
     return (
         <div>
             <Dialog visible={dataDialog}
