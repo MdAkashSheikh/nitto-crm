@@ -2,6 +2,7 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
 import { InputSwitch } from "primereact/inputswitch";
+import { Checkbox } from "primereact/checkbox";
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
@@ -29,6 +30,7 @@ const Lead_Info = () => {
         dataSource: '',
         employee: '',
         name: '',
+        contact: [{ contact_person: '', person_phone: '', person_designation: ''}],
         address: [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}],
         phone: '',
         email: '',
@@ -55,6 +57,7 @@ const Lead_Info = () => {
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [msTank, setMSTank] = useState(null);
+    const [mContact, setMContact] = useState([{ contact_person: '', person_phone: '', person_designation: ''}])
     const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [''], price: ''}])
     const [show, setShow] = useState(false);
     const [chFollow, setChFollow] = useState(false);
@@ -233,6 +236,12 @@ const Lead_Info = () => {
         { label: 'No', value: ''},
     ]
 
+    const designationList = [
+        { label: "Chaiirman", value: "Chairman"},
+        { label: "Manager", value: "Manager"},
+        { label: "Caretaker", value: "Caretaker"}
+    ]
+
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
         let data = { ...infoData };
@@ -281,7 +290,6 @@ const Lead_Info = () => {
     }
     
     const addressBodyTemplate = (rowData) => {
-
         return (
             <>
                 <span className="p-column-title">Address</span>
@@ -359,6 +367,7 @@ const Lead_Info = () => {
             <Button hidden={chFollow} label="Save" icon="pi pi-check" text onClick={saveData} />
         </>
     );
+    
     const deleteDataDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" text onClick={hideDeleteProductDialog} />
@@ -469,324 +478,400 @@ const Lead_Info = () => {
                         footer={dataDialogFooter}
                         onHide={hideDialog}
                     >
-                            <Formik
-                                initialValues={{
-                                    address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}] : infoData.address
-                                }}
-                            >
-                                {(formik) => (
-                                    <Form>
-                                        <div>
-                                            <FieldArray
-                                                name='address'
-                                                render={(arrayHelpers) => {
-                                                    return (
-                                                        <div>
-                                                            <div className="formgrid grid">
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Zone</label>
+                        <Formik
+                            initialValues={{
+                                address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}] : infoData.address,
+                                contact: !infoData.contact?.length ? [{ contact_person: '', person_phone: '', person_designation: ''}] : infoData.contact,
+                            }}
+                        >
+                            {(formik) => (
+                                <Form>
+                                    <div>
+                                        <div className="formgrid grid">
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Zone</label>
+                                                <Dropdown
+                                                    value={infoData.zone}
+                                                    name='zone'
+                                                    onChange={(e) => onSelectionChange(e, "zone")}
+                                                    options={zoneList}
+                                                    optionLabel="value"
+                                                    showClear
+                                                    placeholder="Select a Zone"
+                                                    required
+                                                    className={classNames({
+                                                        "p-invalid": submitted && !infoData.zone,
+                                                    })}
+                                                />
+                                                {submitted && !infoData.zone && (
+                                                    <small className="p-invalid">
+                                                        Zone is required.
+                                                    </small>
+                                                )}
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div className="formgrid grid">
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Data Source</label>
+                                                <Dropdown
+                                                    value={infoData.dataSource}
+                                                    name='dataSource'
+                                                    onChange={(e) => onSelectionChange(e, "dataSource")}
+                                                    options={dataSourceList}
+                                                    optionLabel="value"
+                                                    showClear
+                                                    placeholder="Select a Data Source"
+                                                    required
+                                                    className={classNames({
+                                                        "p-invalid": submitted && !infoData.dataSource,
+                                                    })}
+                                                />
+                                                {submitted && !infoData.dataSource && (
+                                                    <small className="p-invalid">
+                                                        Data Source is required.
+                                                    </small>
+                                                )}
+                                            </div>
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Employee</label>
+                                                <Dropdown
+                                                    value={infoData.employee}
+                                                    name='employee'
+                                                    onChange={(e) => onSelectionChange(e, "employee")}
+                                                    options={employeeList}
+                                                    optionLabel="value"
+                                                    showClear
+                                                    placeholder="Select a Employee"
+                                                    required
+                                                    className={classNames({
+                                                        "p-invalid": submitted && !infoData.employee,
+                                                    })}
+                                                />
+                                                {submitted && !infoData.zone && (
+                                                    <small className="p-invalid">
+                                                        Employee is required.
+                                                    </small>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="formgrid grid">
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Name</label>
+                                                <InputText
+                                                    id="name"
+                                                    value={infoData.name}
+                                                    onChange={(e) => onInputChange(e, "name")}
+                                                    required
+                                                    className={classNames({
+                                                        "p-invalid": submitted && !infoData.name,
+                                                    })}
+                                                />
+                                                {submitted && !infoData.name && (
+                                                    <small className="p-invalid">
+                                                        Name is required.
+                                                    </small>
+                                                )}
+                                            </div>
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Phone</label>
+                                                <InputText
+                                                    id="age"
+                                                    value={infoData.phone}
+                                                    onChange={(e) => onInputChange(e, "phone")}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <FieldArray
+                                            name='contact'
+                                            render={(arrayHelpers) => {
+                                            return (
+                                            <div>
+                                                {setMContact(formik.values.contact)}
+                                                {formik.values.contact?.map((con, i) => (
+                                                    <div key={i}>
+                                                        <div className='card my-3'>
+                                                            <div className='formgrid grid'>
+                                                                <div className='field col'>
+                                                                    <label htmlFor='contact'>Designation</label>
                                                                     <Dropdown
-                                                                        value={infoData.zone}
-                                                                        name='zone'
-                                                                        onChange={(e) => onSelectionChange(e, "zone")}
-                                                                        options={zoneList}
-                                                                        optionLabel="value"
-                                                                        showClear
-                                                                        placeholder="Select a Zone"
-                                                                        required
-                                                                        className={classNames({
-                                                                            "p-invalid": submitted && !infoData.zone,
-                                                                        })}
-                                                                    />
-                                                                    {submitted && !infoData.zone && (
-                                                                        <small className="p-invalid">
-                                                                            Zone is required.
-                                                                        </small>
-                                                                    )}
-                                                                </div>
-                                                                
-                                                            </div>
-
-                                                            <div className="formgrid grid">
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Data Source</label>
-                                                                    <Dropdown
-                                                                        value={infoData.dataSource}
-                                                                        name='dataSource'
-                                                                        onChange={(e) => onSelectionChange(e, "dataSource")}
-                                                                        options={dataSourceList}
-                                                                        optionLabel="value"
-                                                                        showClear
-                                                                        placeholder="Select a Data Source"
-                                                                        required
-                                                                        className={classNames({
-                                                                            "p-invalid": submitted && !infoData.dataSource,
-                                                                        })}
-                                                                    />
-                                                                    {submitted && !infoData.dataSource && (
-                                                                        <small className="p-invalid">
-                                                                            Data Source is required.
-                                                                        </small>
-                                                                    )}
-                                                                </div>
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Employee</label>
-                                                                    <Dropdown
-                                                                        value={infoData.employee}
-                                                                        name='employee'
-                                                                        onChange={(e) => onSelectionChange(e, "employee")}
-                                                                        options={employeeList}
-                                                                        optionLabel="value"
-                                                                        showClear
-                                                                        placeholder="Select a Employee"
-                                                                        required
-                                                                        className={classNames({
-                                                                            "p-invalid": submitted && !infoData.employee,
-                                                                        })}
-                                                                    />
-                                                                    {submitted && !infoData.zone && (
-                                                                        <small className="p-invalid">
-                                                                            Employee is required.
-                                                                        </small>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="formgrid grid">
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Name</label>
-                                                                    <InputText
-                                                                        id="name"
-                                                                        value={infoData.name}
-                                                                        onChange={(e) => onInputChange(e, "name")}
-                                                                        required
-                                                                        className={classNames({
-                                                                            "p-invalid": submitted && !infoData.name,
-                                                                        })}
-                                                                    />
-                                                                    {submitted && !infoData.name && (
-                                                                        <small className="p-invalid">
-                                                                            Name is required.
-                                                                        </small>
-                                                                    )}
-                                                                </div>
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Phone</label>
-                                                                    <InputText
-                                                                        id="age"
-                                                                        value={infoData.phone}
-                                                                        onChange={(e) => onInputChange(e, "phone")}
+                                                                        inputId="category"
+                                                                        name="category"
+                                                                        value={formik.values.contact[i].person_designation}
+                                                                        options={designationList}
+                                                                        optionLabel="label"
+                                                                        placeholder="Select a Designation"
+                                                                        onChange={(e) => {
+                                                                            formik.setFieldValue(`contact.${i}.person_designation`, e.value)
+                                                                        }}
                                                                     />
                                                                 </div>
                                                             </div>
 
-                                                            <div className="formgrid grid">
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Email</label>
-                                                                    <InputText
-                                                                        id="email"
-                                                                        value={infoData.email}
-                                                                        onChange={(e) => onInputChange(e, "email")}
-                                                                    />
-                                                                </div>
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">What's App</label>
-                                                                    <InputText
-                                                                        id="whatsapp"
-                                                                        value={infoData.whatsapp}
-                                                                        onChange={(e) => onInputChange(e, "whatsapp")}
-                                                                    />
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="formgrid grid">
-                                                                <label htmlFor="infoData">Convert To Customer</label>
-                                                                <InputSwitch className='ml-5' checked={show} onChange={(e) => setShow(!show)} />
-
-                                                                <label className='ml-5' htmlFor="infoData">Convert To Follow Up</label>
-                                                                <InputSwitch className='ml-5' checked={chFollow} onChange={() => setChFollow(!chFollow)} />
-                                                            </div>
-
-                                                            {setMAddress(formik.values.address)}
-                                                            {formik.values.address.map((address, i) => (
-                                                                <div key={i}>
-                                                                    <div className='card my-3'>
-                                                                        <div className='field'>
-                                                                            <div className='formgrid grid'>
-                                                                                <div className='field col'>
-                                                                                    <label htmlFor='address'>Address - {i+1}</label>
-                                                                                    <InputText
-                                                                                        id='address'
-                                                                                        value={formik.values.address[i].address}
-                                                                                        onChange={(e) => {
-                                                                                            formik.setFieldValue(`address.${i}.address`, e.target.value)
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div className="formgrid grid mt-2">
-                                                                                <div className="field col">
-                                                                                    <label htmlFor='address'>Category</label>
-                                                                                    <Dropdown
-                                                                                        inputId="category"
-                                                                                        name="category"
-                                                                                        value={formik.values.address[i].category}
-                                                                                        options={categoryList}
-                                                                                        optionLabel="label"
-                                                                                        placeholder="Select a Category"
-                                                                                        onChange={(e) => {
-                                                                                            formik.setFieldValue(`address.${i}.category`, e.value)
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-
-                                                                                <div className='field col'>
-                                                                                    <label htmlFor='address'>Building Status</label>
-                                                                                    <InputText
-                                                                                        id='house_con'
-                                                                                        value={formik.values.address[i].house_con}
-                                                                                        placeholder='Num of floor'
-                                                                                        onChange={(e) => {
-                                                                                            formik.setFieldValue(`address.${i}.house_con`, e.target.value)
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div className='formgrid grid mt-2'> 
-                                                                                <div className='field col'>
-                                                                                    <label htmlFor='address'>Reserve Tank</label>
-                                                                                    <Dropdown
-                                                                                        inputId="reserve_tank"
-                                                                                        name="reserve_tank"
-                                                                                        value={formik.values.address[i].reserve_tank}
-                                                                                        options={rerserveList}
-                                                                                        optionLabel="label"
-                                                                                        placeholder="Select a Tank"
-                                                                                        onChange={(e) => {
-                                                                                            formik.setFieldValue(`address.${i}.reserve_tank`, e.value)
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-                                                                                <div className='field col'>
-                                                                                    <label htmlFor='address'>Over Head Tank</label>
-                                                                                    <MultiSelect
-                                                                                        inputId="overhead_tank"
-                                                                                        name="overhead_tank"
-                                                                                        value={formik.values.address[i].overhead_tank}
-                                                                                        options={tankList}
-                                                                                        optionLabel="label"
-                                                                                        placeholder="Select a Tank"
-                                                                                        display="chip"
-                                                                                        onChange={(e) => {
-                                                                                            formik.setFieldValue(`address.${i}.overhead_tank`, e.value)
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className='formgrid grid' hidden={!show}>
-                                                                                <div className='field col'>
-                                                                                    <label htmlFor='address'>Price</label>
-                                                                                    <InputText
-                                                                                        id='address'
-                                                                                        value={formik.values.address[i].price}
-                                                                                        onChange={(e) => {
-                                                                                            formik.setFieldValue(`address.${i}.price`, e.target.value)
-                                                                                        }}
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className='formgrid grid mt-2'>
-                                                                            <div className='field col'>
-                                                                                {i > 0 && <Button 
-                                                                                    label="Remove" 
-                                                                                    icon="pi pi-times" 
-                                                                                    text onClick={() => arrayHelpers.remove(i)} 
-                                                                                />}
-                                                                            </div>
-                                                                            <div className='field col'></div>
-                                                                            <div className='field col'></div>
-                                                                            <div className='field col'></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
                                                             <div className='formgrid grid mt-2'>
                                                                 <div className='field col'>
-                                                                    <Button 
-                                                                        label='add' 
-                                                                        icon="pi pi-plus" 
-                                                                        text 
-                                                                        onClick={() => arrayHelpers.insert(formik.values.address.length + 1, 
-                                                                            {category:'', address: '', tank_con: '', house_con: ''}
-                                                                        )}
-                                                                    />
-                                                                </div>
-                                                                <div className='field col'></div>
-                                                                <div className='field col'></div>
-                                                                <div className='field col'></div>
-                                                                <div className='field col'></div>
-                                                            </div>
-                                                           
-                                                            <div className="formgrid grid" hidden={!chFollow}>
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Follow Up Date</label>
-                                                                    <Calendar 
-                                                                        value={new Date(infoData.followUpDate)} 
-                                                                        onChange={(e) => onDateChange(e, 'followUpDate')} 
-                                                                        dateFormat="dd/mm/yy" 
-                                                                        numberOfMonths={2}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div className="formgrid grid" hidden={!show}>
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Service Date</label>
-                                                                    <Calendar 
-                                                                        value={new Date(infoData.serviceDate)} 
-                                                                        onChange={(e) => onDateChange(e, 'serviceDate')} 
-                                                                        dateFormat="dd/mm/yy"
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                            <div className="formgrid grid" hidden={!show}>
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Re Follow Up Date</label>
+                                                                    <label htmlFor='contact'>Person Name</label>
                                                                     <InputText
-                                                                        id="reFollowUpDate"
-                                                                        value={infoData.reFollowUpDate}
-                                                                        placeholder='Enter Month'
-                                                                        onChange={(e) => onInputChange(e, "reFollowUpDate")}
+                                                                        id='contact_person'
+                                                                        value={formik.values.contact[i].contact_person}
+                                                                        onChange={(e) => {
+                                                                            formik.setFieldValue(`contact.${i}.contact_person`, e.target.value)
+                                                                        }}
                                                                     />
-                                                                    {/* <Calendar 
-                                                                        value={infoData.reFollowUpDate} 
-                                                                        onChange={(e) => onDateChange(e, 'reFollowUpDate')} 
-                                                                        dateFormat="dd/mm/yy" 
-                                                                        numberOfMonths={2}
-                                                                    /> */}
                                                                 </div>
-                                                            </div>
-                                                            <div className="formgrid grid">
-                                                                <div className="field col">
-                                                                    <label htmlFor="infoData">Details</label>
-                                                                    <InputTextarea
-                                                                        id="details"
-                                                                        value={infoData.details}
-                                                                        onChange={(e) => onInputChange(e, "details")}
-                                                                        rows={3} cols={30}
+                                                                <div className='field col'>
+                                                                    <label htmlFor='contact'>Phone Number</label>
+                                                                    <InputText
+                                                                        id='person_phone'
+                                                                        value={formik.values.contact[i].person_phone}
+                                                                        onChange={(e) => {
+                                                                            formik.setFieldValue(`contact.${i}.person_phone`, e.target.value)
+                                                                        }}
                                                                     />
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    )
-                                                }}
-                                            />
+                                                    </div>
+                                                ))}
+
+                                                <div className='formgrid grid mt-2'>
+                                                    <div className='field col'>
+                                                        <Button 
+                                                            label='add' 
+                                                            icon="pi pi-plus" 
+                                                            text 
+                                                            onClick={() => arrayHelpers.insert(formik.values.contact.length + 1, 
+                                                                { contact_person: '', person_phone: '', person_designation: ''}
+                                                            )}
+                                                        />
+                                                        </div>
+                                                        <div className='field col'></div>
+                                                        <div className='field col'></div>
+                                                        <div className='field col'></div>
+                                                        <div className='field col'></div>
+                                                </div>                                                    
+                                            </div>
+                                            )}}
+                                        />
+
+                                        <div className="formgrid grid">
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Email</label>
+                                                <InputText
+                                                    id="email"
+                                                    value={infoData.email}
+                                                    onChange={(e) => onInputChange(e, "email")}
+                                                />
+                                            </div>
+                                            <div className="field col">
+                                                <label htmlFor="infoData">What's App</label>
+                                                <InputText
+                                                    id="whatsapp"
+                                                    value={infoData.whatsapp}
+                                                    onChange={(e) => onInputChange(e, "whatsapp")}
+                                                />
+                                            </div>
                                         </div>
-                                    </Form>
-                                )}
-                            </Formik>
+
+                                        <div className="formgrid grid my-5">
+                                            <div className="flex align-items-center">
+                                                <Checkbox className='ml-5' checked={show} onChange={(e) => setShow(!show)} />
+                                                <label className='ml-2' htmlFor="infoData">Convert To Customer</label>
+
+                                                <Checkbox className='ml-8' checked={chFollow} onChange={() => setChFollow(!chFollow)} />
+                                                <label className='ml-2' htmlFor="infoData">Follow Up</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <FieldArray
+                                            name='address'
+                                            render={(arrayHelpers) => {
+                                            return (
+                                            <div>
+                                                {setMAddress(formik.values.address)}
+                                                {formik.values.address.map((address, i) => (
+                                                    <div key={i}>
+                                                        <div className='card my-3'>
+                                                            <div className='field'>
+                                                                <div className='formgrid grid'>
+                                                                    <div className='field col'>
+                                                                        <label htmlFor='address'>Address - {i+1}</label>
+                                                                        <InputText
+                                                                            id='address'
+                                                                            value={formik.values.address[i].address}
+                                                                            onChange={(e) => {
+                                                                                formik.setFieldValue(`address.${i}.address`, e.target.value)
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="formgrid grid mt-2">
+                                                                    <div className="field col">
+                                                                        <label htmlFor='address'>Category</label>
+                                                                        <Dropdown
+                                                                            inputId="category"
+                                                                            name="category"
+                                                                            value={formik.values.address[i].category}
+                                                                            options={categoryList}
+                                                                            optionLabel="label"
+                                                                            placeholder="Select a Category"
+                                                                            onChange={(e) => {
+                                                                                formik.setFieldValue(`address.${i}.category`, e.value)
+                                                                            }}
+                                                                        />
+                                                                    </div>
+
+                                                                    <div className='field col'>
+                                                                        <label htmlFor='address'>Building Status</label>
+                                                                        <InputText
+                                                                            id='house_con'
+                                                                            value={formik.values.address[i].house_con}
+                                                                            placeholder='Num of floor'
+                                                                            onChange={(e) => {
+                                                                                formik.setFieldValue(`address.${i}.house_con`, e.target.value)
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className='formgrid grid mt-2'> 
+                                                                    <div className='field col'>
+                                                                        <label htmlFor='address'>Reserve Tank</label>
+                                                                        <Dropdown
+                                                                            inputId="reserve_tank"
+                                                                            name="reserve_tank"
+                                                                            value={formik.values.address[i].reserve_tank}
+                                                                            options={rerserveList}
+                                                                            optionLabel="label"
+                                                                            placeholder="Select a Tank"
+                                                                            onChange={(e) => {
+                                                                                formik.setFieldValue(`address.${i}.reserve_tank`, e.value)
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className='field col'>
+                                                                        <label htmlFor='address'>Over Head Tank</label>
+                                                                        <MultiSelect
+                                                                            inputId="overhead_tank"
+                                                                            name="overhead_tank"
+                                                                            value={formik.values.address[i].overhead_tank}
+                                                                            options={tankList}
+                                                                            optionLabel="label"
+                                                                            placeholder="Select a Tank"
+                                                                            display="chip"
+                                                                            onChange={(e) => {
+                                                                                formik.setFieldValue(`address.${i}.overhead_tank`, e.value)
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div className='formgrid grid' hidden={!show}>
+                                                                    <div className='field col'>
+                                                                        <label htmlFor='address'>Price</label>
+                                                                        <InputText
+                                                                            id='address'
+                                                                            value={formik.values.address[i].price}
+                                                                            onChange={(e) => {
+                                                                                formik.setFieldValue(`address.${i}.price`, e.target.value)
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className='formgrid grid mt-2'>
+                                                                <div className='field col'>
+                                                                    {i > 0 && <Button 
+                                                                        label="Remove" 
+                                                                        icon="pi pi-times" 
+                                                                        text onClick={() => arrayHelpers.remove(i)} 
+                                                                    />}
+                                                                </div>
+                                                                <div className='field col'></div>
+                                                                <div className='field col'></div>
+                                                                <div className='field col'></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                <div className='formgrid grid mt-2'>
+                                                    <div className='field col'>
+                                                        <Button 
+                                                            label='add' 
+                                                            icon="pi pi-plus" 
+                                                            text 
+                                                            onClick={() => arrayHelpers.insert(formik.values.address.length + 1, 
+                                                                {category:'', address: '', tank_con: '', house_con: ''}
+                                                            )}
+                                                        />
+                                                    </div>
+                                                    <div className='field col'></div>
+                                                    <div className='field col'></div>
+                                                    <div className='field col'></div>
+                                                    <div className='field col'></div>
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                            )}}
+                                        />
+
+                                        <div className="formgrid grid" hidden={!chFollow}>
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Follow Up Date</label>
+                                                <Calendar 
+                                                    value={new Date(infoData.followUpDate)} 
+                                                    onChange={(e) => onDateChange(e, 'followUpDate')} 
+                                                    dateFormat="dd/mm/yy" 
+                                                    numberOfMonths={2}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="formgrid grid" hidden={!show}>
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Service Date</label>
+                                                <Calendar 
+                                                    value={new Date(infoData.serviceDate)} 
+                                                    onChange={(e) => onDateChange(e, 'serviceDate')} 
+                                                    dateFormat="dd/mm/yy"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="formgrid grid" hidden={!show}>
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Re Follow Up Date</label>
+                                                <InputText
+                                                    id="reFollowUpDate"
+                                                    value={infoData.reFollowUpDate}
+                                                    placeholder='Enter Month'
+                                                    onChange={(e) => onInputChange(e, "reFollowUpDate")}
+                                                />
+                                                {/* <Calendar 
+                                                    value={infoData.reFollowUpDate} 
+                                                    onChange={(e) => onDateChange(e, 'reFollowUpDate')} 
+                                                    dateFormat="dd/mm/yy" 
+                                                    numberOfMonths={2}
+                                                /> */}
+                                            </div>
+                                        </div>
+                                        <div className="formgrid grid">
+                                            <div className="field col">
+                                                <label htmlFor="infoData">Details</label>
+                                                <InputTextarea
+                                                    id="details"
+                                                    value={infoData.details}
+                                                    onChange={(e) => onInputChange(e, "details")}
+                                                    rows={3} cols={30}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Form>
+                            )}
+                        </Formik>
                     </Dialog>
 
                     <Dialog visible={deleteDataDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDataDialogFooter} onHide={hideDeleteProductDialog}>
@@ -799,7 +884,6 @@ const Lead_Info = () => {
                             )}
                         </div>
                     </Dialog>
-                    
                 </div>
             </div>
         </div>
