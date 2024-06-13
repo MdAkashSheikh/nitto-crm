@@ -1,6 +1,14 @@
 
 const postContact = async(req, res) => {
-    
+    try {
+        
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            error
+        })
+    }
 }
 
 const editContact = async(req, res) => {
