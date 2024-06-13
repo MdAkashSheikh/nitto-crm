@@ -112,6 +112,13 @@ const {
     toggleUser,
     deleteUser
 } = require('../controllers/userController');
+const { 
+    postContact, 
+    editContact, 
+    getContact, 
+    deleteContact,
+    toggleContact
+} = require('../controllers/contact');
 
 /* -------------------------------- */
 /*     Image Upload For Multer      */
@@ -255,6 +262,15 @@ router.post('/cancel-deal/:id', cancellDeal);
 /* -------------------------------- */
 router.post('/post-follow', postFollow);
 router.post('/edit-follow-up/:id', editFollow)
+
+/* -------------------------------- */
+/*        Contact Route URL         */
+/* -------------------------------- */
+router.post('/post-contact', postContact);
+router.post('/edit-contact/:id', editContact);
+router.get('/get-contact', getContact);
+router.delete('/delete-contact/:id', deleteContact);
+router.post('/toggle-contact/:id', toggleContact);
 
 /* -------------------------------- */
 /*   Sign Up and Sign In Route URL  */
