@@ -509,7 +509,6 @@ const Lead_Info = () => {
                                                     </small>
                                                 )}
                                             </div>
-                                            
                                         </div>
 
                                         <div className="formgrid grid">
@@ -643,7 +642,7 @@ const Lead_Info = () => {
                                                             label='add' 
                                                             icon="pi pi-plus" 
                                                             text 
-                                                            onClick={() => arrayHelpers.insert(formik.values.contact.length + 1, 
+                                                            onClick={() => arrayHelpers.insert(formik.values.contact.length + 1,
                                                                 { contact_person: '', person_phone: '', person_designation: ''}
                                                             )}
                                                         />
