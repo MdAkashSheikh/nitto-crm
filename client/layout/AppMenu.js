@@ -144,6 +144,11 @@ const AppMenu = () => {
                             icon: 'pi pi-fw pi-clone',
                             to: '/master/tank_info'
                         },
+                        {
+                            label: 'Contact Information',
+                            icon: 'pi pi pi-user',
+                            to: '/master/contact'
+                        },
                     ]
                 },
             ]
