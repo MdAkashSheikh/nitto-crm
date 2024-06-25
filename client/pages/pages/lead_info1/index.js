@@ -22,6 +22,7 @@ import { TankInfoService } from '../../../demo/service/TankInfoService';
 import { DataSourceService } from '../../../demo/service/SourceDataService';
 import { FolloUpService } from '../../../demo/service/FollowUpService';
 import { TeamInfoService } from '../../../demo/service/TeamInfoService';
+import { ContactService } from '../../../demo/service/ContactService';
 
 const Lead_Info = () => {
     let emptyInfo = {
@@ -53,6 +54,7 @@ const Lead_Info = () => {
     const [msEmployee, setMsEmployee] = useState(null);
     const [msCategory, setMsCategory] = useState(null);
     const [msDataSource, setMSDataSource] = useState(null);
+    const [msContact, setMSContact] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
     const [toggleRefresh, setTogleRefresh] = useState(false);
@@ -70,8 +72,7 @@ const Lead_Info = () => {
         TankInfoService.getTank().then((res) => setMSTank(res.data.AllData));
         DataSourceService.getSourceData().then((res) => setMSDataSource(res.data.AllData));
         TeamInfoService.getTeamInfo().then((res) => setMsEmployee(res.data.AllData));
-
-
+        ContactService.getContact().then((res) => setMSContact(res.data.AllData))
     }, [toggleRefresh]);
 
     const openNew = () => {
@@ -231,15 +232,14 @@ const Lead_Info = () => {
         return { label: item.name, value: item.name }
     })
 
+    const filterDesignation = msContact?.filter((item) => item.is_active == '1');
+    const designationList = filterDesignation?.map((item) => {
+        return { label: item.name, value: item.name }
+    })
+
     const rerserveList = [
         { label: 'Yes', value: 'Reserve Tank'},
         { label: 'No', value: ''},
-    ]
-
-    const designationList = [
-        { label: "Chaiirman", value: "Chairman"},
-        { label: "Manager", value: "Manager"},
-        { label: "Caretaker", value: "Caretaker"}
     ]
 
     const onInputChange = (e, name) => {
@@ -534,7 +534,7 @@ const Lead_Info = () => {
                                                 )}
                                             </div>
                                             <div className="field col">
-                                                <label htmlFor="infoData">Employee</label>
+                                                <label htmlFor="infoData">CRM</label>
                                                 <Dropdown
                                                     value={infoData.employee}
                                                     name='employee'
@@ -632,6 +632,19 @@ const Lead_Info = () => {
                                                                     />
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                        
+                                                        <div className='formgrid grid mt-2'>
+                                                            <div className='field col'>
+                                                                {i > 0 && <Button 
+                                                                    label="Remove" 
+                                                                    icon="pi pi-times" 
+                                                                    text onClick={() => arrayHelpers.remove(i)} 
+                                                                />}
+                                                            </div>
+                                                            <div className='field col'></div>
+                                                            <div className='field col'></div>
+                                                            <div className='field col'></div>
                                                         </div>
                                                     </div>
                                                 ))}

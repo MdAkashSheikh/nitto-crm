@@ -36,7 +36,7 @@ const LoginPage = () => {
             const res = await axios.post(`${URL}/signin`, formData);
            
             const token = res?.data.token;
-            const jwtEmail = res?.data.user.email;
+            const jwtEmail = res?.data.email;
 
             saveJWTToken(token)
             saveUserName(jwtEmail);
