@@ -397,7 +397,7 @@ const Lead_Info = () => {
         )
     }
 
-
+    let j = 0;
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -575,11 +575,20 @@ const Lead_Info = () => {
                                                 )}
                                             </div>
                                             <div className="field col">
-                                                <label htmlFor="infoData">Phone</label>
-                                                <InputText
-                                                    id="age"
-                                                    value={infoData.phone}
-                                                    onChange={(e) => onInputChange(e, "phone")}
+                                                <FieldArray
+                                                    name='phone'
+                                                    render={(arrayHelpers) => {
+                                                    return(
+                                                        <div>
+                                                            <label htmlFor="infoData">Phone</label>
+                                                            <InputText
+                                                                id="age"
+                                                                value={infoData.phone}
+                                                                onChange={(e) => onInputChange(e, "phone")}
+                                                            />
+                                                        </div>
+                                                    )
+                                                    }}
                                                 />
                                             </div>
                                         </div>
@@ -591,6 +600,7 @@ const Lead_Info = () => {
                                             <div>
                                                 {setMContact(formik.values.contact)}
                                                 {formik.values.contact?.map((con, i) => (
+                                                <>
                                                     <div key={i}>
                                                         <div className='card my-3'>
                                                             <div className='formgrid grid'>
@@ -647,24 +657,25 @@ const Lead_Info = () => {
                                                             <div className='field col'></div>
                                                         </div>
                                                     </div>
-                                                ))}
+                                                </>
+                                                ))} 
 
                                                 <div className='formgrid grid mt-2'>
                                                     <div className='field col'>
-                                                        <Button 
+                                                        {j < 2 && <Button 
                                                             label='add' 
                                                             icon="pi pi-plus" 
                                                             text 
                                                             onClick={() => arrayHelpers.insert(formik.values.contact.length + 1,
                                                                 { contact_person: '', person_phone: '', person_designation: ''}
                                                             )}
-                                                        />
+                                                        />}
                                                         </div>
                                                         <div className='field col'></div>
                                                         <div className='field col'></div>
                                                         <div className='field col'></div>
                                                         <div className='field col'></div>
-                                                </div>                                                    
+                                                </div>                                                
                                             </div>
                                             )}}
                                         />
