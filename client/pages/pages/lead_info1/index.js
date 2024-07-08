@@ -60,7 +60,7 @@ const Lead_Info = () => {
     const [toggleRefresh, setTogleRefresh] = useState(false);
     const [msTank, setMSTank] = useState(null);
     const [mContact, setMContact] = useState([{ contact_person: '', person_phone: '', person_designation: ''}])
-    const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [''], price: ''}])
+    const [mAddress, setMAddress] = useState([{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}])
     const [show, setShow] = useState(false);
     const [chFollow, setChFollow] = useState(false);
 
@@ -229,8 +229,10 @@ const Lead_Info = () => {
 
     const filterTank = msTank?.filter((item) => item.is_active == '1');
     const tankList = filterTank?.map(item => {
-        return { label: item.name, value: item.name }
+        return { serviceId: item._id, label: item.name, value: item.name }
     })
+
+    console.log('tankList', tankList)
 
     const filterDesignation = msContact?.filter((item) => item.is_active == '1');
     const designationList = filterDesignation?.map((item) => {
@@ -780,16 +782,43 @@ const Lead_Info = () => {
                                                                     <label htmlFor='address'>Over Head Tank</label>
                                                                     <MultiSelect
                                                                         inputId="overhead_tank"
-                                                                        name="overhead_tank"
+                                                                        name={tankList?.serviceId}
                                                                         value={formik.values.address[i].overhead_tank}
                                                                         options={tankList}
                                                                         optionLabel="label"
+                                                                        serviceId={tankList.serviceId}
                                                                         placeholder="Select a Tank"
                                                                         display="chip"
                                                                         onChange={(e) => {
-                                                                            formik.setFieldValue(`address.${i}.overhead_tank`, e.value)
+                                                                            const filterId = tankList?.filter(item => item.label == e.target.value)
+
+                                                                            cons
+                                        
+                                                                            console.log("eeeeeeeeeee", e)
+                                                                            const selectedTanks = e.value;
+                                                                            formik.setFieldValue(`address.${i}.overhead_tank`, selectedTanks);
+
+                                                                            console.log('selectedTanks', selectedTanks)
+
+                                                                            // Add new fields based on selected values
+                                                                            const newFields = selectedTanks.map((tank) => ({
+                                                                                name: tank.label,
+                                                                                value: '',
+                                                                            }));
+
+                                                                            // Log the serviceId for each selected tank
+                                                                            selectedTanks.forEach((tank) => {
+                                                                                const selectedTank = tankList.find(t => t.value === tank.value);
+                                                                                if (selectedTank) {
+                                                                                    console.log('Service ID:', selectedTank.serviceId);
+                                                                                }
+                                                                            });
+
+                                                                            formik.setFieldValue(`address.${i}.additionalFields`, newFields);
                                                                         }}
+                                
                                                                     />
+                                                    
                                                                 </div>
                                                             </div>
                                                             <div className='formgrid grid' hidden={!show}>
