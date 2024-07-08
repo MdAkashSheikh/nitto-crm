@@ -11,16 +11,14 @@ export default function BasicDemo() {
         { name: 'Istanbul', code: 'IST' },
         { name: 'Paris', code: 'PRS' }
     ];
+    
+
+    console.log(selectedCities)
 
     return (
         <div className="card flex justify-content-center">
-            <MultiSelect 
-                value={selectedCities}
-                onChange={(e) => setSelectedCities(e.value)}
-                options={cities} 
-                optionLabel="name" 
-                placeholder="Select Cities" 
-                maxSelectedLabels={3} className="w-full md:w-20rem" />
+            <MultiSelect value={selectedCities} onChange={(e) => setSelectedCities(e.value)} options={cities} optionLabel="name" 
+                placeholder="Select Cities" maxSelectedLabels={3} className="w-full md:w-20rem" />
         </div>
     );
 }
