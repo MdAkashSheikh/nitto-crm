@@ -790,11 +790,8 @@ const Lead_Info = () => {
                                                                         placeholder="Select a Tank"
                                                                         display="chip"
                                                                         onChange={(e) => {
-                                                                            const filterId = tankList?.filter(item => item.label == e.target.value)
-
-                                                                            cons
+                                                                            // const filterId = tankList?.filter(item => item.label == e.target.value)
                                         
-                                                                            console.log("eeeeeeeeeee", e)
                                                                             const selectedTanks = e.value;
                                                                             formik.setFieldValue(`address.${i}.overhead_tank`, selectedTanks);
 
@@ -808,7 +805,9 @@ const Lead_Info = () => {
 
                                                                             // Log the serviceId for each selected tank
                                                                             selectedTanks.forEach((tank) => {
-                                                                                const selectedTank = tankList.find(t => t.value === tank.value);
+                                                                                
+                                                                                console.log('tank', tank)
+                                                                                const selectedTank = tankList?.find(t => t.value === tank);
                                                                                 if (selectedTank) {
                                                                                     console.log('Service ID:', selectedTank.serviceId);
                                                                                 }
