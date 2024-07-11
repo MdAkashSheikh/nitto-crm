@@ -398,8 +398,14 @@ const Lead_Info = () => {
             </div>
         )
     }
-
     let j = 0;
+    const addNum = (n) => {
+        console.log(n)
+        n+=1
+    }
+
+    console.log('mAddress', mAddress)
+
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -482,7 +488,7 @@ const Lead_Info = () => {
                     >
                         <Formik
                             initialValues={{
-                                address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], price: ''}] : infoData.address,
+                                address: !infoData.address?.length ? [{category: '', address: '', house_con: '', reserve_tank: '', overhead_tank: [], additionalFields: { name: "", count: 0 }, price: ''}] : infoData.address,
                                 contact: !infoData.contact?.length ? [{ contact_person: '', person_phone: '', person_designation: ''}] : infoData.contact,
                             }}
                         >
@@ -595,6 +601,7 @@ const Lead_Info = () => {
                                         </div>
                                     </div>
 
+
                                     <FieldArray
                                         name='contact'
                                         render={(arrayHelpers) => {
@@ -669,7 +676,8 @@ const Lead_Info = () => {
                                                         icon="pi pi-plus" 
                                                         text 
                                                         onClick={() => arrayHelpers.insert(formik.values.contact.length + 1,
-                                                            { contact_person: '', person_phone: '', person_designation: ''}
+                                                            { contact_person: '', person_phone: '', person_designation: ''},
+                                                            addNum(j)
                                                         )}
                                                     />}
                                                     </div>
@@ -710,13 +718,13 @@ const Lead_Info = () => {
                                             <label className='ml-2' htmlFor="infoData">Follow Up</label>
                                         </div>
                                     </div>
-                                    
+                                    {console.log("VALUE----------->",formik.values.address[0].additionalFields)}
                                     <FieldArray
                                         name='address'
                                         render={(arrayHelpers) => {
                                         return (
                                         <div>
-                                            {setMAddress(formik.values.address)}
+                                            {setMAddress(formik.values.address.overhead_tank)}
                                             {formik.values.address.map((address, i) => (
                                                 <div key={i}>
                                                     <div className='card my-3'>
@@ -783,41 +791,44 @@ const Lead_Info = () => {
                                                                     <MultiSelect
                                                                         inputId="overhead_tank"
                                                                         name={tankList?.serviceId}
-                                                                        value={formik.values.address[i].overhead_tank}
+                                                                        value={formik?.values?.address[i]?.overhead_tank}
                                                                         options={tankList}
                                                                         optionLabel="label"
-                                                                        serviceId={tankList.serviceId}
                                                                         placeholder="Select a Tank"
                                                                         display="chip"
                                                                         onChange={(e) => {
-                                                                            // const filterId = tankList?.filter(item => item.label == e.target.value)
                                         
                                                                             const selectedTanks = e.value;
                                                                             formik.setFieldValue(`address.${i}.overhead_tank`, selectedTanks);
 
-                                                                            console.log('selectedTanks', selectedTanks)
+                                                                            // console.log('selectedTanks', selectedTanks)
 
                                                                             // Add new fields based on selected values
-                                                                            const newFields = selectedTanks.map((tank) => ({
-                                                                                name: tank.label,
-                                                                                value: '',
+                                                                            const newFields = selectedTanks?.map((tank) => ({
+                                                                                name: tank,
+                                                                                value: 0,
                                                                             }));
 
                                                                             // Log the serviceId for each selected tank
-                                                                            selectedTanks.forEach((tank) => {
+                                                                            // selectedTanks.forEach((tank) => {
                                                                                 
-                                                                                console.log('tank', tank)
-                                                                                const selectedTank = tankList?.find(t => t.value === tank);
-                                                                                if (selectedTank) {
-                                                                                    console.log('Service ID:', selectedTank.serviceId);
-                                                                                }
-                                                                            });
+                                                                            //     console.log('tank', tank)
+                                                                            //     const selectedTank = tankList?.find(t => t.value === tank);
+                                                                            //     if (selectedTank) {
+                                                                            //         console.log('Service ID:', selectedTank.serviceId);
+                                                                            //     }
+                                                                            // });
 
                                                                             formik.setFieldValue(`address.${i}.additionalFields`, newFields);
+                                                                            // formik.setFieldValue(`address.${i}.overhead_tank`, newFields);
                                                                         }}
-                                
                                                                     />
-                                                    
+
+                                                                    {formik.values.address[i].additionalFields?.map((p, q) => (
+                                                                        <div key={q}>
+                                                                            <div></div>
+                                                                        </div>
+                                                                    ))}                   
                                                                 </div>
                                                             </div>
                                                             <div className='formgrid grid' hidden={!show}>
