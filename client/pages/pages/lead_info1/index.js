@@ -826,7 +826,15 @@ const Lead_Info = () => {
 
                                                                     {formik.values.address[i].additionalFields?.map((p, q) => (
                                                                         <div key={q}>
-                                                                            <div></div>
+                                                                            <label htmlFor='address'>{formik.values.address[i].additionalFields[q].name}</label>
+                                                                            <InputText
+                                                                                id='count'
+                                                                                value={formik.values.address[i].additionalFields[q].count}
+                                                                                onChange={(e) => {
+                                                                                    console.log('eeeeee', e)
+                                                                                    formik.setFieldValue(`address.${i}.additionalFields.${q}.count`, e.nativeEvent.data)
+                                                                                }}
+                                                                            />
                                                                         </div>
                                                                     ))}                   
                                                                 </div>
